@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('icon')->nullable();              // Emoji hoặc icon class
             $table->string('color')->default('#6B7280');     // Màu sắc (hex)
             $table->integer('min_posts')->default(0);        // Số bài viết tối thiểu
-            $table->integer('min_books')->default(0);        // Số sách đề xuất tối thiểu
+            $table->integer('min_recipes')->default(0);        // Số công thức tối thiểu
             $table->integer('priority')->default(1);         // Thứ tự ưu tiên (cao = ưu tiên hơn)
             $table->boolean('is_active')->default(true);
             $table->timestamps();

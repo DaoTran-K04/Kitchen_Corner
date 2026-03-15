@@ -11,29 +11,19 @@ class Comment extends Model
 
     protected $fillable = [
         'user_id',
-        'post_id', // Cột này đang lưu ID của Sách (hoặc Post)
+        'recipe_id',
+        'parent_id',
         'content',
-        'rating',
-        // ... các cột khác
     ];
 
-    // Quan hệ với User (người bình luận)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // --- THÊM ĐOẠN NÀY ĐỂ SỬA LỖI ---
-    public function book()
+    public function recipe()
     {
-        // Khai báo: Comment thuộc về Book thông qua cột 'post_id'
-        return $this->belongsTo(Book::class, 'post_id');
-    }
-    
-    // Nếu bạn cũng muốn lấy comment theo Post, có thể giữ thêm cái này (tuỳ chọn)
-    public function post()
-    {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Recipe::class);
     }
     public function likes()
     {

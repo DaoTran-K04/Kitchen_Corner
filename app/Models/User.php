@@ -36,17 +36,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // --- 1. CÁC MỐI QUAN HỆ CƠ BẢN ---
 
-    public function posts()
+    public function recipes()
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Recipe::class);
     }
 
-    // Bài viết đã lưu (Bookmark)
-    public function savedPosts()
+    public function collections()
     {
-        return $this->belongsToMany(Post::class, 'saved_posts')
-            ->withTimestamps()
-            ->orderByPivot('created_at', 'desc');
+        return $this->hasMany(Collection::class);
     }
 
     public function comments()
@@ -60,13 +57,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-
-    // --- [PHẦN QUAN TRỌNG ĐÃ SỬA] ---
-
-    public function contributedBooks()
-    {
-        return $this->hasMany(Book::class, 'created_by_user_id');
-    }
 
     // --- 2. QUAN HỆ FOLLOW ---
 
@@ -140,16 +130,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // --- 5. LẤY DANH HIỆU HOẠT ĐỘNG (ACTIVITY TITLE) ---
     /**
-     * Lấy danh hiệu dựa trên số bài viết đã duyệt và sách đã đề xuất được duyệt
+     * Lấy danh hiệu dựa trên số công thức đã duyệt
      *
      * @return \App\Models\ActivityTitle|null
      */
     public function getActivityTitle()
     {
-        $publishedPosts = $this->posts()->where('status', 'published')->count();
-        $approvedBooks = $this->contributedBooks()->where('is_approved', true)->count();
-
-        return ActivityTitle::getForUser($publishedPosts, $approvedBooks);
+        $publishedRecipes = $this->recipes()->where('status', 'published')->count();
+        // Since we removed books, we pass 0 or remove that parameter in ActivityTitle.
+        // Assuming ActivityTitle::getForUser will be updated to handle (publishedRecipes).
+        return ActivityTitle::getForUser($publishedRecipes, 0);
     }
 
     // --- 4. HÀM TÍNH ĐIỂM THỬ THÁCH (CHUẨN XÁC) ---
@@ -167,7 +157,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $endDate = Carbon::parse($challenge->end_date)->endOfDay();
 
             // Đếm bài viết hợp lệ (Đã duyệt + Nằm trong khoảng thời gian)
-            $validPostsCount = $this->posts()
+            $validPostsCount = $this->recipes()
                 ->where('status', 'published')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count();

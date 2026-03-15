@@ -14,30 +14,30 @@ class ActivityTitle extends Model
         'icon',
         'color',
         'min_posts',
-        'min_books',
+        'min_recipes',
         'priority',
         'is_active',
     ];
 
     protected $casts = [
         'min_posts' => 'integer',
-        'min_books' => 'integer',
+        'min_recipes' => 'integer',
         'priority' => 'integer',
         'is_active' => 'boolean',
     ];
 
     /**
-     * Lấy danh hiệu phù hợp nhất cho user dựa trên số bài viết và sách đã duyệt
+     * Lấy danh hiệu phù hợp nhất cho user dựa trên số bài viết và công thức đã duyệt
      *
      * @param int $publishedPosts Số bài viết đã được duyệt
-     * @param int $approvedBooks Số sách đề xuất đã được duyệt
+     * @param int $approvedRecipes Số công thức đã được duyệt
      * @return ActivityTitle|null
      */
-    public static function getForUser(int $publishedPosts, int $approvedBooks): ?self
+    public static function getForUser(int $publishedPosts, int $approvedRecipes): ?self
     {
         return self::where('is_active', true)
             ->where('min_posts', '<=', $publishedPosts)
-            ->where('min_books', '<=', $approvedBooks)
+            ->where('min_recipes', '<=', $approvedRecipes)
             ->orderBy('priority', 'desc') // Ưu tiên cao nhất trước
             ->first();
     }

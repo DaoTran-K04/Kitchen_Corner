@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('likes', function (Blueprint $table) {
+        Schema::create('recipe_steps', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('recipe_id')->constrained()->onDelete('cascade');
+            $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
+            $table->integer('step_number');
+            $table->text('description');
+            $table->string('image')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'recipe_id']);
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::dropIfExists('recipe_steps');
     }
 };
