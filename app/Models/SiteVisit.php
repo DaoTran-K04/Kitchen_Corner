@@ -27,9 +27,15 @@ class SiteVisit extends Model
      */
     public static function trackVisit(string $ip): void
     {
+        // Lấy session ID từ request (hoặc tạo unique string nếu không có)
+        $sessionId = session()->getId() ?? uniqid('visit_', true);
+
         self::updateOrCreate(
             ['ip_address' => $ip],
-            ['last_activity' => now()]
+            [
+                'session_id'    => $sessionId,
+                'last_activity' => now(),
+            ]
         );
     }
 

@@ -99,7 +99,9 @@
                     @if($activityLog->action === 'delete' && $activityLog->old_values)
                         <div class="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
                             <form method="POST" action="{{ route('admin.activity-logs.restore', $activityLog) }}"
-                                onsubmit="return confirm('Bạn có chắc muốn khôi phục mục này?')">
+                                class="confirm-submit"
+                                data-confirm="Bạn có chắc muốn khôi phục mục này?"
+                                data-confirm-type="info">
                                 @csrf
                                 <button type="submit"
                                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition-all">

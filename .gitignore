@@ -22,3 +22,22 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Temp/utility scripts (không commit lên git)
+cleanup.php
+distribute_recipes.php
+fix_images.php
+read_docx.php
+migrate_asset_paths.php
+patch_*.php
+set_absolute_urls*.php
+update_images.php
+_cleanup_temp.php
+gen_report.py
+report_content.txt
+
+# Báo cáo sinh viên (file cá nhân)
+BaoCao_*.docx
+
+# File nén cũ
+gocsach.zip

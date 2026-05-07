@@ -3,16 +3,6 @@
 @section('title', 'Trang Cá Nhân - ' . $user->name)
 
 @section('content')
-    <div class="bg-brand-beige/30 py-4 border-b border-brand-beige">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center text-sm text-gray-500 font-medium">
-                <a href="{{ route('home') }}" class="hover:text-brand-green transition">Trang chủ</a>
-                <span class="mx-2 text-gray-300">/</span>
-                <span class="text-brand-green font-bold">Hồ sơ của {{ $user->name }}</span>
-            </div>
-        </div>
-    </div>
-
     <main class="container mx-auto px-4 py-12 flex-grow min-h-screen">
         {{-- THÔNG BÁO THÀNH CÔNG (NẾU CÓ) --}}
         @if(session('success'))
@@ -79,7 +69,7 @@
                     <p
                         class="text-gray-600 text-sm italic mb-4 px-2 bg-gray-50 py-2 rounded-lg border border-gray-100 relative">
                         <i class="fas fa-quote-left text-gray-300 absolute top-1 left-1 text-xs"></i>
-                        {{ $user->bio ?? 'Thành viên tích cực của Góc Sách.' }}
+                        {{ $user->bio ?? 'Thành viên tích cực của Góc Bếp.' }}
                     </p>
 
                     <div class="flex justify-center gap-2 mb-6 flex-wrap">
@@ -113,11 +103,11 @@
                     <div class="grid grid-cols-2 gap-3 mb-6 border-t border-b border-gray-100 py-4">
                         <div class="text-center">
                             <span class="block font-bold text-xl text-brand-green">{{ $totalSuggestedBooks ?? 0 }}</span>
-                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Sách đề xuất</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Công thức</span>
                         </div>
                         <div class="text-center border-l border-gray-100">
                             <span class="block font-bold text-xl text-brand-accent">{{ $totalReviews ?? 0 }}</span>
-                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Bài viết</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Bình luận</span>
                         </div>
 
                         <div class="text-center mt-2 pt-2 border-t border-gray-50 col-span-2 grid grid-cols-2">
@@ -418,18 +408,18 @@
                                 <i class="fas fa-th-large mr-2"></i>Tổng quan
                             </button>
 
-                            {{-- Tab 2: Bài Review --}}
+                            {{-- Tab 2: Công Thức --}}
                             <button onclick="showProfileTab('reviews')" id="tab-btn-reviews"
                                 class="flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-brand-green hover:bg-gray-50">
-                                <i class="fas fa-pen-nib mr-2"></i>Bài Review
+                                <i class="fas fa-utensils mr-2"></i>Công Thức
                                 <span
                                     class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalReviews }}</span>
                             </button>
 
-                            {{-- Tab 3: Sách Đề Xuất --}}
+                            {{-- Thẻ Books bị ẩn do dùng chung với Recipes --}}
                             <button onclick="showProfileTab('books')" id="tab-btn-books"
-                                class="flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-brand-accent hover:bg-gray-50">
-                                <i class="fas fa-book-medical mr-2"></i>Sách Đề Xuất
+                                class="hidden flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-brand-accent hover:bg-gray-50">
+                                <i class="fas fa-book-medical mr-2"></i>Công Thức Phụ
                                 <span
                                     class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalSuggestedBooks }}</span>
                             </button>
@@ -465,7 +455,7 @@
                     <div class="bg-white rounded-xl shadow-soft border border-gray-100 p-6 mb-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <i class="fas fa-pen-nib text-brand-green"></i> Bài Review Gần Đây
+                                <i class="fas fa-utensils text-brand-green"></i> Công Thức Mới Nhất
                             </h3>
                             @if($totalReviews > 0)
                                 <button onclick="showProfileTab('reviews')"
@@ -480,7 +470,7 @@
                                 @foreach($reviews->take(3) as $post)
                                     <div class="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group">
                                         @php
-                                            $cover = $post->book->cover_image ?? null;
+                                            $cover = $post->image ?? null;
                                             $coverUrl = $cover ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover)) : 'https://placehold.co/50';
                                         @endphp
                                         <img src="{{ $coverUrl }}" class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0">
@@ -489,7 +479,7 @@
                                                 class="font-bold text-gray-800 text-sm line-clamp-1 group-hover:text-brand-green transition">
                                                 {{ $post->title }}
                                             </h4>
-                                            <p class="text-xs text-gray-500 mt-0.5">{{ $post->book->title ?? 'Sách đã xóa' }}</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">{{ $post->category->name ?? 'Món ăn' }}</p>
                                             <div class="flex items-center gap-2 mt-1">
                                                 <div class="flex text-yellow-400 text-[10px]">
                                                     @for($i = 1; $i <= 5; $i++)
@@ -509,7 +499,7 @@
                                         @if(Auth::check() && Auth::id() == $post->user_id)
                                             {{-- Nút Sửa (chỉ cho chủ bài viết, ẩn khi pending_delete) --}}
                                             @if($post->status != 'pending_delete')
-                                                <a href="{{ route('reviews.edit', $post->id) }}"
+                                                <a href="{{ route('recipes.edit', $post->id) }}"
                                                     class="text-blue-500 hover:text-blue-700 self-center opacity-0 group-hover:opacity-100 transition"
                                                     title="Chỉnh sửa">
                                                     <i class="fas fa-edit"></i>
@@ -531,9 +521,9 @@
                                         @else
                                             {{-- Nút Xem (cho người khác, ẩn khi pending_delete) --}}
                                             @if($post->status != 'pending_delete')
-                                                <a href="{{ route('book.reviews', $post->book->slug ?? $post->book_id) }}"
+                                                <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}"
                                                     class="text-brand-green hover:text-brand-green/80 self-center opacity-0 group-hover:opacity-100 transition"
-                                                    title="Xem bài review">
+                                                    title="Xem công thức">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
                                             @endif
@@ -546,19 +536,19 @@
                                 <i class="fas fa-pen-nib text-2xl mb-2"></i>
                                 <p class="text-sm">Chưa có bài review nào</p>
                                 @if(isset($isOwnProfile) && $isOwnProfile)
-                                    <a href="{{ route('reviews.create') }}"
-                                        class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Viết bài đầu
+                                    <a href="{{ route('recipes.create') }}"
+                                        class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Viết công thức đầu
                                         tiên</a>
                                 @endif
                             </div>
                         @endif
                     </div>
 
-                    {{-- Sách Đề Xuất Gần Đây (3 sách) --}}
+                    {{-- Công Thức Của Tôi Gần Đây (3 sách) --}}
                     <div class="bg-white rounded-xl shadow-soft border border-gray-100 p-6">
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="hidden flex items-center justify-between mb-4">
                             <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <i class="fas fa-book-medical text-brand-accent"></i> Sách Đề Xuất Gần Đây
+                                <i class="fas fa-book-medical text-brand-accent"></i> Công Thức Của Tôi Gần Đây
                             </h3>
                             @if($totalSuggestedBooks > 0)
                                 <button onclick="showProfileTab('books')"
@@ -582,9 +572,9 @@
                                                 class="font-bold text-gray-800 text-sm line-clamp-2 group-hover:text-brand-accent transition">
                                                 {{ $book->title }}
                                             </h4>
-                                            <p class="text-xs text-gray-500 mt-0.5 truncate">{{ $book->author_name ?? 'Tác giả' }}
+                                            <p class="text-xs text-gray-500 mt-0.5 truncate">{{ $book->user->name ?? 'Tác giả' }}
                                             </p>
-                                            @if($book->is_approved)
+                                            @if($book->status == 'published')
                                                 <span class="text-[10px] text-green-600 font-bold"><i class="fas fa-check-circle"></i>
                                                     Đã duyệt</span>
                                             @else
@@ -598,10 +588,10 @@
                         @else
                             <div class="text-center py-6 text-gray-400">
                                 <i class="fas fa-book-medical text-2xl mb-2"></i>
-                                <p class="text-sm">Chưa đề xuất sách nào</p>
+                                <p class="text-sm">Chưa chia sẻ công thức nào</p>
                                 @if(isset($isOwnProfile) && $isOwnProfile)
-                                    <a href="{{ route('books.suggest') }}"
-                                        class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Đề xuất sách
+                                    <a href="{{ route('recipes.create') }}"
+                                        class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Chia sẻ công thức
                                         mới</a>
                                 @endif
                             </div>
@@ -625,7 +615,7 @@
                         </div>
 
                         @if(Auth::check() && Auth::id() == $user->id)
-                            <a href="{{ route('reviews.create') }}"
+                            <a href="{{ route('recipes.create') }}"
                                 class="inline-flex items-center gap-1.5 bg-brand-accent hover:bg-[#c29263] text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm transition transform hover:-translate-y-0.5">
                                 <i class="fas fa-pen-nib"></i> Viết Review mới
                             </a>
@@ -665,13 +655,13 @@
                                 <div class="flex justify-between items-start mb-4 pr-20"> {{-- Thêm pr-20 để tránh đè lên badge
                                     --}}
                                     <div class="flex items-center gap-4">
-                                        <a href="{{ route('book.show', $post->book_id ?? 0) }}" class="block shrink-0">
+                                        <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="block shrink-0">
                                             {{-- Sửa lại đường dẫn ảnh cho chuẩn --}}
                                             @php
-                                                $cover = $post->book->cover_image ?? null;
+                                                $cover = $post->image ?? null;
                                                 $coverUrl = $cover
                                                     ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover))
-                                                    : 'https://placehold.co/50';
+                                                    : 'https://placehold.co/50x70?text=Recipe';
                                             @endphp
                                             <img src="{{ $coverUrl }}"
                                                 class="w-12 h-16 object-cover rounded shadow-sm border border-gray-200">
@@ -679,9 +669,9 @@
 
                                         <div>
                                             <h4 class="font-bold text-gray-800 text-base mb-1">
-                                                <a href="{{ route('book.show', $post->book_id ?? 0) }}"
+                                                <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}"
                                                     class="hover:text-brand-green transition">
-                                                    {{ $post->book->title ?? 'Sách đã xóa' }}
+                                                    {{ $post->title }}
                                                 </a>
                                             </h4>
                                             <div class="flex text-yellow-400 text-xs items-center gap-2">
@@ -718,7 +708,7 @@
                                     <div class="flex items-center gap-3">
                                         {{-- Nút Sửa (ẩn khi đang chờ xóa) --}}
                                         @if(Auth::check() && Auth::id() == $post->user_id && $post->status != 'pending_delete')
-                                            <a href="{{ route('reviews.edit', $post->id) }}"
+                                            <a href="{{ route('recipes.edit', $post->id) }}"
                                                 class="text-blue-500 hover:text-blue-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
                                                 <i class="fas fa-edit"></i> Sửa
                                             </a>
@@ -726,7 +716,7 @@
                                         {{-- Nút Xóa (chờ admin duyệt) --}}
                                         @if(Auth::check() && Auth::id() == $post->user_id)
                                             @if($post->status != 'pending_delete')
-                                                <a href="{{ route('reviews.edit', $post->id) }}"
+                                                <a href="{{ route('recipes.edit', $post->id) }}"
                                                     class="text-blue-500 hover:text-blue-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
                                                     <i class="fas fa-edit"></i> Sửa
                                                 </a>
@@ -747,12 +737,12 @@
                                         {{-- Link Xem chi tiết (ẩn khi pending_delete) --}}
                                         @if($post->status != 'pending_delete')
                                             @if($post->status == 'pending' && Auth::check() && Auth::id() == $post->user_id)
-                                                <a href="{{ route('reviews.edit', $post->id) }}"
+                                                <a href="{{ route('recipes.edit', $post->id) }}"
                                                     class="text-brand-green font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1">
                                                     Xem & Chỉnh sửa <i class="fas fa-arrow-right"></i>
                                                 </a>
                                             @else
-                                                <a href="{{ route('book.reviews', $post->book->slug ?? $post->book_id) }}"
+                                                <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}"
                                                     class="text-brand-green font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1">
                                                     Xem chi tiết <i class="fas fa-arrow-right"></i>
                                                 </a>
@@ -769,9 +759,9 @@
                                 </div>
                                 <p class="text-gray-500 font-medium">Người dùng này chưa có bài viết nào.</p>
                                 @if(Auth::check() && Auth::id() == $user->id)
-                                    <a href="{{ route('reviews.create') }}"
+                                    <a href="{{ route('recipes.create') }}"
                                         class="text-brand-accent font-bold hover:underline text-sm">
-                                        Viết bài đầu tiên ngay
+                                        Viết công thức đầu tiên ngay
                                     </a>
                                 @endif
                             </div>
@@ -795,15 +785,15 @@
                         class="flex items-center justify-between mb-6 bg-white rounded-xl shadow-soft border border-gray-100 p-4">
                         <div class="flex items-center gap-3">
                             <h3 class="text-xl font-bold text-gray-800 font-serif border-l-4 border-brand-accent pl-3">
-                                {{ $totalSuggestedBooks > 0 ? 'Sách Tôi Đề Xuất' : 'Chưa có sách đề xuất' }}
+                                {{ $totalSuggestedBooks > 0 ? 'Công Thức Của Tôi' : 'Chưa có công thức chia sẻ' }}
                             </h3>
                             <span
                                 class="bg-brand-accent/10 text-brand-accent text-sm px-3 py-1 rounded-full font-bold">{{ $totalSuggestedBooks }}</span>
                         </div>
 
-                        <a href="{{ route('books.suggest') }}"
+                        <a href="{{ route('recipes.create') }}"
                             class="inline-flex items-center gap-1.5 bg-brand-accent hover:bg-[#c29263] text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm transition transform hover:-translate-y-0.5">
-                            <i class="fas fa-plus-circle"></i> Đề xuất sách mới
+                            <i class="fas fa-plus-circle"></i> Chia sẻ công thức mới
                         </a>
                     </div>
 
@@ -813,26 +803,26 @@
                                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-row h-44 relative group">
 
                                 <div class="w-28 relative flex-shrink-0 bg-gray-200">
-                                    @if($book->is_approved)
-                                        <a href="{{ route('book.show', $book->slug) }}">
+                                    @if($book->status == 'published')
+                                        <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}">
                                     @endif
                                         @php
-                                            $cover = $book->cover_image ?? null;
+                                            $cover = $book->image ?? null;
                                             $coverUrl = $cover
                                                 ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover))
                                                 : 'https://placehold.co/150x225?text=' . urlencode(Str::limit($book->title, 10));
                                         @endphp
                                         <img src="{{ $coverUrl }}"
                                             class="w-full h-full object-cover transition group-hover:opacity-90">
-                                        @if($book->is_approved)
+                                        @if($book->status == 'published')
                                             </a>
                                         @endif
                                 </div>
                                 <div class="p-3 flex flex-col justify-between flex-grow min-w-0">
                                     <div>
                                         <h4 class="font-bold font-serif text-gray-800 text-sm mb-1 leading-tight line-clamp-2">
-                                            @if($book->is_approved)
-                                                <a href="{{ route('book.show', $book->slug) }}"
+                                            @if($book->status == 'published')
+                                                <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}"
                                                     class="hover:text-brand-green transition">
                                                     {{ $book->title }}
                                                 </a>
@@ -841,7 +831,7 @@
                                             @endif
                                         </h4>
                                         <p class="text-xs text-gray-500 truncate">
-                                            {{ $book->author_name ?? 'Tác giả' }}
+                                            {{ $book->user->name ?? 'Tác giả' }}
                                         </p>
                                         <p class="text-[10px] text-gray-400 mt-1">
                                             <i class="far fa-calendar-alt mr-1"></i> Gửi:
@@ -851,8 +841,8 @@
 
                                     {{-- BADGE TRẠNG THÁI --}}
                                     <div class="mt-auto pt-2">
-                                        @if($book->is_approved)
-                                            <a href="{{ route('book.show', $book->slug) }}"
+                                        @if($book->status == 'published')
+                                            <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}"
                                                 class="inline-flex items-center gap-1 text-brand-green border border-brand-green/30 bg-brand-green/5 px-2.5 py-1 rounded text-[10px] font-bold hover:bg-brand-green hover:text-white transition">
                                                 <i class="fas fa-check-circle"></i> ĐÃ DUYỆT
                                             </a>
@@ -872,17 +862,17 @@
                                     class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 text-gray-400">
                                     <i class="fas fa-book-medical text-2xl"></i>
                                 </div>
-                                <p class="text-gray-500 text-sm font-medium">Bạn chưa đề xuất cuốn sách nào.</p>
-                                <p class="text-gray-400 text-xs mt-1 mb-3">Hãy đóng góp sách mới cho cộng đồng nhé!</p>
-                                <a href="{{ route('books.suggest') }}"
+                                <p class="text-gray-500 text-sm font-medium">Bạn chưa đề xuất công thức nào.</p>
+                                <p class="text-gray-400 text-xs mt-1 mb-3">Hãy đóng góp công thức mới cho cộng đồng nhé!</p>
+                                <a href="{{ route('recipes.create') }}"
                                     class="text-brand-accent text-sm font-bold hover:underline">
-                                    + Đề xuất sách ngay
+                                    + Chia sẻ công thức ngay
                                 </a>
                             </div>
                         @endforelse
                     </div>
 
-                    {{-- Phân trang Sách --}}
+                    {{-- Phân trang Công thức --}}
                     @if($suggestedBooks instanceof \Illuminate\Pagination\LengthAwarePaginator && $suggestedBooks->hasPages())
                         <div class="mt-6">
                             {{ $suggestedBooks->links() }}
@@ -910,9 +900,9 @@
                                         </button>
 
                                         <div class="flex gap-5">
-                                            @if($savedPost->book)
-                                                <a href="{{ route('detail', $savedPost->book->slug) }}" class="flex-shrink-0">
-                                                    <img src="{{ $savedPost->book->cover_image ? (Str::startsWith($savedPost->book->cover_image, 'http') ? $savedPost->book->cover_image : asset('storage/' . $savedPost->book->cover_image)) : 'https://placehold.co/80x120' }}"
+                                            @if($savedPost->recipe)
+                                                <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}" class="flex-shrink-0">
+                                                    <img src="{{ $savedPost->recipe->image ? (Str::startsWith($savedPost->recipe->image, 'http') ? $savedPost->recipe->image : asset('storage/' . $savedPost->recipe->image)) : 'https://placehold.co/80x120' }}"
                                                         class="w-20 h-28 object-cover rounded-lg shadow-sm group-hover:shadow-md transition">
                                                 </a>
                                             @endif
@@ -933,10 +923,10 @@
                                                         class="text-xs text-gray-400">{{ $savedPost->created_at->diffForHumans() }}</span>
                                                 </div>
 
-                                                @if($savedPost->book)
-                                                    <a href="{{ route('detail', $savedPost->book->slug) }}"
+                                                @if($savedPost->recipe)
+                                                    <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}"
                                                         class="text-xs text-brand-green font-bold uppercase tracking-wider hover:underline mb-1 block">
-                                                        {{ $savedPost->book->title }}
+                                                        {{ $savedPost->recipe->title }}
                                                     </a>
                                                 @endif
 
@@ -972,8 +962,8 @@
                                                             id="comment-count-{{ $savedPost->id }}">{{ $savedPost->comments_count ?? 0 }}</span>
                                                     </button>
 
-                                                    @if($savedPost->book)
-                                                        <a href="{{ route('book.reviews', $savedPost->book->slug) }}#post-{{ $savedPost->id }}"
+                                                    @if($savedPost->recipe)
+                                                        <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}"
                                                             class="text-brand-green font-bold hover:underline text-sm ml-auto flex items-center gap-1">
                                                             Xem chi tiết <i class="fas fa-arrow-right"></i>
                                                         </a>
@@ -1002,7 +992,7 @@
                                                     <form onsubmit="submitSavedComment({{ $savedPost->id }}, event)"
                                                         class="flex gap-2 items-center">
                                                         @csrf
-                                                        <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                                                        <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}"
                                                             class="w-8 h-8 rounded-full">
                                                         <input type="text" name="content" required
                                                             class="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-brand-green"
@@ -1050,22 +1040,27 @@
                                     @foreach($trashedPosts as $post)
                                         <div
                                             class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 group hover:bg-gray-100 transition">
-                                            {{-- Ảnh bìa sách --}}
-                                            @if($post->book && $post->book->cover_image)
-                                                <img src="{{ Str::startsWith($post->book->cover_image, 'http') ? $post->book->cover_image : asset('storage/' . $post->book->cover_image) }}"
-                                                    alt="{{ $post->book->title }}"
+                                            {{-- Ảnh món ăn --}}
+                                            @php
+                                                $cover = $post->image ?? null;
+                                                $coverUrl = $cover
+                                                    ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover))
+                                                    : null;
+                                            @endphp
+                                            @if($coverUrl)
+                                                <img src="{{ $coverUrl }}"
+                                                    alt="{{ $post->title }}"
                                                     class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0 opacity-60">
                                             @else
                                                 <div class="w-12 h-16 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-book text-gray-400"></i>
+                                                    <i class="fas fa-utensils text-gray-400"></i>
                                                 </div>
                                             @endif
 
-                                            {{-- Thông tin bài viết --}}
                                             <div class="flex-1 min-w-0">
                                                 <h4 class="font-bold text-gray-700 truncate line-through">{{ $post->title }}</h4>
                                                 <p class="text-xs text-gray-400 mt-1">
-                                                    <i class="fas fa-book mr-1"></i>{{ $post->book->title ?? 'Sách đã xóa' }}
+                                                    <i class="fas fa-tag mr-1"></i>{{ $post->category->name ?? 'Không phân loại' }}
                                                 </p>
                                                 <p class="text-xs text-red-400 mt-1">
                                                     <i class="fas fa-trash mr-1"></i>Đã xóa: {{ $post->deleted_at->diffForHumans() }}
@@ -1144,7 +1139,7 @@
     <script>
         // --- 0. Xử lý chuyển đổi Tab Profile --        -
         function showProfileTab(tabName) {
-            // Danh sách các tab
+            // Danh công thức các tab
             const tabs = ['overview', 'reviews', 'books', 'saved', 'trash'];
 
             // Ẩn tất cả nội dung tab
@@ -1236,7 +1231,7 @@
                 .catch(error => console.error('Lỗi Follow:', error));
         }
 
-        // --- 2. Xử lý Modal Danh sách Follow ---
+        // --- 2. Xử lý Modal Danh công thức Follow ---
         function openFollowModal(type, userId) {
             const modal = document.getElementById('followModal');
             const title = document.getElementById('modal-title');
@@ -1259,11 +1254,11 @@
                     body.innerHTML = ''; // Xóa loading
 
                     if (users.length === 0) {
-                        body.innerHTML = '<p class="text-center text-gray-500 py-4 text-sm">Chưa có ai trong danh sách này.</p>';
+                        body.innerHTML = '<p class="text-center text-gray-500 py-4 text-sm">Chưa có ai trong danh công thức này.</p>';
                         return;
                     }
 
-                    // Vẽ danh sách user
+                    // Vẽ danh công thức user
                     let html = '<div class="space-y-3">';
                     users.forEach(u => {
                         // Logic lấy avatar (Nếu null thì dùng UI Avatars)
@@ -1390,7 +1385,7 @@
                             el.textContent = data.user.name;
                         });
                         document.querySelectorAll('[data-user-bio]').forEach(el => {
-                            el.textContent = data.user.bio || 'Thành viên tích cực của Góc Sách.';
+                            el.textContent = data.user.bio || 'Thành viên tích cực của Góc Bếp.';
                         });
                         document.querySelectorAll('[data-user-avatar]').forEach(el => {
                             el.src = data.user.avatar;
@@ -1458,10 +1453,9 @@
         }
 
         // --- 5. Yêu cầu xóa bài review (chờ admin duyệt) ---
-        function requestDeleteReview(postId) {
-            if (!confirm('Bạn có chắc muốn yêu cầu xóa bài review này?\n\nYêu cầu sẽ được gửi đến Admin để xử lý.')) {
-                return;
-            }
+        async function requestDeleteReview(postId) {
+            const result = await SwalConfirm('Xác nhận yêu cầu', 'Bạn có chắc muốn yêu cầu xóa bài review này?\n\nYêu cầu sẽ được gửi đến Admin để xử lý.', 'question', 'Gửi yêu cầu');
+            if (!result.isConfirmed) return;
 
             fetch(`/reviews/${postId}/request-delete`, {
                 method: 'POST',
@@ -1487,10 +1481,9 @@
         }
 
         // --- 6. Hủy yêu cầu xóa bài review ---
-        function cancelDeleteReview(postId) {
-            if (!confirm('Bạn có chắc muốn hủy yêu cầu xóa và khôi phục bài viết này?')) {
-                return;
-            }
+        async function cancelDeleteReview(postId) {
+            const result = await SwalConfirm('Xác nhận hủy', 'Bạn có chắc muốn hủy yêu cầu xóa và khôi phục bài viết này?', 'info', 'Khôi phục ngay');
+            if (!result.isConfirmed) return;
 
             fetch(`/reviews/${postId}/cancel-delete`, {
                 method: 'POST',
@@ -1516,10 +1509,9 @@
         }
 
         // --- 7. Khôi phục bài review từ thùng rác ---
-        function restoreReview(postId) {
-            if (!confirm('Bạn có chắc muốn khôi phục bài viết này?')) {
-                return;
-            }
+        async function restoreReview(postId) {
+            const result = await SwalConfirm('Khôi phục bài viết', 'Bạn có chắc muốn khôi phục bài viết này?', 'info', 'Khôi phục');
+            if (!result.isConfirmed) return;
 
             fetch(`/reviews/${postId}/restore`, {
                 method: 'POST',
@@ -1545,10 +1537,9 @@
         }
 
         // --- 8. Xóa vĩnh viễn bài review ---
-        function forceDeleteReview(postId) {
-            if (!confirm('⚠️ CẢNH BÁO: Hành động này không thể hoàn tác!\n\nBạn có chắc chắn muốn xóa vĩnh viễn bài viết này?')) {
-                return;
-            }
+        async function forceDeleteReview(postId) {
+            const result = await SwalConfirm('CẢNH BÁO', 'Hành động này không thể hoàn tác!\n\nBạn có chắc chắn muốn xóa vĩnh viễn bài viết này?', 'warning', 'Xóa vĩnh viễn');
+            if (!result.isConfirmed) return;
 
             fetch(`/reviews/${postId}/force-delete`, {
                 method: 'DELETE',
@@ -1705,14 +1696,15 @@
         });
 
         // Handle Unsave Post (Bỏ lưu bài viết)
-        function handleUnsavePost(postId, btnElement) {
-            if (!confirm('Bạn có chắc muốn bỏ lưu bài viết này?')) return;
+        async function handleUnsavePost(postId, btnElement) {
+            const result = await SwalConfirm('Bỏ lưu', 'Bạn có chắc muốn bỏ lưu bài viết này?', 'question', 'Bỏ lưu');
+            if (!result.isConfirmed) return;
 
             // Visual feedback
             btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             btnElement.disabled = true;
 
-            fetch('/post/save', {
+            fetch('/bo-suu-tap/toggle', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1827,7 +1819,7 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            fetch(`/post/${postId}/comment`, {
+            fetch(`/cong-thuc/${postId}/comment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1854,10 +1846,10 @@
                             const newComment = document.createElement('div');
                             newComment.className = 'flex gap-2';
                             newComment.innerHTML = `
-                                                                                    <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}" 
+                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
-                                                                                        <span class="font-bold text-gray-700">{{ Auth::user()->name }}</span>
+                                                                                        <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>
                                                                                         <span class="text-gray-600 ml-2">${content}</span>
                                                                                     </div>
                                                                                 `;
@@ -2008,14 +2000,15 @@
             });
 
             // Handle Unsave Post (Bỏ lưu bài viết)
-            function handleUnsavePost(postId, btnElement) {
-                if (!confirm('Bạn có chắc muốn bỏ lưu bài viết này?')) return;
+            async function handleUnsavePost(postId, btnElement) {
+                const result = await SwalConfirm('Bỏ lưu', 'Bạn có chắc muốn bỏ lưu bài viết này?', 'question', 'Bỏ lưu');
+                if (!result.isConfirmed) return;
 
                 // Visual feedback
                 btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 btnElement.disabled = true;
 
-                fetch('/post/save', {
+                fetch('/bo-suu-tap/toggle', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2130,7 +2123,7 @@
                 const submitBtn = form.querySelector('button[type="submit"]');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-                fetch(`/post/${postId}/comment`, {
+                fetch(`/cong-thuc/${postId}/comment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2157,10 +2150,10 @@
                                 const newComment = document.createElement('div');
                                 newComment.className = 'flex gap-2';
                                 newComment.innerHTML = `
-                                                                                    <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}" 
+                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
-                                                                                        <span class="font-bold text-gray-700">{{ Auth::user()->name }}</span>
+                                                                                        <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>
                                                                                         <span class="text-gray-600 ml-2">${content}</span>
                                                                                     </div>
                                                                                 `;
@@ -2312,14 +2305,15 @@
             });
 
             // Handle Unsave Post (Bỏ lưu bài viết)
-            function handleUnsavePost(postId, btnElement) {
-                if (!confirm('Bạn có chắc muốn bỏ lưu bài viết này?')) return;
+            async function handleUnsavePost(postId, btnElement) {
+                const result = await SwalConfirm('Bỏ lưu', 'Bạn có chắc muốn bỏ lưu bài viết này?', 'question', 'Bỏ lưu');
+                if (!result.isConfirmed) return;
 
                 // Visual feedback
                 btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 btnElement.disabled = true;
 
-                fetch('/post/save', {
+                fetch('/bo-suu-tap/toggle', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2434,7 +2428,7 @@
                 const submitBtn = form.querySelector('button[type="submit"]');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-                fetch(`/post/${postId}/comment`, {
+                fetch(`/cong-thuc/${postId}/comment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2461,10 +2455,10 @@
                                 const newComment = document.createElement('div');
                                 newComment.className = 'flex gap-2';
                                 newComment.innerHTML = `
-                                                                                    <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}" 
+                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
-                                                                                        <span class="font-bold text-gray-700">{{ Auth::user()->name }}</span>
+                                                                                        <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>
                                                                                         <span class="text-gray-600 ml-2">${content}</span>
                                                                                     </div>
                                                                                 `;

@@ -1,36 +1,31 @@
-# 📚 HƯỚNG DẪN SỬ DỤNG WEBSITE GÓC SÁCH
+# 🍳 HƯỚNG DẪN SỬ DỤNG WEBSITE GÓC BẾP (KITCHEN CORNER)
 
 ---
 
 ## MỤC LỤC
 
-### 👤 PHẦN NGƯỜI DÙNG
+### 👤 PHẦN NGƯỜI DÙNG (USER)
 1. [Trang Chủ](#-1-trang-chủ)
 2. [Đăng Ký & Đăng Nhập](#-2-đăng-ký--đăng-nhập)
-3. [Xem Sách](#-3-xem-sách)
-4. [Viết Bài Review](#-4-viết-bài-review)
-5. [Tương Tác](#-5-tương-tác)
-6. [Trang Cá Nhân](#-6-trang-cá-nhân)
-7. [Theo Dõi Thành Viên](#-7-theo-dõi-thành-viên)
-8. [Đề Xuất Sách Mới](#-8-đề-xuất-sách-mới)
+3. [Xem & Tìm Kiếm Công Thức (Smart Search)](#-3-xem--tìm-kiếm-công-thức)
+4. [Đăng Tải Công Thức & Phân Tích Dinh Dưỡng](#-4-đăng-tải-công-thức)
+5. [Tương Tác & Bình Luận](#-5-tương-tác)
+6. [Trang Cá Nhân (Profile)](#-6-trang-cá-nhân)
+7. [Theo Dõi Đầu Bếp (Follow)](#-7-theo-dõi-đầu-bếp)
+8. [Khám Phá Tác Giả](#-8-khám-phá-tác-giả)
 9. [Thông Báo](#-9-thông-báo)
-10. [Thử Thách Đọc Sách](#-10-thử-thách-đọc-sách)
-11. [Tác Giả](#-11-tác-giả)
-12. [Tạp Chí Đọc](#-12-tạp-chí-đọc)
+10. [Tạp Chí Ẩm Thực](#-10-tạp-chí-ẩm-thực)
+11. [Hệ Thống Gamification](#-11-hệ-thống-danh-hiệu-gamification)
 
 ### 🔧 PHẦN QUẢN TRỊ (ADMIN)
-13. [Dashboard](#-13-dashboard-admin)
-14. [Quản Lý Sách](#-14-quản-lý-sách)
-15. [Quản Lý Bài Review](#-15-quản-lý-bài-review)
-16. [Quản Lý Người Dùng](#-16-quản-lý-người-dùng)
-17. [Quản Lý Thể Loại](#-17-quản-lý-thể-loại)
-18. [Quản Lý Tác Giả](#-18-quản-lý-tác-giả)
-19. [Quản Lý Banner](#-19-quản-lý-banner)
-20. [Quản Lý Bài Viết Tạp Chí](#-20-quản-lý-bài-viết-tạp-chí)
-21. [Quản Lý Quotes](#-21-quản-lý-quotes)
-22. [Gamification](#-22-gamification)
-23. [Xử Lý Báo Cáo Vi Phạm](#-23-xử-lý-báo-cáo-vi-phạm)
-24. [Nhật Ký Hoạt Động](#-24-nhật-ký-hoạt-động)
+12. [Dashboard Admin](#-12-dashboard-admin)
+13. [Quản Lý Công Thức](#-13-quản-lý-công-thức)
+14. [Quản Lý Người Dùng](#-14-quản-lý-người-dùng)
+15. [Quản Lý Chủ Đề Ẩm Thực](#-15-quản-lý-chủ-đề)
+16. [Quản Lý Tác Giả / Bài Viết](#-16-quản-lý-tác-giả--bài-viết)
+17. [Quản Lý Banner & Quotes](#-17-quản-lý-banner--quotes)
+18. [Xử Lý Báo Cáo Vi Phạm](#-18-xử-lý-báo-cáo)
+19. [Nhật Ký Hoạt Động (Logs)](#-19-nhật-ký-hoạt-động)
 
 ---
 
@@ -41,455 +36,168 @@
 ## 🏠 1. TRANG CHỦ
 
 Khi truy cập website, bạn sẽ thấy:
-- **Banner slider** - Các sự kiện/thông báo mới nhất
-- **Hôm Nay Đọc Gì** - Gợi ý sách ngẫu nhiên mỗi ngày
-- **Bài Review Sách** - Các bài review hay (tab Mới nhất / Hot nhất)
-- **Tạp Chí Đọc** - Các bài viết về văn hóa đọc
-- **Sách Mới Cập Nhật** - Sách vừa được thêm vào
-- **Cộng Đồng Review** - Bình luận từ cộng đồng
-- **Thống Kê Cộng Đồng** - Số liệu thống kê về sách, review, thành viên
-- **Quote ngẫu nhiên** - Câu trích dẫn hay về sách
+- **Banner slider** - Các sự kiện, món ngon tiêu biểu, banner quảng bá.
+- **Hôm Nay Nấu Gì?** - Hệ thống gợi ý ngẫu nhiên một món ăn ngon mỗi ngày.
+- **Món Ngon Xu Hướng** - Các công thức đang hot, được tương tác và có lượt xem cao nhất.
+- **Tạp Chí Ẩm Thực** - Các bài viết chuyên sâu về văn hóa ẩm thực.
+- **Công Thức Mới Cập Nhật** - Danh sách công thức vừa được các đầu bếp đăng tải.
+- **Gợi ý Chủ Đề** - Lọc món ăn nhanh theo các chủ đề: Món chay, Thịt gia cầm, Hải sản...
+- **Thống Kê Cộng Đồng** - Số lượng công thức, số thành viên, và lượt truy cập.
+- **Châm Ngôn Hôm Nay** - Quote truyền cảm hứng nấu nướng ngẫu nhiên.
 
 ---
 
 ## 🔐 2. ĐĂNG KÝ & ĐĂNG NHẬP
 
 ### Đăng ký tài khoản mới:
-1. Nhấn nút **"Đăng Ký"** trên header
-2. Điền thông tin: Họ tên, Email, Mật khẩu
-3. Nhấn **"Đăng Ký"**
-4. Kiểm tra email để xác thực tài khoản
+1. Nhấn nút **"Đăng Ký"** trên góc phải header.
+2. Điền thông tin: Họ tên, Email, Mật khẩu.
+3. Nhấn **"Tham Gia Ngay"**.
+4. (Nếu áp dụng) Kiểm tra email để xác thực tài khoản.
 
 ### Đăng nhập:
-1. Nhấn nút **"Đăng Nhập"**
-2. Nhập Email và Mật khẩu
-3. Nhấn **"Đăng Nhập"**
+1. Nhấn nút **"Đăng Nhập"**.
+2. Nhập Email và Mật khẩu.
+3. Nhấn **"Đăng Nhập"**. Bạn cũng có thể tích "Ghi nhớ xác thực" để không cần đăng nhập lại vào lần sau.
 
-### Quên mật khẩu:
-1. Nhấn **"Quên mật khẩu?"**
-2. Nhập email của bạn
-3. Nhận mã OTP qua email
-4. Nhập mã OTP và đặt mật khẩu mới
-
-### Đổi mật khẩu:
-1. Đăng nhập vào tài khoản
-2. Click avatar → Chọn **"Đổi mật khẩu"**
-3. Nhập mật khẩu cũ và mật khẩu mới
-4. Nhấn **"Cập nhật"**
+### Tùy chỉnh tài khoản:
+- Bạn có thể vào **Thiết lập tài khoản** để Đổi mật khẩu, tải lên Avatar ảnh đại diện, điền thêm các thông tin tiểu sử (Bio), quốc gia, năm sinh để cộng đồng biết thêm về bạn.
 
 ---
 
-## 📖 3. XEM SÁCH
+## 🔍 3. XEM & TÌM KIẾM CÔNG THỨC
 
-### Tìm kiếm sách:
-1. Sử dụng **thanh tìm kiếm** ở header
-2. Gõ tên sách hoặc tên tác giả
-3. Kết quả hiện ra ngay lập tức (Live Search)
+### Tìm kiếm Live Search thông thường:
+1. Sử dụng **thanh tìm kiếm** (Icon Kính lúp) ở header.
+2. Từ khóa sẽ trả về các món ăn có chứa tên trên nhan đề ngay lập tức.
 
-### Xem chi tiết sách:
-1. Click vào bìa sách hoặc tên sách
-2. Xem thông tin: Tác giả, Thể loại, Mô tả, Đánh giá trung bình
-3. Đọc các bài review từ cộng đồng
-4. Xem tất cả đánh giá bằng cách nhấn **"Xem tất cả đánh giá"**
+### Tìm Kiếm Thông Minh (Tủ Lạnh Web - Jaccard Search):
+*Đây là tính năng độc quyền của hệ thống:*
+1. Vào mục **"Tủ Lạnh Web"** trên thanh Menu.
+2. Điền các nguyên liệu bạn đang sẵn có trong tủ lạnh (ngăn cách bằng dấu phẩy, ví dụ: *thịt lợn, cà chua, hành lá*).
+3. Hệ thống dùng Thuật toán **Jaccard Similarity** AI để tính toán độ tương đồng và đề xuất cho bạn các món ăn có thể nấu với độ chính xác cao nhất (Hiển thị tỷ lệ khớp %).
 
-### Lọc theo thể loại:
-1. Vào trang **"Danh sách sách"**
-2. Chọn thể loại từ menu bên trái
-3. Sắp xếp theo: Mới nhất, Xem nhiều, Đánh giá cao
+### Xem chi tiết món ăn:
+1. Click vào hình ảnh món ăn.
+2. Tại đây có toàn bộ thông tin: **Khẩu phần, Thời gian nấu, Độ khó, Nguyên liệu (định lượng cụ thể), và Các Bước Nấu.**
+3. Xem bảng **Thành Phần Dinh Dưỡng** (Calo, Protein, Carb, Fat) của món ăn.
 
 ---
 
-## ✍️ 4. VIẾT BÀI REVIEW
+## 🥘 4. ĐĂNG TẢI CÔNG THỨC (NỔI BẬT)
 
-1. Đăng nhập tài khoản
-2. Nhấn **"Viết Review"** trên header hoặc nút **"Viết Review"** ở trang chi tiết sách
-3. Chọn cuốn sách muốn review (tìm kiếm hoặc chọn từ gợi ý)
-4. Viết tiêu đề và nội dung review
-5. Đánh giá sao (1-5, hỗ trợ 0.5 sao)
-6. Upload ảnh thumbnail (tùy chọn - có thể upload file hoặc nhập URL)
-7. Nhấn **"Đăng bài"**
+1. Đăng nhập tài khoản, nhấn nút **"Đăng Công Thức"** (hoặc biểu tượng viết bài +) trên cấu hình.
+2. Điền tiêu đề món ăn, thời gian thực hiện, khẩu phần, mức độ khó.
+3. **Thêm Nguyên Liệu:** Bạn gõ chính xác số lượng và tên (VD: *200g Thịt bò*).
+4. **Viết Các Bước Làm:** Mô tả cách chế biến món ăn từng bước.
+5. Úp ảnh Cover món ăn.
+6. Khi lưu nháp hoặc Đăng bài, **Hệ thống Nutrition Calculator** sẽ tự động bắt từ khóa định lượng của nguyên liệu, khớp với USDA Database để tự động xuất ra Bảng Dinh Dưỡng cực kỳ chính xác cho món của bạn.
 
-> 💡 Bài review sẽ được admin kiểm duyệt trước khi hiển thị công khai
-
-### Chỉnh sửa bài review:
-1. Vào trang cá nhân
-2. Tìm bài review muốn sửa
-3. Nhấn **"Chỉnh sửa"**
-4. Cập nhật nội dung và nhấn **"Lưu"**
-
-> ⚠️ Sau khi chỉnh sửa, bài viết cần được admin duyệt lại
+> 💡 Các công thức mới đăng sẽ ở trạng thái chờ duyệt, Admin sẽ kích hoạt cho bạn.
 
 ---
 
 ## 💬 5. TƯƠNG TÁC
 
-### Like bài viết:
-- Nhấn nút ❤️ **Tim** trên bài review
+### 🤍 Lưu & Thích Công Thức:
+- Nhấn nút **Tim (Heart)** trên công thức để đếm lượt thích.
+- Nhấn **Lưu (Bookmark)** để thêm vào danh sách Yêu thích của cá nhân bạn (Xem lại trong tab "Công thức đã lưu" ở Profile).
 
-### Bình luận:
-1. Cuộn xuống phần bình luận
-2. Gõ nội dung bình luận
-3. Nhấn **"Gửi"**
-
-### Trả lời bình luận:
-- Nhấn **"Trả lời"** dưới bình luận
-- Gõ nội dung và nhấn **"Gửi"**
-
-### Lưu bài viết:
-- Nhấn nút 🔖 **Bookmark** để lưu bài viết yêu thích
-
-### Báo cáo vi phạm:
-- Nhấn nút **"Báo cáo"** nếu thấy bài viết/bình luận vi phạm quy tắc
+### 💬 Bình luận (Review):
+1. Cuộn tới phần Comment bên dưới món ăn.
+2. Bình luận những thắc mắc hoặc lời khen gửi tới Tác giả.
+3. Người dùng khác có cơ chế **Thích (Like) bình luận** của bạn.
 
 ---
 
-## 👤 6. TRANG CÁ NHÂN
+## 👤 6. TRANG CÁ NHÂN (PROFILE)
 
-### Xem profile:
-1. Click vào avatar ở góc trên phải
-2. Chọn **"Trang cá nhân"**
-
-### Chỉnh sửa profile:
-1. Vào trang cá nhân
-2. Nhấn **"Chỉnh sửa"**
-3. Cập nhật: Avatar, Bio, Tên hiển thị
-4. Nhấn **"Lưu"**
-
-### Các tab trong trang cá nhân:
-- **Bài viết** - Các bài review đã viết
-- **Bài đã lưu** - Bài viết đã bookmark
-- **Sách đã đề xuất** - Sách bạn đã gợi ý
-
-### Trang bị Avatar Frame:
-1. Vào trang cá nhân
-2. Nhấn vào avatar
-3. Chọn khung avatar đã mở khóa
-4. Nhấn **"Trang bị"**
+### Quản lý Hồ sơ:
+1. Click vào avatar góc trên phải $\rightarrow$ **Trang cá nhân**.
+2. Bạn sẽ thấy giao diện Profile đẹp mắt, cho biết bạn đang ở hạng nào, điểm tích lũy bao nhiêu.
+3. Có 3 tab lớn: 
+   - **Bài đã đăng**: Danh sách các món ăn bạn là tác giả.
+   - **Bài đã lưu**: Bộ sưu tập món ngon học lỏm.
+   - **Bình luận**: Lịch sử giao tiếp cộng đồng.
 
 ---
 
-## 👥 7. THEO DÕI THÀNH VIÊN
+## 👥 7. THEO DÕI ĐẦU BẾP (FOLLOW)
 
-### Follow thành viên:
-1. Vào trang profile của họ
-2. Nhấn nút **"Theo dõi"**
-
-### Xem followers/following:
-- Vào trang cá nhân → Nhấn vào số Followers/Following để xem danh sách
-
-### Bỏ theo dõi:
-- Vào profile → Nhấn **"Đang theo dõi"** → **"Hủy theo dõi"**
+- Bạn yêu thích phong cách nấu của một người? Nhấp vào avatar của họ để vào Trang của họ.
+- Bấm nút **"Theo dõi" (Follow)**.
+- Khi người đó đăng bài mới, bảng tin của bạn sẽ ưu tiên hiển thị. Thông số *Followers/Following* sẽ cấu thành độ uy tín của tài khoản.
 
 ---
 
-## 📢 8. ĐỀ XUẤT SÁCH MỚI
+## 🧑‍🍳 8. KHÁM PHÁ TÁC GIẢ
 
-1. Nhấn **"Đề xuất sách"** trong menu
-2. Điền thông tin: Tên sách, Tác giả, Mô tả, Năm xuất bản
-3. Upload ảnh bìa (file hoặc URL)
-4. Nhấn **"Gửi đề xuất"**
-
-> 💡 Admin sẽ xem xét và phê duyệt sách vào hệ thống
+- Nhấn vào **"Tác Giả"** trên Menu chính.
+- Hệ thống sẽ liệt kê các "Đầu bếp xuất sắc" dựa trên thành tích chia sẻ công thức.
+- Bạn có thể **Sắp xếp** hiển thị Tên A-Z hoặc Top nhiều công thức nhất.
 
 ---
 
 ## 🔔 9. THÔNG BÁO
 
-- Icon 🔔 trên header hiển thị số thông báo mới
-- Click vào để xem danh sách thông báo
-- Nhấn vào từng thông báo để xem chi tiết
-- Nhấn **"Đánh dấu tất cả đã đọc"** để xóa thông báo
-
-### Bạn sẽ nhận thông báo khi:
-- Có người like bài viết của bạn
-- Có người bình luận bài của bạn
-- Có người follow bạn
-- Có người trả lời bình luận của bạn
-- Bài viết được admin duyệt/từ chối
-- Người bạn follow đăng bài mới
+- Hệ thống Notify (Chuông) góc phải trên cùng sẽ sáng khi có biến động.
+- Bạn nhận thông báo nếu: Có người thích công thức của bạn, bình luận vào món của bạn, follow bạn, hoặc admin vừa duyệt/không duyệt bài viết của bạn.
 
 ---
 
-## 🏆 10. THỬ THÁCH ĐỌC SÁCH
+## 📰 10. TẠP CHÍ ẨM THỰC
 
-1. Vào trang **"Thử thách"**
-2. Xem các thử thách đang diễn ra
-3. Nhấn **"Tham gia"** để tham gia thử thách
-4. Hoàn thành mục tiêu (viết đủ số review) để nhận huy hiệu
-
-### Phần thưởng:
-- **Huy hiệu (Badge)** - Hiển thị trên profile
-- **Khung Avatar** - Trang bị cho avatar
+- Hệ thống có Blog riêng chia sẻ kinh nghiệm chọn nguyên liệu, mẹo vặt nhà bếp. Nhấp vào các bài viết Tạp Chí từ trang chủ để mở rộng kiến thức.
 
 ---
 
-## � 11. TÁC GIẢ
+## 🏆 11. HỆ THỐNG DANH HIỆU (GAMIFICATION)
 
-### Xem danh sách tác giả:
-1. Vào menu **"Tác giả"**
-2. Xem danh sách tác giả theo alphabet
-3. Tìm kiếm tác giả theo tên
-
-### Xem chi tiết tác giả:
-1. Click vào tên tác giả
-2. Xem tiểu sử và các sách của tác giả
+- Mỗi tương tác của bạn (Đăng bài = +20đ, Đăng bình luận = +2đ, Nhận Like = +1đ) đều sinh ra Point (Kinh nghiệm).
+- Kinh nghiệm giúp bạn lên hạng. Khi đạt mốc chỉ định, bạn mở khóa **Icon Danh Hiệu (Badges)** (Thực Thần, Vua Đầu Bếp).
+- Mở khóa **Khung Avatar** (Frames).
+- Bạn vào Profile $\rightarrow$ Click vào Avatar $\rightarrow$ Chọn Khung và Trang bị để khoe với cộng đồng.
 
 ---
-
-## 📰 12. TẠP CHÍ ĐỌC
-
-- Vào mục **"Tạp chí"** trên trang chủ
-- Đọc các bài viết về văn hóa đọc, review sách, tin tức
-
----
-
-## 📱 SỬ DỤNG TRÊN ĐIỆN THOẠI
-
-- Website tương thích hoàn toàn với điện thoại (Responsive)
-- Nhấn ☰ **Menu** ở góc phải để mở navigation
-- Vuốt ngang để xem slider sách
-
 ---
 
 # 🔧 PHẦN QUẢN TRỊ (ADMIN)
 
-> ⚠️ Chỉ dành cho tài khoản có quyền Admin. Truy cập qua `/admin/dashboard`
+> ⚠️ *Khu vực này yêu cầu tài khoản Role: Admin. Truy cập bằng `/admin/dashboard`*
+
+## 📊 12. DASHBOARD ADMIN
+Giao diện siêu trực quan:
+- **Biểu đồ Cột/Line** thống kê Lượng người dùng mới, và Công thức đăng tải tuần qua/tháng qua.
+- **Top Metrics**: Số người online, Tổng số Recipe, Số vi phạm.
+
+## 🥘 13. QUẢN LÝ CÔNG THỨC (RECIPES)
+- Theo dõi toàn bộ món ăn được đăng tải.
+- Xem các món ở trạng thái **"Chờ Duyệt"** (Pending). Bấm "Xem trước", sau đó chọn "Duyệt" (Published) hoặc "Từ chối khéo" (Rejected) kèm lý do.
+- Có khả năng Ẩn, Chỉnh sửa ép buộc hoặc Xóa bình luận tiêu cực trực tiếp trong màn hình chi tiết món.
+
+## 👥 14. QUẢN LÝ NGƯỜI DÙNG
+- Tìm kiếm thành viên chuyên sâu theo Tên/Email.
+- Can thiệp thay đổi Quyền (User $\leftrightarrow$ Admin).
+- Chấm dứt hoạt động (Bank tài khoản) tự động thông qua Soft Delete.
+
+## 📖 15. QUẢN LÝ CHỦ ĐỀ
+- Khởi tạo, Sửa, Xóa các Danh mục ẩm thực (Categories) để làm bộ lọc Menu cho User. (Ví dụ: Món ăn dặm, Món chay, Thức uống).
+
+## 📰 16. QUẢN LÝ TẠP CHÍ
+- Nơi viết các bài Blog cho nền tảng sử dụng CKEditor cực mạnh. Đăng tải và set cờ "Is Featured" (Đáng chú ý) để lên trang chủ banner.
+
+## 🖼️ 17. QUẢN LÝ BANNER & QUOTES
+- **Banner**: Thêm/Sửa hình ảnh Banner slider to trên Homepage, điều phối order.
+- **Quotes**: Cập nhật câu nói hay (Châm ngôn nhà bếp), hệ thống tự động bốc ngẫu nhiên lên Sidebar trang chủ mỗi ngày.
+
+## 🚨 18. XỬ LÝ BÁO CÁO (REPORTS)
+- User có quyền Báo cáo Nội dung (Bài viết mạo danh, ảnh không hợp lệ) hoặc Báo cáo Comment (Toxic, chửi tục).
+- Admin sử dụng mục Báo Cáo để ra lệnh **Xóa Vĩnh Viễn** thành phần bị cảnh báo hoặc Hủy đơn báo cáo sai.
+
+## 📋 19. NHẬT KÝ HOẠT ĐỘNG (SYSTEM LOGS)
+- Kiểm toán (Audit) tự động mọi nút nhấp của **Tất cả các Admin**. 
+- Lưu trữ IP, Ngày giờ, Hành vi (Sửa User A, Cập nhật Món ăn B).
+- Chức năng này phục vụ cho bảo mật hệ thống nghiêm ngặt.
 
 ---
-
-## 📊 13. DASHBOARD (ADMIN)
-
-**Đường dẫn:** `/admin/dashboard`
-
-Dashboard hiển thị:
-- **Thống kê tổng quan**: Số sách, bài review, người dùng, bình luận
-- **Biểu đồ**: Review theo thời gian, người dùng mới
-- **Hoạt động gần đây**: Các hành động mới nhất trong hệ thống
-
-### Xuất báo cáo Excel:
-- Nhấn **"Xuất Excel"** để tải báo cáo thống kê
-
----
-
-## 📚 14. QUẢN LÝ SÁCH
-
-**Đường dẫn:** `/admin/books`
-
-### Xem danh sách sách:
-- Tìm kiếm theo tên sách, tác giả
-- Lọc theo thể loại, trạng thái phê duyệt
-- Sắp xếp theo các tiêu chí
-
-### Thêm sách mới:
-1. Nhấn **"Thêm sách"**
-2. Điền thông tin: Tên, Tác giả, Thể loại, Mô tả, Năm xuất bản
-3. Upload ảnh bìa (file hoặc URL)
-4. Nhấn **"Lưu"**
-
-### Chỉnh sửa sách:
-1. Nhấn icon **✏️ Sửa** trên dòng sách
-2. Cập nhật thông tin
-3. Nhấn **"Cập nhật"**
-
-### Phê duyệt sách đề xuất:
-1. Lọc theo **"Chờ duyệt"**
-2. Xem chi tiết sách
-3. Nhấn **"Phê duyệt"** hoặc **"Từ chối"**
-
-### Xóa sách:
-- Nhấn icon **🗑️ Xóa** → Xác nhận
-
----
-
-## 📝 15. QUẢN LÝ BÀI REVIEW
-
-**Đường dẫn:** `/admin/posts`
-
-### Kiểm duyệt bài viết:
-1. Xem danh sách bài viết theo trạng thái:
-   - **Tất cả** - Mọi bài viết
-   - **Chờ duyệt** - Bài mới cần kiểm duyệt
-   - **Đã đăng** - Bài đang hiển thị
-   - **Đang ẩn** - Bài bị ẩn
-   - **Từ chối** - Bài bị từ chối
-
-2. Xem chi tiết bài bằng cách nhấn **"Xem chi tiết"**
-
-### Duyệt bài:
-- Nhấn ✅ **Duyệt** để phê duyệt bài chờ
-
-### Từ chối bài:
-1. Nhấn ❌ **Từ chối**
-2. Chọn lý do từ chối hoặc nhập lý do tùy chỉnh
-3. Nhấn **"Xác nhận"**
-
-### Ẩn/Hiện bài:
-- Bài đang hiển thị: Nhấn **"Ẩn"** để ẩn
-- Bài đang ẩn: Nhấn **"Hiện"** để hiển thị lại
-
-### Xóa bài:
-- Nhấn 🗑️ **Xóa** → Xác nhận xóa vĩnh viễn
-
----
-
-## 👥 16. QUẢN LÝ NGƯỜI DÙNG
-
-**Đường dẫn:** `/admin/users`
-
-### Xem danh sách người dùng:
-- Tìm kiếm theo tên, email
-- Lọc theo role (Admin/User)
-
-### Chỉnh sửa người dùng:
-1. Nhấn **"Sửa"** trên dòng user
-2. Cập nhật thông tin: Tên, Email, Role
-3. Nhấn **"Cập nhật"**
-
-### Cấp quyền Admin:
-- Chỉnh sửa user → Đổi Role thành **Admin**
-
----
-
-## 📂 17. QUẢN LÝ THỂ LOẠI
-
-**Đường dẫn:** `/admin/categories`
-
-### Thêm thể loại:
-1. Nhấn **"Thêm thể loại"**
-2. Nhập tên thể loại
-3. Nhấn **"Lưu"**
-
-### Chỉnh sửa/Xóa:
-- Sử dụng các nút ✏️ và 🗑️ tương ứng
-
----
-
-## ✍️ 18. QUẢN LÝ TÁC GIẢ
-
-**Đường dẫn:** `/admin/authors`
-
-### Thêm tác giả:
-1. Nhấn **"Thêm tác giả"**
-2. Điền: Tên, Tiểu sử, Ảnh đại diện
-3. Nhấn **"Lưu"**
-
-### Chỉnh sửa tác giả:
-1. Nhấn **"Sửa"**
-2. Cập nhật thông tin
-3. Nhấn **"Cập nhật"**
-
----
-
-## 🖼️ 19. QUẢN LÝ BANNER
-
-**Đường dẫn:** `/admin/banners`
-
-### Thêm banner:
-1. Nhấn **"Thêm banner"**
-2. Upload ảnh, nhập tiêu đề, link đích
-3. Đặt thứ tự hiển thị
-4. Nhấn **"Lưu"**
-
-### Sắp xếp banner:
-- Thay đổi giá trị **Order** để điều chỉnh thứ tự
-
-### Ẩn/Hiện banner:
-- Toggle trạng thái **Active**
-
----
-
-## 📰 20. QUẢN LÝ BÀI VIẾT TẠP CHÍ
-
-**Đường dẫn:** `/admin/articles`
-
-### Thêm bài viết:
-1. Nhấn **"Thêm bài viết"**
-2. Điền: Tiêu đề, Tag, Mô tả, Nội dung (CKEditor)
-3. Upload ảnh bìa
-4. Chọn **"Bài tiêu điểm"** nếu muốn hiển thị nổi bật
-5. Nhấn **"Lưu"**
-
-### Chỉnh sửa bài viết:
-1. Nhấn **"Sửa"**
-2. Cập nhật nội dung
-3. Nhấn **"Cập nhật"**
-
----
-
-## 💬 21. QUẢN LÝ QUOTES
-
-**Đường dẫn:** `/admin/quotes`
-
-### Thêm quote:
-1. Nhấn **"Thêm quote"**
-2. Nhập nội dung quote, tên tác giả
-3. Nhấn **"Lưu"**
-
-> 💡 Quote sẽ được hiển thị ngẫu nhiên trên trang chủ
-
----
-
-## 🎮 22. GAMIFICATION
-
-**Đường dẫn:** `/admin/game`
-
-### Quản lý Danh hiệu (Badges):
-1. Vào tab **"Danh hiệu"**
-2. Thêm mới/Chỉnh sửa danh hiệu
-3. Đặt icon, tên, mô tả
-
-### Quản lý Khung Avatar:
-1. Vào tab **"Khung Avatar"**
-2. Upload file ảnh khung (PNG với transparency)
-3. Đặt tên và thứ tự
-
-### Quản lý Thử thách:
-1. Vào `/admin/challenges`
-2. Tạo thử thách mới với:
-   - Tên, mô tả
-   - Mục tiêu (số bài review cần viết)
-   - Thời gian bắt đầu/kết thúc
-   - Phần thưởng (Badge, Avatar Frame)
-
-### Trao thưởng thủ công:
-- Vào chi tiết thử thách → Chọn user → **"Trao thưởng"**
-
----
-
-## 🚨 23. XỬ LÝ BÁO CÁO VI PHẠM
-
-### Báo cáo bài viết:
-**Đường dẫn:** `/admin/post-reports`
-
-1. Xem danh sách báo cáo
-2. Click để xem chi tiết bài viết và lý do báo cáo
-3. Hành động:
-   - **Chấp nhận** - Ẩn/Xóa bài vi phạm
-   - **Từ chối** - Bỏ qua báo cáo
-   - **Xóa bài** - Xóa vĩnh viễn bài viết
-
-### Báo cáo bình luận:
-**Đường dẫn:** `/admin/comment-reports`
-
-Tương tự như báo cáo bài viết.
-
----
-
-## 📋 24. NHẬT KÝ HOẠT ĐỘNG
-
-**Đường dẫn:** `/admin/activity-logs`
-
-### Xem lịch sử hoạt động:
-- Hiển thị tất cả hành động của admin trong hệ thống
-- Lọc theo loại hành động, admin thực hiện, thời gian
-
-### Chi tiết hoạt động:
-- Click vào dòng để xem chi tiết
-- Xem giá trị cũ và mới khi chỉnh sửa
-
-### Dọn dẹp logs:
-- Nhấn **"Dọn dẹp"** để xóa logs cũ
-- Có thể khôi phục từ thùng rác
-
----
-
+*Chúc bạn có trải nghiệm tuyệt vời cùng Kitchen Corner* 🚀

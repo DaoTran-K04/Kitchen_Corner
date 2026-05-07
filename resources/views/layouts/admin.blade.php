@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - Admin Góc Sách</title>
+    <title>@yield('title') - Admin Góc Bếp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     {{-- Tailwind Config: Enable dark mode with class strategy --}}
     <script>
@@ -21,7 +21,8 @@
                 }
             })();
     </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {{-- Google Fonts: Inter --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -29,6 +30,67 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            /* Body = same appearance as content area: light cream + kitchen image
+               This ensures page transitions show the same background as the loaded content */
+            background-image:
+                linear-gradient(135deg,
+                    rgba(254, 243, 220, 0.55) 0%,
+                    rgba(250, 232, 200, 0.50) 50%,
+                    rgba(254, 243, 220, 0.55) 100%),
+                url('/images/admin-bg.png');
+            background-size: cover, cover;
+            background-position: center, center;
+            background-attachment: scroll, scroll;
+            min-height: 100vh;
+        }
+
+        /* Sidebar: dark mahogany — same kitchen image, darker overlay for contrast */
+        #admin-sidebar {
+            background-image:
+                linear-gradient(180deg,
+                    rgba(40, 12, 5, 0.88) 0%,
+                    rgba(60, 20, 8, 0.82) 50%,
+                    rgba(40, 12, 5, 0.88) 100%),
+                url('/images/admin-bg.png') !important;
+            background-size: cover, cover !important;
+            background-position: center, center !important;
+            background-attachment: scroll, scroll !important;
+            border-right: 1px solid rgba(232, 93, 4, 0.25) !important;
+            box-shadow: 4px 0 24px rgba(40, 12, 5, 0.6) !important;
+        }
+
+        /* Content area: transparent — inherits body background seamlessly */
+        #main-content-area {
+            background: transparent;
+        }
+
+        .dark body {
+            background-image:
+                linear-gradient(135deg,
+                    rgba(30, 12, 4, 0.80) 0%,
+                    rgba(45, 18, 6, 0.75) 50%,
+                    rgba(30, 12, 4, 0.80) 100%),
+                url('/images/admin-bg.png');
+            background-size: cover, cover;
+            background-position: center, center;
+        }
+
+        .dark #main-content-area {
+            background: transparent;
+        }
+
+        /* Topbar: warm glass */
+        #admin-topbar {
+            background: rgba(254, 245, 225, 0.90) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid rgba(232, 93, 4, 0.2) !important;
+            box-shadow: 0 2px 20px rgba(120, 50, 20, 0.15) !important;
+        }
+
+        .dark #admin-topbar {
+            background: rgba(35, 14, 5, 0.92) !important;
+            border-bottom: 1px solid rgba(232, 93, 4, 0.3) !important;
         }
 
         /* Force hide sidebar on mobile/tablet */
@@ -241,13 +303,13 @@
         }
 
         .custom-dropdown-item.active {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #9b2226 0%, #7a1a1e 100%);
             color: white;
             font-weight: 600;
         }
 
         .custom-dropdown-item.active:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #7a1a1e 0%, #5c1216 100%);
         }
 
         /* Scrollbar for dropdown menu */
@@ -459,23 +521,22 @@
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+<body class="text-slate-800 dark:text-slate-200 transition-colors duration-300">
     <div class="flex min-h-screen">
 
-        <aside
-            class="w-72 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex-shrink-0 hidden xl:flex flex-col sticky top-0 h-screen shadow-xl dark:shadow-none border-r border-gray-200 dark:border-slate-800 z-50 transition-colors duration-300">
+        <aside id="admin-sidebar"
+            class="w-72 text-slate-200 flex-shrink-0 hidden xl:flex flex-col sticky top-0 h-screen shadow-2xl z-50 transition-colors duration-300">
 
             {{-- 1. Brand Logo --}}
             <div
-                class="h-16 flex items-center gap-3 px-6 border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50 backdrop-blur-sm sticky top-0 z-10 transition-colors duration-300">
+                class="h-16 flex items-center gap-3 px-6 border-b border-amber-900/30 sticky top-0 z-10 transition-colors duration-300">
                 <div
-                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                    <i class="fas fa-shield-alt text-sm"></i>
+                    class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#9b2226] to-[#7a1a1e] flex items-center justify-center text-white shadow-lg shadow-red-900/30">
+                    <span class="text-lg">🍳</span>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg text-slate-800 dark:text-white tracking-tight">Admin Panel</h1>
-                    <p class="text-[12px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">Quản
-                        trị hệ thống</p>
+                    <h1 class="font-black text-lg text-[#9b2226] dark:text-red-400 tracking-tight font-serif">GÓC BẾP</h1>
+                    <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-[0.2em]">Bếp Trưởng Quản Trị</p>
                 </div>
             </div>
 
@@ -494,9 +555,9 @@
                 <div>
                     <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tổng Quan</p>
                     <a href="{{ route('admin.dashboard') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
-                            class="fas fa-chart-pie w-5 text-center {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-blue-400' }}"></i>
+                            class="fas fa-chart-pie w-5 text-center {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-[#E85D04]' }}"></i>
                         <span class="font-medium text-sm">Dashboard</span>
                     </a>
                 </div>
@@ -507,7 +568,7 @@
 
                     {{-- [MỚI] Quản lý Banner --}}
                     <a href="{{ route('admin.banners.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.banners.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.banners.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-images w-5 text-center {{ request()->routeIs('admin.banners.*') ? 'text-white' : 'text-slate-400 group-hover:text-pink-400' }}"></i>
                         <span class="font-medium text-sm">Quản Lý Banner</span>
@@ -515,68 +576,41 @@
 
                     {{-- [MỚI] Quản lý Tạp chí (Article) - Thêm luôn để tiện --}}
                     <a href="{{ route('admin.articles.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-newspaper w-5 text-center {{ request()->routeIs('admin.articles.*') ? 'text-white' : 'text-slate-400 group-hover:text-teal-400' }}"></i>
                         <span class="font-medium text-sm">Tạp Chí Đọc</span>
                     </a>
 
+
                     {{-- Quản lý Châm Ngôn --}}
                     <a href="{{ route('admin.quotes.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.quotes.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.quotes.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-quote-left w-5 text-center {{ request()->routeIs('admin.quotes.*') ? 'text-white' : 'text-slate-400 group-hover:text-amber-400' }}"></i>
                         <span class="font-medium text-sm">Quản Lý Châm Ngôn</span>
                     </a>
 
-                    <a href="{{ route('admin.books.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.books.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                    {{-- Quản Lý Công Thức --}}
+                    <a href="{{ route('admin.recipes.index') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.recipes.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
-                            class="fas fa-book w-5 text-center {{ request()->routeIs('admin.books.*') ? 'text-white' : 'text-slate-400 group-hover:text-emerald-400' }}"></i>
-                        <span class="font-medium text-sm">Quản Lý Sách</span>
-                        {{-- Badge sách chờ duyệt (polling update) --}}
-                        @php
-                            $pendingBooksCount = \App\Models\Book::where('is_approved', false)->count();
-                        @endphp
-                        <span id="badge-books-pending"
-                            class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-orange-500/30 {{ $pendingBooksCount > 0 ? 'badge-blink' : 'hidden' }}">
-                            {{ $pendingBooksCount > 0 ? $pendingBooksCount : '' }}
-                        </span>
-                    </a>
-
-                    {{-- Quản lý Tác giả --}}
-                    <a href="{{ route('admin.authors.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.authors.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
-                        <i
-                            class="fas fa-user-pen w-5 text-center {{ request()->routeIs('admin.authors.*') ? 'text-white' : 'text-slate-400 group-hover:text-cyan-400' }}"></i>
-                        <span class="font-medium text-sm">Quản Lý Tác Giả</span>
+                            class="fas fa-utensils w-5 text-center {{ request()->routeIs('admin.recipes.*') ? 'text-white' : 'text-slate-400 group-hover:text-green-400' }}"></i>
+                        <span class="font-medium text-sm">Quản Lý Công Thức</span>
                     </a>
 
                     <a href="{{ route('admin.categories.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-tags w-5 text-center {{ request()->routeIs('admin.categories.*') ? 'text-white' : 'text-slate-400 group-hover:text-orange-400' }}"></i>
                         <span class="font-medium text-sm">Quản Lý Danh Mục</span>
                     </a>
 
-                    <a href="{{ route('admin.posts.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.posts.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
-                        <i
-                            class="fas fa-star w-5 text-center {{ request()->routeIs('admin.posts.*') ? 'text-white' : 'text-slate-400 group-hover:text-yellow-400' }}"></i>
-                        <span class="font-medium text-sm">Kiểm Duyệt Bài Đăng</span>
-                        {{-- Badge số lượng bài chờ duyệt (polling update) --}}
-                        @php
-                            $pendingPostsCount = \App\Models\Post::whereIn('status', ['pending', 'pending_delete'])->count();
-                        @endphp
-                        <span id="badge-posts-pending"
-                            class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-red-500/30 {{ $pendingPostsCount > 0 ? 'badge-blink' : 'hidden' }}">
-                            {{ $pendingPostsCount > 0 ? $pendingPostsCount : '' }}
-                        </span>
-                    </a>
+
 
                     {{-- Báo Cáo Bình Luận --}}
                     <a href="{{ route('admin.comment-reports.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.comment-reports.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.comment-reports.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-flag w-5 text-center {{ request()->routeIs('admin.comment-reports.*') ? 'text-white' : 'text-slate-400 group-hover:text-red-400' }}"></i>
                         <span class="font-medium text-sm">Báo Cáo Bình Luận</span>
@@ -590,21 +624,7 @@
                         </span>
                     </a>
 
-                    {{-- Báo Cáo Bài Viết --}}
-                    <a href="{{ route('admin.post-reports.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.post-reports.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
-                        <i
-                            class="fas fa-file-alt w-5 text-center {{ request()->routeIs('admin.post-reports.*') ? 'text-white' : 'text-slate-400 group-hover:text-purple-400' }}"></i>
-                        <span class="font-medium text-sm">Báo Cáo Bài Viết</span>
-                        {{-- Badge số lượng báo cáo chờ xử lý (polling update) --}}
-                        @php
-                            $pendingPostReportsCount = \App\Models\PostReport::where('status', 'pending')->count();
-                        @endphp
-                        <span id="badge-post-reports"
-                            class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-purple-500 to-violet-500 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-purple-500/30 {{ $pendingPostReportsCount > 0 ? 'badge-blink' : 'hidden' }}">
-                            {{ $pendingPostReportsCount > 0 ? $pendingPostReportsCount : '' }}
-                        </span>
-                    </a>
+
                 </div>
 
                 {{-- Group: Người Dùng & Hệ Thống --}}
@@ -612,42 +632,42 @@
                     <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hệ Thống</p>
 
                     <a href="{{ route('admin.users.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-users w-5 text-center {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-400' }}"></i>
                         <span class="font-medium text-sm">Thành Viên</span>
                     </a>
 
                     <a href="{{ route('admin.activity-logs.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-logs.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-logs.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-clipboard-list w-5 text-center {{ request()->routeIs('admin.activity-logs.*') ? 'text-white' : 'text-slate-400 group-hover:text-purple-400' }}"></i>
                         <span class="font-medium text-sm">Nhật Ký Hoạt Động</span>
                     </a>
 
                     <a href="{{ route('admin.game.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.game.*') || request()->routeIs('admin.badges.*') || request()->routeIs('admin.challenges.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.game.*') || request()->routeIs('admin.badges.*') || request()->routeIs('admin.challenges.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-trophy w-5 text-center {{ request()->routeIs('admin.game.*') || request()->routeIs('admin.badges.*') || request()->routeIs('admin.challenges.*') ? 'text-white' : 'text-slate-400 group-hover:text-yellow-400' }}"></i>
                         <span class="font-medium text-sm">Thử Thách</span>
                     </a>
 
                     <a href="{{ route('admin.activity-titles.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-titles.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-titles.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-crown w-5 text-center {{ request()->routeIs('admin.activity-titles.*') ? 'text-white' : 'text-slate-400 group-hover:text-purple-400' }}"></i>
                         <span class="font-medium text-sm">Danh Hiệu Hoạt Động</span>
                     </a>
 
                     <a href="{{ route('admin.theme.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.theme.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.theme.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-palette w-5 text-center {{ request()->routeIs('admin.theme.*') ? 'text-white' : 'text-slate-400 group-hover:text-pink-400' }}"></i>
                         <span class="font-medium text-sm">Trang Trí Lễ Hội</span>
                     </a>
 
                     <a href="{{ route('admin.subscribers.index') }}"
-                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.subscribers.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.subscribers.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
                             class="fas fa-envelope w-5 text-center {{ request()->routeIs('admin.subscribers.*') ? 'text-white' : 'text-slate-400 group-hover:text-teal-400' }}"></i>
                         <span class="font-medium text-sm">Đăng Ký Nhận Tin</span>
@@ -667,19 +687,18 @@
                 </div>
             </nav>
 
-            {{-- 3. Footer Actions --}}
             <div
-                class="p-4 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/30 transition-colors duration-300">
+                class="p-4 border-t border-amber-900/30 transition-colors duration-300">
                 <a href="{{ route('home') }}"
-                    class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-white rounded-lg transition-all mb-2 group">
-                    <i class="fas fa-external-link-alt w-5 text-center group-hover:text-blue-400"></i>
+                    class="flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-white/10 hover:text-white rounded-lg transition-all mb-2 group">
+                    <i class="fas fa-external-link-alt w-5 text-center group-hover:text-[#E85D04]"></i>
                     <span class="text-sm">Xem Trang Chủ</span>
                 </a>
 
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all text-left group">
+                        class="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-red-500/20 hover:text-red-300 rounded-lg transition-all text-left group">
                         <i class="fas fa-sign-out-alt w-5 text-center group-hover:text-red-500"></i>
                         <span class="text-sm font-medium">Đăng Xuất</span>
                     </button>
@@ -687,13 +706,13 @@
             </div>
         </aside>
 
-        <div class="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+        <div id="main-content-area" class="flex-1 flex flex-col min-w-0 transition-colors duration-300">
 
             {{-- Mobile Header --}}
-            <div
-                class="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 p-4 xl:hidden sticky top-0 z-20 flex justify-between items-center shadow-sm transition-colors duration-300">
-                <div class="flex items-center gap-2 font-bold text-slate-800 dark:text-white">
-                    <i class="fas fa-shield-alt text-blue-600"></i> Admin Panel
+            <div id="admin-topbar"
+                class="border-b border-gray-200 dark:border-slate-700 p-4 xl:hidden sticky top-0 z-20 flex justify-between items-center shadow-sm transition-colors duration-300">
+                <div class="flex items-center gap-2 font-bold text-[#9b2226] dark:text-red-400 font-serif">
+                    <span>🍳</span> GÓC BẾP
                 </div>
                 <div class="flex items-center gap-2">
                     {{-- Theme Toggle Mobile --}}
@@ -703,7 +722,7 @@
                         <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
                     </button>
                     <button id="mobile-menu-toggle"
-                        class="text-slate-500 dark:text-slate-400 hover:text-blue-600 focus:outline-none p-2">
+                        class="text-slate-500 dark:text-slate-400 hover:text-[#9b2226] focus:outline-none p-2">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -724,12 +743,13 @@
                         class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50">
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                                <i class="fas fa-shield-alt text-sm"></i>
+                                class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#9b2226] to-[#7a1a1e] flex items-center justify-center text-white shadow-lg shadow-red-900/30">
+                                <span class="text-lg">🍳</span>
                             </div>
                             <div>
-                                <h1 class="font-bold text-lg text-slate-800 dark:text-white tracking-tight">Admin Panel
+                                <h1 class="font-black text-[#9b2226] dark:text-red-400 tracking-tight font-serif">GÓC BẾP
                                 </h1>
+                                <p class="text-[10px] text-amber-600 font-bold uppercase tracking-wider">Bếp Trưởng Quản Trị</p>
                             </div>
                         </div>
                         <button id="mobile-menu-close"
@@ -744,7 +764,7 @@
                         <div>
                             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tổng Quan</p>
                             <a href="{{ route('admin.dashboard') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-chart-pie w-5 text-center"></i>
                                 <span class="font-medium text-sm">Dashboard</span>
                             </a>
@@ -754,77 +774,59 @@
                         <div class="space-y-1">
                             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nội Dung</p>
                             <a href="{{ route('admin.banners.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.banners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.banners.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-images w-5 text-center"></i>
                                 <span class="font-medium text-sm">Quản Lý Banner</span>
                             </a>
                             <a href="{{ route('admin.articles.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.articles.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.articles.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-newspaper w-5 text-center"></i>
                                 <span class="font-medium text-sm">Tạp Chí Đọc</span>
                             </a>
+
                             <a href="{{ route('admin.quotes.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.quotes.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.quotes.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-quote-left w-5 text-center"></i>
                                 <span class="font-medium text-sm">Quản Lý Châm Ngôn</span>
                             </a>
-                            <a href="{{ route('admin.books.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.books.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-book w-5 text-center"></i>
-                                <span class="font-medium text-sm">Quản Lý Sách</span>
-                            </a>
-                            <a href="{{ route('admin.authors.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.authors.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-user-pen w-5 text-center"></i>
-                                <span class="font-medium text-sm">Quản Lý Tác Giả</span>
+                            <a href="{{ route('admin.recipes.index') }}"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.recipes.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                <i class="fas fa-utensils w-5 text-center"></i>
+                                <span class="font-medium text-sm">Quản Lý Công Thức</span>
                             </a>
                             <a href="{{ route('admin.categories.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.categories.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.categories.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-tags w-5 text-center"></i>
                                 <span class="font-medium text-sm">Quản Lý Danh Mục</span>
                             </a>
-                            <a href="{{ route('admin.posts.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.posts.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-star w-5 text-center"></i>
-                                <span class="font-medium text-sm">Kiểm Duyệt Bài Đăng</span>
-                            </a>
-                            <a href="{{ route('admin.comment-reports.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.comment-reports.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-flag w-5 text-center"></i>
-                                <span class="font-medium text-sm">Báo Cáo Bình Luận</span>
-                            </a>
-                            <a href="{{ route('admin.post-reports.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.post-reports.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-file-alt w-5 text-center"></i>
-                                <span class="font-medium text-sm">Báo Cáo Bài Viết</span>
-                            </a>
+
                         </div>
 
                         {{-- Hệ Thống --}}
                         <div class="space-y-1">
                             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hệ Thống</p>
                             <a href="{{ route('admin.users.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.users.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-users w-5 text-center"></i>
                                 <span class="font-medium text-sm">Thành Viên</span>
                             </a>
                             <a href="{{ route('admin.activity-logs.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.activity-logs.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.activity-logs.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-clipboard-list w-5 text-center"></i>
                                 <span class="font-medium text-sm">Nhật Ký Hoạt Động</span>
                             </a>
                             <a href="{{ route('admin.game.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.game.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.game.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-trophy w-5 text-center"></i>
                                 <span class="font-medium text-sm">Thử Thách & Danh Hiệu</span>
                             </a>
                             <a href="{{ route('admin.activity-titles.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.activity-titles.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.activity-titles.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-crown w-5 text-center"></i>
                                 <span class="font-medium text-sm">Danh Hiệu Hoạt Động</span>
                             </a>
                             <a href="{{ route('admin.subscribers.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.subscribers.*') ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.subscribers.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-envelope w-5 text-center"></i>
                                 <span class="font-medium text-sm">Đăng Ký Nhận Tin</span>
                             </a>
@@ -855,19 +857,19 @@
                     <div>
                         <h1 class="text-3xl font-bold text-slate-800 dark:text-white tracking-tight">@yield('header')
                         </h1>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Quản lý hệ thống Góc Sách</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Quản lý hệ thống Góc Bếp</p>
                     </div>
                     <div class="flex items-center gap-3">
                         {{-- Theme Toggle Button (Desktop) --}}
                         <button id="theme-toggle"
                             class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 shadow-sm transition-all duration-300"
                             title="Chế độ sáng/tối">
-                            <i class="fas fa-moon text-indigo-500 dark:hidden"></i>
+                            <i class="fas fa-moon text-[#E85D04] dark:hidden"></i>
                             <i class="fas fa-sun text-yellow-400 hidden dark:inline"></i>
                         </button>
                         <div
                             class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full border border-gray-200 dark:border-slate-600 shadow-sm transition-colors duration-300">
-                            <i class="far fa-calendar-alt text-blue-500"></i>
+                            <i class="far fa-calendar-alt text-[#9b2226]"></i>
                             <span id="live-date">{{ date('d/m/Y') }}</span>
                         </div>
                         <script>
@@ -972,7 +974,7 @@
             {{-- Footer Admin --}}
             <footer
                 class="p-6 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-gray-200 dark:border-slate-700 transition-colors duration-300">
-                &copy; {{ date('Y') }} Góc Sách Admin Panel. Bản quyền được bảo lưu.
+                &copy; {{ date('Y') }} Góc Bếp Admin Panel. Bản quyền được bảo lưu.
             </footer>
         </div>
     </div>
@@ -1646,6 +1648,69 @@
                 link.addEventListener('click', closeMenu);
             });
         });
+    </script>
+
+    {{-- Global Confirmation Handler with SweetAlert2 --}}
+    <script>
+        (function() {
+            function handleConfirmation(e, form) {
+                if (form.dataset.confirmed === "true") return true;
+
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                const message = form.getAttribute('data-confirm') || 'Bạn có chắc chắn muốn thực hiện hành động này?';
+                const type = form.getAttribute('data-confirm-type') || 'warning';
+                const confirmButtonText = form.getAttribute('data-confirm-btn') || 'Đồng ý';
+
+                Swal.fire({
+                    title: 'Xác nhận',
+                    text: message,
+                    icon: type,
+                    showCancelButton: true,
+                    confirmButtonColor: '#9b2226',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: confirmButtonText,
+                    cancelButtonText: 'Hủy',
+                    reverseButtons: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                    customClass: {
+                        popup: 'rounded-xl border border-gray-100 dark:border-slate-700 shadow-2xl',
+                        confirmButton: 'px-6 py-2.5 rounded-lg font-bold text-sm',
+                        cancelButton: 'px-6 py-2.5 rounded-lg font-bold text-sm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.dataset.confirmed = "true";
+                        form.submit();
+                    }
+                });
+                
+                return false;
+            }
+
+            // Listen for submit events (e.g. hitting Enter in an input)
+            document.addEventListener('submit', function(e) {
+                const form = e.target.closest('.confirm-submit');
+                if (form && form.dataset.confirmed !== "true") {
+                    handleConfirmation(e, form);
+                }
+            }, true);
+
+            // Listen for clicks on submit buttons (more direct interception)
+            document.addEventListener('click', function(e) {
+                const button = e.target.closest('button[type="submit"]');
+                if (button) {
+                    const form = button.closest('.confirm-submit');
+                    if (form && form.dataset.confirmed !== "true") {
+                        handleConfirmation(e, form);
+                    }
+                }
+            }, true);
+        })();
     </script>
 
     @stack('scripts')

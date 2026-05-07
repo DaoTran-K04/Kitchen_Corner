@@ -49,7 +49,7 @@
                     </label>
                     <input type="text" name="source" value="{{ old('source') }}"
                         class="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white transition placeholder:italic"
-                        placeholder="Ví dụ: Tên sách, bài viết...">
+                        placeholder="Ví dụ: Tên công thức, bài viết...">
                 </div>
 
                 {{-- Thứ tự hiển thị --}}

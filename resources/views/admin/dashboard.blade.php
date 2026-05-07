@@ -74,53 +74,51 @@
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div
-            class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-colors duration-300">
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <div class="relative z-10">
-                <p class="text-blue-500 text-sm font-bold uppercase tracking-wider mb-1">TỔNG BÀI VIẾT</p>
+                <p class="text-[#9b2226] text-sm font-bold uppercase tracking-wider mb-1">CÔNG THỨC</p>
                 <h3 class="text-3xl font-extrabold text-gray-800 dark:text-white">{{ number_format($totalReviews) }}</h3>
                 <p class="text-gray-400 dark:text-slate-400 text-xs mt-2"><i
                         class="fas fa-check-circle text-green-500 mr-1"></i> Đã xuất bản
                 </p>
             </div>
-            <i class="fas fa-file-alt absolute right-4 top-6 text-6xl text-blue-500 opacity-20"></i>
+            <i class="fas fa-utensils absolute right-4 top-6 text-6xl text-[#9b2226] opacity-10"></i>
         </div>
         <div
-            class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-colors duration-300">
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <div class="relative z-10">
-                <p class="text-green-500 text-sm font-bold uppercase tracking-wider mb-1">TỔNG LƯỢT XEM</p>
+                <p class="text-amber-600 text-sm font-bold uppercase tracking-wider mb-1">LƯỢT XEM</p>
                 <h3 class="text-3xl font-extrabold text-gray-800 dark:text-white">{{ number_format($totalViews) }}</h3>
                 <p class="text-gray-400 dark:text-slate-400 text-xs mt-2">
-                    <span class="text-blue-500">Bài viết: {{ number_format($postViews) }}</span>
-                    <span class="mx-1">|</span>
-                    <span class="text-emerald-500">Sách: {{ number_format($bookViews) }}</span>
+                    <span class="text-[#9b2226]">Công thức: {{ number_format($postViews) }}</span>
                 </p>
             </div>
-            <i class="fas fa-eye absolute right-4 top-6 text-6xl text-green-500 opacity-20"></i>
+            <i class="fas fa-eye absolute right-4 top-6 text-6xl text-amber-500 opacity-10"></i>
         </div>
         <div
-            class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-colors duration-300">
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <div class="relative z-10">
-                <p class="text-yellow-500 text-sm font-bold uppercase tracking-wider mb-1">CHỜ DUYỆT</p>
+                <p class="text-orange-500 text-sm font-bold uppercase tracking-wider mb-1">CHỜ DUYỆT</p>
                 <h3 class="text-3xl font-extrabold text-gray-800 dark:text-white">{{ number_format($pendingReviews) }}</h3>
                 <p class="text-gray-400 dark:text-slate-400 text-xs mt-2">Cần xử lý ngay</p>
             </div>
-            <i class="fas fa-clipboard-list absolute right-4 top-6 text-6xl text-yellow-500 opacity-20"></i>
+            <i class="fas fa-clipboard-list absolute right-4 top-6 text-6xl text-orange-400 opacity-10"></i>
         </div>
         <div
-            class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-colors duration-300">
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <div class="relative z-10">
-                <p class="text-indigo-500 text-sm font-bold uppercase tracking-wider mb-1">THÀNH VIÊN</p>
+                <p class="text-teal-600 text-sm font-bold uppercase tracking-wider mb-1">THÀNH VIÊN</p>
                 <h3 class="text-3xl font-extrabold text-gray-800 dark:text-white">{{ number_format($totalUsers) }}</h3>
                 <p class="text-gray-400 dark:text-slate-400 text-xs mt-2">Đang hoạt động</p>
             </div>
-            <i class="fas fa-users absolute right-4 top-6 text-6xl text-indigo-500 opacity-20"></i>
+            <i class="fas fa-users absolute right-4 top-6 text-6xl text-teal-500 opacity-10"></i>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div
             class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
-            <h4 class="text-blue-600 dark:text-blue-400 font-bold mb-6">Biểu đồ phát triển</h4>
+            <h4 class="text-[#9b2226] dark:text-red-400 font-bold mb-6">Biểu đồ phát triển</h4>
             <div class="relative h-80 w-full"><canvas id="reviewChart"></canvas></div>
         </div>
         <div
@@ -192,8 +190,8 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Bài viết', data: dataReviews, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, tension: 0.4, fill: true },
-                        { label: 'Thành viên', data: dataUsers, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, borderDash: [5, 5], tension: 0.4, fill: false }
+                        { label: 'Công thức', data: dataReviews, borderColor: '#9b2226', backgroundColor: 'rgba(155, 34, 38, 0.1)', borderWidth: 2, tension: 0.4, fill: true },
+                        { label: 'Thành viên', data: dataUsers, borderColor: '#E85D04', backgroundColor: 'rgba(232, 93, 4, 0.05)', borderWidth: 2, borderDash: [5, 5], tension: 0.4, fill: false }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }

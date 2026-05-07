@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminActivityLog;
-use App\Models\Book;
-use App\Models\Post;
+use App\Models\Recipe;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -178,14 +177,12 @@ class ActivityLogController extends Controller
      */
     public function trash()
     {
-        $trashedBooks = Book::onlyTrashed()->latest('deleted_at')->get();
-        $trashedPosts = Post::onlyTrashed()->with(['user', 'book'])->latest('deleted_at')->get();
+        $trashedRecipes    = Recipe::onlyTrashed()->latest('deleted_at')->get();
         $trashedCategories = Category::onlyTrashed()->latest('deleted_at')->get();
-        $trashedUsers = User::onlyTrashed()->latest('deleted_at')->get();
+        $trashedUsers      = User::onlyTrashed()->latest('deleted_at')->get();
 
         return view('admin.activity-logs.trash', compact(
-            'trashedBooks',
-            'trashedPosts',
+            'trashedRecipes',
             'trashedCategories',
             'trashedUsers'
         ));
@@ -200,10 +197,9 @@ class ActivityLogController extends Controller
         $id = $request->input('id');
 
         $modelMap = [
-            'book' => Book::class,
-            'post' => Post::class,
+            'recipe'   => Recipe::class,
             'category' => Category::class,
-            'user' => User::class,
+            'user'     => User::class,
         ];
 
         if (!isset($modelMap[$type])) {
@@ -239,10 +235,9 @@ class ActivityLogController extends Controller
         $id = $request->input('id');
 
         $modelMap = [
-            'book' => Book::class,
-            'post' => Post::class,
+            'recipe'   => Recipe::class,
             'category' => Category::class,
-            'user' => User::class,
+            'user'     => User::class,
         ];
 
         if (!isset($modelMap[$type])) {
@@ -292,11 +287,10 @@ class ActivityLogController extends Controller
     private function getModelDescription(string $modelClass, $record): string
     {
         return match ($modelClass) {
-            Book::class => "Sách: {$record->title}",
-            Post::class => "Bài viết ID: {$record->id}",
-            Category::class => "Danh mục: {$record->name}",
-            User::class => "Thành viên: {$record->name} ({$record->email})",
-            default => class_basename($modelClass) . " #{$record->id}",
+            Recipe::class   => "C\u00f4ng th\u1ee9c: {$record->title}",
+            Category::class => "Danh m\u1ee5c: {$record->name}",
+            User::class     => "Th\u00e0nh vi\u00ean: {$record->name} ({$record->email})",
+            default         => class_basename($modelClass) . " #{$record->id}",
         };
     }
 }

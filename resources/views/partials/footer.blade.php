@@ -1,123 +1,144 @@
-<div class="relative mt-12 sm:mt-20">
-    <div class="absolute top-0 left-0 w-full overflow-hidden leading-none z-0 transform -translate-y-full pointer-events-none">
-        <svg class="relative block w-full h-10 sm:h-12 md:h-16 text-[#2C3E36]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
-        </svg>
-    </div>
+<div class="relative mt-20 sm:mt-32">
+    <footer class="bg-brand-green text-white pt-16 sm:pt-24 pb-8 sm:pb-10 relative overflow-hidden rounded-t-[40px] md:rounded-t-[80px] shadow-[0_-10px_40px_rgba(155,34,38,0.15)]">
+        {{-- Beautiful Background Image with soft dark red overlay --}}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Footer Background">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-brand-green/90 to-brand-green/95"></div>
+        </div>
 
-    <footer class="bg-[#2C3E36] text-white pt-10 sm:pt-16 pb-6 sm:pb-8 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-5" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
-        
-        <div class="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-brand-green-light/20 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-brand-accent/10 rounded-full blur-[80px] -ml-10 -mb-10 pointer-events-none"></div>
-
-        <div class="container mx-auto px-4 relative z-10">
-            {{-- Main Grid - 1 col mobile, 2 cols tablet, 4 cols desktop --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
+        <div class="container mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
                 
-                {{-- Logo & Social - Full width on smallest screens --}}
-                <div class="col-span-2 sm:col-span-2 md:col-span-1 space-y-4 text-center sm:text-left">
-                    <div class="flex flex-col items-center sm:items-start">
-                        <div class="mb-2"><i class="fas fa-book-open text-3xl sm:text-4xl text-[#E9EDC9]"></i></div>
-                        <h3 class="font-bold text-base sm:text-lg leading-tight">Góc Sách Review</h3>
+                {{-- Column 1: Brand Info --}}
+                <div class="space-y-6 text-center md:text-left flex flex-col items-center md:items-start group">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl mb-2 transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-500">
+                        <span class="text-3xl filter drop-shadow-md">🍳</span>
                     </div>
-                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed max-w-xs mx-auto sm:mx-0">
-                        Nơi kết nối những tâm hồn yêu sách. Chia sẻ cảm nhận, lan tỏa tri thức.
+                    <h3 class="font-serif font-bold text-3xl tracking-wide">Góc Bếp</h3>
+                    <p class="text-brand-cream/80 text-sm leading-relaxed max-w-xs font-light">
+                        Nơi giao thoa giữa niềm đam mê ẩm thực và sự ấm áp của gia đình. Cùng nhau khám phá những công thức tuyệt hảo mỗi ngày.
                     </p>
-                    <div class="flex gap-3 pt-2 justify-center sm:justify-start">
-                        <a href="https://www.facebook.com/profile.php?id=61585413759981" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D4A373] hover:text-white transition transform hover:-translate-y-1"><i class="fab fa-facebook-f text-sm sm:text-xs"></i></a>
-                        <a href="https://youtu.be/mKptA96QMZ0" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D4A373] hover:text-white transition transform hover:-translate-y-1"><i class="fab fa-youtube text-sm sm:text-xs"></i></a>
+                    <div class="flex gap-4 pt-4">
+                        <a href="https://www.facebook.com/profile.php?id=61585413759981" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-brand-accent hover:border-brand-accent hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                            <i class="fab fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="https://youtu.be/mKptA96QMZ0" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-brand-accent hover:border-brand-accent hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                            <i class="fab fa-youtube text-sm"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-brand-accent hover:border-brand-accent hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                            <i class="fab fa-tiktok text-sm"></i>
+                        </a>
                     </div>
                 </div>
 
-                {{-- Liên Kết Nhanh --}}
-                <div>
-                    <h4 class="font-bold mb-3 sm:mb-6 text-white text-sm sm:text-lg">Liên Kết</h4>
-                    <ul class="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-300">
+                {{-- Column 2: Quick Links --}}
+                <div class="md:pl-8">
+                    <h4 class="font-serif font-bold text-xl mb-8 relative inline-block">
+                        Khám Phá
+                        <span class="absolute -bottom-3 left-0 w-1/2 h-1 bg-brand-accent rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4 text-sm text-brand-cream/80 font-medium">
                         <li>
-                            <a href="{{ route('home') }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-angle-right text-xs"></i> Trang chủ
+                            <a href="{{ route('home') }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group/link">
+                                <i class="fas fa-chevron-right text-[10px] text-brand-accent opacity-0 group-hover/link:opacity-100 transition-opacity"></i> Trang chủ
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('page.about') }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-angle-right text-xs"></i> Về chúng tôi
+                            <a href="{{ route('page.about') }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group/link">
+                                <i class="fas fa-chevron-right text-[10px] text-brand-accent opacity-0 group-hover/link:opacity-100 transition-opacity"></i> Về chúng tôi
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('page.terms') }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-angle-right text-xs"></i> Điều khoản
+                            <a href="{{ route('page.terms') }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group/link">
+                                <i class="fas fa-chevron-right text-[10px] text-brand-accent opacity-0 group-hover/link:opacity-100 transition-opacity"></i> Điều khoản dịch vụ
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('page.privacy') }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-angle-right text-xs"></i> Bảo mật
+                            <a href="{{ route('page.privacy') }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group/link">
+                                <i class="fas fa-chevron-right text-[10px] text-brand-accent opacity-0 group-hover/link:opacity-100 transition-opacity"></i> Chính sách bảo mật
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('page.contact') }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-angle-right text-xs"></i> Liên hệ
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {{-- Thể Loại --}}
-                <div>
-                    <h4 class="font-bold mb-3 sm:mb-6 text-white text-sm sm:text-lg">Thể Loại</h4>
-                    <ul class="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-300">
-                        <li>
-                            <a href="{{ route('books.list', ['category' => 'tieu-thuyet']) }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-book text-xs opacity-50"></i> Tiểu thuyết
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('books.list', ['category' => 'kinh-te']) }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-book text-xs opacity-50"></i> Kinh tế
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('books.list', ['category' => 'tam-ly-ky-nang-song']) }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-book text-xs opacity-50"></i> Tâm lý
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('books.list', ['category' => 'van-hoc-nuoc-ngoai']) }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-book text-xs opacity-50"></i> Văn học
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('books.list', ['category' => 'thieu-nhi']) }}" class="hover:text-white transition flex items-center gap-1.5 sm:gap-2">
-                                <i class="fas fa-book text-xs opacity-50"></i> Thiếu nhi
+                            <a href="{{ route('page.contact') }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group/link">
+                                <i class="fas fa-chevron-right text-[10px] text-brand-accent opacity-0 group-hover/link:opacity-100 transition-opacity"></i> Liên hệ
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                {{-- Newsletter --}}
-                <div class="col-span-2 sm:col-span-2 md:col-span-1">
-                    <h4 class="font-bold mb-3 sm:mb-6 text-white text-sm sm:text-lg text-center sm:text-left">Đăng Ký Nhận Tin</h4>
-                    <p class="text-xs text-gray-300 mb-3 sm:mb-4 leading-relaxed text-center sm:text-left">Nhận thông báo sách mới, sự kiện và bài viết hay.</p>
-                    <form id="newsletter-form" class="flex flex-col sm:flex-col gap-2 sm:gap-3">
-                        @csrf
-                        <input type="email" id="newsletter-email" name="email" placeholder="Email của bạn..." 
-                            class="w-full px-4 py-2.5 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-sm focus:outline-none focus:border-[#D4A373] text-white placeholder-gray-400 transition" required>
-                        <button type="submit" id="newsletter-btn" class="bg-[#8C6B4B] hover:bg-[#6e5338] text-white font-bold px-4 py-2.5 sm:py-3 rounded-lg text-xs sm:text-sm transition shadow-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fas fa-paper-plane text-xs" id="newsletter-icon"></i>
-                            <span id="newsletter-text">Đăng Ký</span>
-                        </button>
-                        <p id="newsletter-message" class="text-xs text-center sm:text-left hidden"></p>
-                    </form>
+                {{-- Column 3: Categories --}}
+                <div>
+                    <h4 class="font-serif font-bold text-xl mb-8 relative inline-block">
+                        Chủ Đề Yêu Thích
+                        <span class="absolute -bottom-3 left-0 w-1/2 h-1 bg-brand-accent rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4 text-sm text-brand-cream/80 font-medium">
+                        <li>
+                            <a href="{{ route('recipes.list', ['category' => 'mon-chinh']) }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5"><i class="fas fa-utensils text-[11px] text-amber-200"></i></div> Món chính
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('recipes.list', ['category' => 'mon-an-chay']) }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5"><i class="fas fa-leaf text-[11px] text-green-300"></i></div> Món ăn chay
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('recipes.list', ['category' => 'mon-trang-mieng']) }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5"><i class="fas fa-cake-candles text-[11px] text-pink-300"></i></div> Món tráng miệng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('recipes.list', ['category' => 'mi-bun-pho']) }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5"><i class="fas fa-bowl-food text-[11px] text-orange-200"></i></div> Mì - Bún - Phở
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('recipes.list', ['category' => 'mon-khai-vi']) }}" class="hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5"><i class="fas fa-pepper-hot text-[11px] text-red-300"></i></div> Món khai vị
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {{-- Column 4: Newsletter Box --}}
+                <div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-3xl p-7 border border-white/20 shadow-2xl relative overflow-hidden group">
+                        <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-accent/40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+                        <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-brand-green/60 rounded-full blur-2xl pointer-events-none"></div>
+                        
+                        <h4 class="font-serif font-bold text-xl mb-2 relative z-10 text-white">Bảng Tin Góc Bếp</h4>
+                        <p class="text-[13px] text-brand-cream/90 mb-6 leading-relaxed relative z-10 font-light">
+                            Đăng ký ngay để nhận những công thức độc quyền và mẹo nhà bếp hữu ích mỗi tuần từ cộng đồng của chúng tôi.
+                        </p>
+                        
+                        <form id="newsletter-form" class="relative z-10 flex flex-col gap-3">
+                            @csrf
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-white/50">
+                                    <i class="fas fa-envelope text-sm"></i>
+                                </span>
+                                <input type="email" id="newsletter-email" name="email" placeholder="Email của bạn..." 
+                                    class="w-full pl-11 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent text-white placeholder-white/40 transition-all font-light" required>
+                            </div>
+                            <button type="submit" id="newsletter-btn" class="w-full bg-brand-accent hover:bg-[#d05003] text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-[0_4px_14px_0_rgba(232,93,4,0.39)] hover:shadow-[0_6px_20px_rgba(232,93,4,0.23)] flex justify-center items-center gap-2 group/btn transform hover:-translate-y-0.5">
+                                <span id="newsletter-text">Nhận Công Thức Ngay</span>
+                                <i class="fas fa-paper-plane text-xs transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" id="newsletter-icon"></i>
+                            </button>
+                            <p id="newsletter-message" class="text-xs text-center mt-2 hidden font-medium"></p>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            {{-- Bottom Bar --}}
-            <div class="border-t border-gray-600/50 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-gray-400">
-                <p class="text-center sm:text-left">© {{ date('Y') }} Góc Sách Review. All rights reserved.</p>
-                <div class="flex gap-4 sm:gap-6 flex-wrap justify-center">
-                    <a href="{{ route('page.privacy') }}" class="hover:text-white transition">Privacy</a>
-                    <a href="{{ route('page.terms') }}" class="hover:text-white transition">Terms</a>
-                    <a href="#" class="hover:text-white transition">Cookies</a>
+            {{-- Bottom Footer Bar --}}
+            <div class="border-t border-white/10 pt-8 mt-4 flex flex-col md:flex-row justify-between items-center gap-4 text-[13px] font-light text-white/60">
+                <p class="text-center md:text-left flex items-center justify-center gap-1.5 flex-wrap">
+                    © {{ date('Y') }} Góc Bếp. Thiết kế với <i class="fas fa-heart text-brand-accent animate-pulse mx-0.5"></i> dành cho người yêu nấu nướng.
+                </p>
+                <div class="flex gap-6 justify-center">
+                    <a href="{{ route('page.privacy') }}" class="hover:text-white hover:underline transition">Privacy Policy</a>
+                    <a href="{{ route('page.terms') }}" class="hover:text-white hover:underline transition">Terms of Service</a>
                 </div>
             </div>
         </div>
@@ -137,6 +158,7 @@ document.getElementById('newsletter-form').addEventListener('submit', async func
     
     // Disable button and show loading
     btn.disabled = true;
+    const originalIcon = icon.className;
     icon.className = 'fas fa-spinner fa-spin text-xs';
     text.textContent = 'Đang xử lý...';
     message.classList.add('hidden');
@@ -156,22 +178,23 @@ document.getElementById('newsletter-form').addEventListener('submit', async func
         
         message.classList.remove('hidden');
         if (data.success) {
-            message.className = 'text-xs text-center sm:text-left text-green-400';
+            message.className = 'text-xs text-center text-green-400 mt-2 font-medium';
             message.textContent = data.message;
             document.getElementById('newsletter-email').value = '';
         } else {
-            message.className = 'text-xs text-center sm:text-left text-red-400';
+            message.className = 'text-xs text-center text-red-400 mt-2 font-medium';
             message.textContent = data.message;
         }
     } catch (error) {
         message.classList.remove('hidden');
-        message.className = 'text-xs text-center sm:text-left text-red-400';
+        message.className = 'text-xs text-center text-red-400 mt-2 font-medium';
         message.textContent = 'Có lỗi xảy ra. Vui lòng thử lại!';
     } finally {
         // Reset button
         btn.disabled = false;
-        icon.className = 'fas fa-paper-plane text-xs';
-        text.textContent = 'Đăng Ký';
+        icon.className = originalIcon;
+        text.textContent = 'Nhận Công Thức Ngay';
     }
 });
 </script>
+

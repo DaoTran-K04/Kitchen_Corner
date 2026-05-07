@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $article->title ?? 'Tạp Chí Góc Sách')
+@section('title', $article->title ?? 'Tạp Chí Góc Bếp')
 
 @section('content')
     {{-- CSS riêng cho bài viết --}}
@@ -97,7 +97,7 @@
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-brand-green font-bold uppercase">Mẹo đọc</span>
-                                    <h5 class="text-sm font-bold text-gray-800 line-clamp-2">Làm sao để đọc sách hiệu quả hơn mỗi ngày?</h5>
+                                    <h5 class="text-sm font-bold text-gray-800 line-clamp-2">Làm sao để đọc công thức hiệu quả hơn mỗi ngày?</h5>
                                 </div>
                             </div>
                         </div>
@@ -113,12 +113,12 @@
                 <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                     <h3 class="font-serif font-bold text-lg text-gray-800 mb-4">Về Tạp Chí</h3>
                     <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        Góc Sách Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh văn hóa đọc, phỏng vấn tác giả và những tips hay ho cho mọt sách.
+                        Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh văn hóa đọc, phỏng vấn tác giả và những tips hay ho cho mọt sách.
                     </p>
                     <a href="{{ route('home') }}" class="text-brand-green text-sm font-bold hover:underline">Xem thêm bài viết &rarr;</a>
                 </div>
 
-                {{-- Widget: Mua Sách (Tái sử dụng từ Home) --}}
+                {{-- Widget: Mua Công thức (Tái sử dụng từ Home) --}}
                 <div class="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-2xl p-4 sm:p-6 border border-amber-100 shadow-lg relative overflow-hidden sticky top-24">
                     {{-- Decorative --}}
                     <div class="absolute -top-6 -right-6 w-20 h-20 bg-amber-200/40 rounded-full blur-2xl pointer-events-none">
@@ -129,7 +129,7 @@
                             <i class="fas fa-shopping-bag text-white"></i>
                         </div>
                         <div>
-                            <h3 class="font-serif font-bold text-gray-800 leading-none">Mua Sách Giá Tốt
+                            <h3 class="font-serif font-bold text-gray-800 leading-none">Mua Công thức Giá Tốt
                             </h3>
                             <span class="text-[10px] text-gray-400">Đối tác uy tín</span>
                         </div>
@@ -164,7 +164,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">F</div>
                                 <div>
                                     <span class="font-bold text-sm text-gray-700 group-hover:text-red-600 block">Fahasa.com</span>
-                                    <span class="text-[10px] text-gray-500">✓ Sách chính hãng</span>
+                                    <span class="text-[10px] text-gray-500">✓ Công thức chính hãng</span>
                                 </div>
                             </div>
                             <i class="fas fa-chevron-right text-gray-300 text-xs group-hover:text-red-500 group-hover:translate-x-1 transition-all"></i>

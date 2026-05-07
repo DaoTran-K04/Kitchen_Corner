@@ -40,7 +40,9 @@
                     <div class="flex items-center justify-center gap-2">
                         {{-- Toggle Active --}}
                         <form action="{{ route('admin.subscribers.toggle-active', $subscriber->id) }}" method="POST"
-                            onsubmit="return confirm('{{ $subscriber->is_active ? 'Vô hiệu hóa' : 'Kích hoạt' }} subscriber này?');">
+                            class="confirm-submit"
+                            data-confirm="{{ $subscriber->is_active ? 'Vô hiệu hóa' : 'Kích hoạt' }} subscriber này?"
+                            data-confirm-type="{{ $subscriber->is_active ? 'warning' : 'info' }}">
                             @csrf
                             @if($subscriber->is_active)
                                 <button
@@ -58,7 +60,8 @@
                         </form>
                         {{-- Delete --}}
                         <form action="{{ route('admin.subscribers.destroy', $subscriber->id) }}" method="POST"
-                            onsubmit="return confirm('Xóa subscriber {{ $subscriber->email }}?');">
+                            class="confirm-submit"
+                            data-confirm="Xóa subscriber {{ $subscriber->email }}?">
                             @csrf
                             @method('DELETE')
                             <button

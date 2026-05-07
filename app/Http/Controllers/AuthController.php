@@ -65,10 +65,10 @@ class AuthController extends Controller
                     // Gửi email mã OTP
                     Mail::send([], [], function ($message) use ($user, $code) {
                         $message->to($user->email)
-                            ->subject('Xác thực tài khoản - Góc Sách')
+                            ->subject('Xác thực tài khoản - Góc Bếp')
                             ->html("
                                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;'>
-                                    <h2 style='color: #3E5F4E; text-align: center;'>📚 Góc Sách</h2>
+                                    <h2 style='color: #3E5F4E; text-align: center;'>🍳 Góc Bếp</h2>
                                     <p>Xin chào <strong>{$user->name}</strong>,</p>
                                     <p>Đây là mã xác thực tài khoản của bạn:</p>
                                     <div style='background: #f5f5f5; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
@@ -138,10 +138,10 @@ class AuthController extends Controller
         // Gửi email chứa mã OTP
         Mail::send([], [], function ($message) use ($request, $code, $user) {
             $message->to($request->email)
-                ->subject('Xác thực tài khoản - Góc Sách')
+                ->subject('Xác thực tài khoản - Góc Bếp')
                 ->html("
                     <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;'>
-                        <h2 style='color: #3E5F4E; text-align: center;'>📚 Góc Sách</h2>
+                        <h2 style='color: #3E5F4E; text-align: center;'>🍳 Góc Bếp</h2>
                         <p>Xin chào <strong>{$user->name}</strong>,</p>
                         <p>Cảm ơn bạn đã đăng ký tài khoản. Đây là mã xác thực của bạn:</p>
                         <div style='background: #f5f5f5; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
@@ -289,10 +289,10 @@ class AuthController extends Controller
         // Gửi email chứa mã OTP
         Mail::send([], [], function ($message) use ($email, $code, $user) {
             $message->to($email)
-                ->subject('Mã xác thực đặt lại mật khẩu - Góc Sách')
+                ->subject('Mã xác thực đặt lại mật khẩu - Góc Bếp')
                 ->html("
                     <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;'>
-                        <h2 style='color: #3E5F4E; text-align: center;'>📚 Góc Sách</h2>
+                        <h2 style='color: #3E5F4E; text-align: center;'>🍳 Góc Bếp</h2>
                         <p>Xin chào <strong>{$user->name}</strong>,</p>
                         <p>Bạn đã yêu cầu đặt lại mật khẩu. Đây là mã xác thực của bạn:</p>
                         <div style='background: #f5f5f5; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
@@ -462,10 +462,10 @@ class AuthController extends Controller
         // Gửi email
         Mail::send([], [], function ($message) use ($user, $code) {
             $message->to($user->email)
-                ->subject('Mã xác thực tài khoản - Góc Sách')
+                ->subject('Mã xác thực tài khoản - Góc Bếp')
                 ->html("
                     <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;'>
-                        <h2 style='color: #3E5F4E; text-align: center;'>📚 Góc Sách</h2>
+                        <h2 style='color: #3E5F4E; text-align: center;'>🍳 Góc Bếp</h2>
                         <p>Xin chào <strong>{$user->name}</strong>,</p>
                         <p>Đây là mã xác thực mới của bạn:</p>
                         <div style='background: #f5f5f5; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>

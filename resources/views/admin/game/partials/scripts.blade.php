@@ -176,8 +176,18 @@
             }
         }
 
-        function deleteBadge(id, name) {
-            if (!confirm(`Xóa biểu tượng "${name}"?`)) return;
+        async function deleteBadge(id, name) {
+            const result = await Swal.fire({
+                title: 'Xóa biểu tượng?',
+                text: `Bạn có chắc muốn xóa biểu tượng "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#9b2226',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa ngay',
+                cancelButtonText: 'Hủy'
+            });
+            if (!result.isConfirmed) return;
 
             fetch(`{{ url('admin/badges') }}/${id}`, {
                 method: 'DELETE',
@@ -363,8 +373,18 @@
             }
         }
 
-        function deleteFrame(id, name) {
-            if (!confirm(`Xóa khung "${name}"?`)) return;
+        async function deleteFrame(id, name) {
+            const result = await Swal.fire({
+                title: 'Xóa khung?',
+                text: `Bạn có chắc muốn xóa khung "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#9b2226',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa ngay',
+                cancelButtonText: 'Hủy'
+            });
+            if (!result.isConfirmed) return;
 
             fetch(`{{ url('admin/avatar-frames') }}/${id}`, {
                 method: 'DELETE',
@@ -493,8 +513,18 @@
             });
         }
 
-        function deleteChallenge(id, name) {
-            if (!confirm(`Xóa thử thách "${name}"?`)) return;
+        async function deleteChallenge(id, name) {
+            const result = await Swal.fire({
+                title: 'Xóa thử thách?',
+                text: `Bạn có chắc muốn xóa thử thách "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#9b2226',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa ngay',
+                cancelButtonText: 'Hủy'
+            });
+            if (!result.isConfirmed) return;
 
             fetch(`{{ url('admin/challenges') }}/${id}`, {
                 method: 'DELETE',

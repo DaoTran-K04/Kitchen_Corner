@@ -3,29 +3,29 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Book;
+use App\Models\Recipe;
 use App\Models\Category;
-use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Like;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-// Tránh sự kiện model khi seeding
-//use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
-    // use WithoutModelEvents;
-
     public function run(): void
     {
+        // Thêm Seeders tĩnh
+        $this->call([
+            ActivityTitleSeeder::class,
+        ]);
+
         // Admin
         $admin = User::create([
-            'name' => 'Admin',
+            'name' => 'Admin Góc Bếp',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('123456789'),
             'role' => 'admin',
-            'bio' => 'Quản trị viên hệ thống Góc Sách',
+            'bio' => 'Bếp trưởng quản trị hệ thống Góc Bếp',
             'email_verified_at' => now(),
             'is_active' => true
         ]);
@@ -36,67 +36,52 @@ class DatabaseSeeder extends Seeder
             'email' => 'tester@gmail.com',
             'password' => bcrypt('123456789'),
             'role' => 'user',
-            'bio' => 'Kiểm thử viên hệ thống Góc Sách',
+            'bio' => 'Người thử nghiệm món ăn',
             'email_verified_at' => now(),
             'is_active' => true
         ]);
-        $users = User::factory(60)->create();
+        $users = User::factory(30)->create();
 
         // Danh mục
-        $categories = Category::factory()->count(20)->create();
+        $categories = Category::factory()->count(10)->create();
 
-        // 5 cuốn sách Best Seller
-        $hotBooks = Book::factory(5)->create([
-            'view_count' => fn() => rand(1000, 20000),
-            'avg_rating' => fn() => rand(10, 50) / 10,
+        // 5 Công thức Hot
+        $hotRecipes = Recipe::factory(5)->create([
+            'view_count' => fn() => rand(5000, 20000),
+            'is_featured' => true,
         ]);
 
-        // Sách mẫu
-        $normalBooks = Book::factory(30)->create();
-        $allBooks = $hotBooks->merge($normalBooks);
+        // Công thức bình thường
+        $normalRecipes = Recipe::factory(20)->create();
+        $allRecipes = $hotRecipes->merge($normalRecipes);
 
-        // Tạo 5 bài viết đang ở trạng thái pending --> Test admin
-        Post::factory(5)->create([
-            'status' => 'pending',
-            'user_id' => $users->random()->id,
-            'book_id' => $allBooks->random()->id,
-        ]);
-
-        foreach ($hotBooks as $book) {
-            Post::factory(3)->create([ // Mỗi sách hot có 3 bài review
-                'book_id' => $book->id,
-                'status' => 'published',
-                'view_count' => rand(1000, 5000),
-                'user_id' => $users->random()->id
-            ])->each(function ($post) use ($users) {
-                // Tự động fake like/comment nhiều cho bài hot
-                $this->fakeInteraction($post, $users, 15, 50); // 15-50 like
-            });
+        // Tạo tương tác (Like, Comment) cho Công thức hot
+        foreach ($hotRecipes as $recipe) {
+            $this->fakeInteraction($recipe, $users, 15, 30); // 15-30 like
         }
 
-        // Bài viết không gắn sách
-        Post::factory(10)->create([
-            'book_id' => null,
-            'status' => 'published'
-        ]);
+        // Tạo tương tác một phần cho công thức bình thường
+        foreach ($normalRecipes->random(10) as $recipe) {
+            $this->fakeInteraction($recipe, $users, 1, 10);
+        }
 
-        echo "Hoàn tất!";
+        echo "Hoàn tất Seeding CSDL Góc Bếp!";
     }
 
-    // Hàm phụ trợ: Fake like và comment cho bài viết
-    private function fakeInteraction($post, $users, $min, $max)
+    // Hàm phụ trợ: Fake like và comment cho công thức
+    private function fakeInteraction($recipe, $users, $min, $max)
     {
         // Fake Like
         $randomUsers = $users->random(rand($min, $max));
         foreach ($randomUsers as $user) {
-            Like::firstOrCreate(['user_id' => $user->id, 'post_id' => $post->id]);
+            Like::firstOrCreate(['user_id' => $user->id, 'recipe_id' => $recipe->id]);
         }
 
         // Fake Comment
-        $commentCount = rand(2, 10);
+        $commentCount = rand(2, 5);
         for ($i = 0; $i < $commentCount; $i++) {
             Comment::factory()->create([
-                'post_id' => $post->id,
+                'recipe_id' => $recipe->id,
                 'user_id' => $users->random()->id
             ]);
         }

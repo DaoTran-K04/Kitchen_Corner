@@ -4,45 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Góc Sách - Mạng Xã Hội Đọc Sách')</title>
+    <title>@yield('title', 'Góc Bếp - Chia Sẻ Công Thức & Dinh Dưỡng')</title>
+    <meta name="description" content="Khám phá hàng nghìn công thức nấu ăn ngon, mẹo vặt nhà bếp và kiến thức dinh dưỡng tại Góc Bếp. Nơi kết nối những người yêu ẩm thực.">
+    <meta name="keywords" content="công thức nấu ăn, món ngon mỗi ngày, nấu ăn ngon, thực đơn dinh dưỡng, ẩm thực việt nam, góc bếp">
+    <meta name="author" content="Trần Hoàng Đạo">
 
     {{-- [MỚI] THÊM FAVICON --}}
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&family=Nunito+Sans:wght@300;400;600;700&display=swap"
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&family=Nunito+Sans:wght@300;400;600;700;800&display=swap"
         rel="stylesheet">
+
+    @php
+        $siteTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
+            $setting = \App\Models\Setting::where('key', 'active_theme')->first();
+            return $setting ? $setting->value : 'auto';
+        });
+        if ($siteTheme === 'auto') {
+            $month = now()->month; $day = now()->day;
+            if ($month == 12 && $day >= 20 && $day <= 26) $siteTheme = 'christmas';
+            elseif (($month == 1 && $day >= 15) || ($month == 2 && $day <= 15)) $siteTheme = 'tet';
+            elseif ($month == 2 && $day >= 12 && $day <= 30) $siteTheme = 'valentine';
+            elseif (($month == 10 && $day >= 25) || ($month == 11 && $day <= 2)) $siteTheme = 'halloween';
+            else $siteTheme = 'default';
+        }
+        $colors = [
+            'default' => ['primary' => '#9B2226', 'light' => '#AE2012', 'accent' => '#E9D8A6', 'bg1' => 'rgba(254, 243, 220, 0.60)', 'bg2' => 'rgba(250, 232, 200, 0.55)', 'url' => '/images/admin-bg.png'],
+            'valentine' => ['primary' => '#D81B60', 'light' => '#E91E63', 'accent' => '#F48FB1', 'bg1' => 'rgba(252, 228, 236, 0.85)', 'bg2' => 'rgba(248, 187, 208, 0.80)', 'url' => 'https://www.transparenttextures.com/patterns/hearts.png'],
+            'tet' => ['primary' => '#B71C1C', 'light' => '#D32F2F', 'accent' => '#FFC107', 'bg1' => 'rgba(255, 248, 225, 0.90)', 'bg2' => 'rgba(255, 236, 179, 0.85)', 'url' => '/images/admin-bg.png'],
+            'halloween' => ['primary' => '#E65100', 'light' => '#EF6C00', 'accent' => '#6A1B9A', 'bg1' => 'rgba(255, 243, 224, 0.90)', 'bg2' => 'rgba(255, 224, 178, 0.85)', 'url' => 'https://www.transparenttextures.com/patterns/cobweb.png'],
+            'christmas' => ['primary' => '#1B5E20', 'light' => '#2E7D32', 'accent' => '#C62828', 'bg1' => 'rgba(232, 245, 233, 0.90)', 'bg2' => 'rgba(200, 230, 201, 0.85)', 'url' => 'https://www.transparenttextures.com/patterns/stardust.png'],
+        ];
+        $cColors = $colors[$siteTheme] ?? $colors['default'];
+    @endphp
 
     <script>
         tailwind.config = {
             theme: {
                 screens: {
-                    'xs': '400px',
-                    'sm': '640px',
-                    'md': '768px',
-                    'lg': '1024px',
-                    'xl': '1280px',
-                    '2xl': '1536px',
+                    'xs': '400px', 'sm': '640px', 'md': '768px', 'lg': '1024px', 'xl': '1280px', '2xl': '1536px',
                 },
                 extend: {
                     colors: {
-                        'brand-green': '#2A483A',
-                        'brand-green-light': '#3E5F4E',
-                        'brand-cream': '#FDFBF7',
-                        'brand-beige': '#F2E8DC',
-                        'brand-brown': '#8C6B4B',
-                        'brand-accent': '#D4A373',
+                        'brand-green':       '{{ $cColors["primary"] }}',
+                        'brand-green-light': '{{ $cColors["light"] }}',
+                        'brand-accent':      '{{ $cColors["accent"] }}',
+                        'brand-cream':       '#FAFAF8',
+                        'brand-beige':       '#FDF0D5',
+                        'brand-brown':       '#CA6702',
+                        'brand-text':        '#1A1A1A',
+                        'brand-muted':       '#6B7280',
                     },
                     fontFamily: {
-                        sans: ['Nunito Sans', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'],
+                        sans:    ['Nunito Sans', 'sans-serif'],
+                        serif:   ['Playfair Display', 'Merriweather', 'serif'],
                     },
                     boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+                        'soft':   '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card':   '0 10px 30px rgba(0, 0, 0, 0.06)',
+                        'deep':   '0 25px 50px rgba(0, 0, 0, 0.15)',
                     }
                 }
             }
@@ -55,22 +78,90 @@
         body {
             overflow-x: hidden;
             max-width: 100vw;
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: #FAF9F6;
-            color: #333;
+            /* Dynamic active theme background mapping */
+            background-image:
+                linear-gradient(135deg,
+                    {{ $cColors["bg1"] }} 0%,
+                    {{ $cColors["bg2"] }} 50%,
+                    {{ $cColors["bg1"] }} 100%),
+                url('{{ $cColors["url"] }}');
+            background-size: cover, auto;
+            background-position: center, center;
+            background-attachment: fixed, fixed;
+            color: #1A1A1A;
         }
 
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        /* Typography Đặc biệt */
+        .font-serif { font-family: 'Playfair Display', 'Merriweather', serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+
+        /* Line Clamp */
+        .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+        .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+        .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(200%);
+            -webkit-backdrop-filter: blur(16px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
+        .glass-dark {
+            background: rgba(26, 51, 42, 0.85);
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Entry Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
+            width: 6px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
@@ -78,16 +169,16 @@
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #E5E7EB;
+            background-color: rgba(42, 72, 58, 0.1);
             border-radius: 20px;
         }
 
         .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-            background-color: #3E5F4E;
+            background-color: #2A483A;
         }
 
         .hero-slider-wrapper {
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
         }
 
         /* Safe area for iOS */
@@ -95,13 +186,81 @@
             padding-bottom: env(safe-area-inset-bottom, 0);
         }
     </style>
+
+    {{-- SweetAlert2 for global popup overrides --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Override native browser alert to use SweetAlert2
+        window.alert = function(message) {
+            Swal.fire({
+                title: 'Góc Bếp thông báo',
+                text: message,
+                icon: 'info',
+                confirmButtonColor: '#9B2226',
+                confirmButtonText: 'Đã hiểu',
+                customClass: {
+                    container: 'z-[9999]',
+                    title: 'font-serif text-2xl text-red-900',
+                    popup: 'rounded-[2rem] shadow-2xl border-0',
+                    confirmButton: 'rounded-full px-8 py-2.5 font-bold shadow hover:shadow-lg transition-all'
+                }
+            });
+        };
+        
+        // Custom function to ask user to login softly
+        window.requireLogin = function(customMessage = 'Bạn cần đăng nhập để sử dụng tính năng này!') {
+            Swal.fire({
+                title: 'Vui lòng đăng nhập',
+                text: customMessage,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9B2226',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Đăng nhập',
+                cancelButtonText: 'Để sau',
+                customClass: {
+                    container: 'z-[9999]',
+                    title: 'font-serif text-2xl text-red-900',
+                    popup: 'rounded-[2rem] shadow-2xl border-0',
+                    confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
+                    cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        };
+
+        // Global SwalConfirm helper
+        window.SwalConfirm = function(title, text, icon = 'warning', confirmButtonText = 'Đồng ý', cancelButtonText = 'Hủy') {
+            return Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: '#9B2226',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: confirmButtonText,
+                cancelButtonText: cancelButtonText,
+                reverseButtons: true,
+                customClass: {
+                    container: 'z-[9999]',
+                    title: 'font-serif text-2xl text-red-900',
+                    popup: 'rounded-[2rem] shadow-2xl border-0',
+                    confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
+                    cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
+                }
+            });
+        };
+    </script>
 </head>
 
 <body class="font-sans antialiased flex flex-col min-h-screen selection:bg-brand-green selection:text-white">
 
     @include('partials.header')
 
-    <div class="flex-grow">
+    <div class="flex-grow {{ (Request::is('/') || Request::is('cong-thuc*') || Request::is('tac-gia*') || Request::is('tim-kiem-nguyen-lieu*') || Request::is('mon-an*') || Request::is('login') || Request::is('register')) ? '' : 'pt-20 lg:pt-24' }}">
         @yield('content')
     </div>
 
@@ -112,8 +271,7 @@
 
     @stack('scripts')
 
-    {{-- Seasonal Decorations (Giáng sinh, Tết, Valentine, Halloween) --}}
-    @include('partials.seasonal-decoration')
+    {{-- Seasonal Decorations removed, moved to Admin Theme settings page --}}
 
     {{-- AI Chatbox --}}
     @include('partials.chatbox')
@@ -173,12 +331,22 @@
             mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
         }
 
-        // Close on ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('hidden')) {
-                closeMobileMenu();
+        // Reveal on Scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
             }
-        });
+        }
+
+        window.addEventListener("scroll", reveal);
+        // To check the scroll position on page load
+        window.addEventListener("load", reveal);
     </script>
 </body>
 

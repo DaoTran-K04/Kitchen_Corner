@@ -10,7 +10,7 @@
             class="p-4 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-4">
                 <span class="font-bold text-gray-700 dark:text-slate-200 flex items-center gap-2">
-                    <i class="fas fa-envelope text-blue-500"></i>Danh sách Subscribers
+                    <i class="fas fa-envelope text-blue-500"></i>Danh sách Người đăng ký Newsletter
                 </span>
                 <div class="flex gap-2 text-xs">
                     <span

@@ -18,8 +18,8 @@ class Category extends Model
     ];
 
     // Quan hệ
-    public function books()
+    public function recipes()
     {
-        return $this->belongsToMany(Book::class, 'book_category');
+        return $this->hasMany(Recipe::class);
     }
 }

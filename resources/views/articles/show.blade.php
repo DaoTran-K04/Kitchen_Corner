@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $article->title ?? 'Tạp Chí Góc Sách')
+@section('title', $article->title ?? 'Tạp Chí Góc Bếp')
 
 @section('content')
     {{-- CSS riêng cho bài viết --}}
@@ -16,10 +16,10 @@
     {{-- [BREADCRUMB] --}}
     <div class="bg-gray-50 border-b border-gray-200 py-4">
         <div class="container mx-auto px-4">
-            <nav class="flex text-sm font-medium text-gray-500">
+            <nav class="flex text-sm font-bold text-black">
                 <a href="{{ route('home') }}" class="hover:text-brand-green transition">Trang chủ</a>
-                <span class="mx-2">/</span>
-                <span class="text-brand-green font-bold truncate max-w-[300px]">{{ $article->title }}</span>
+                <span class="mx-2 text-gray-500 font-normal">/</span>
+                <span class="text-brand-green font-extrabold truncate max-w-[300px]">{{ $article->title }}</span>
             </nav>
         </div>
     </div>
@@ -158,13 +158,13 @@
                             </div>
                             <div>
                                 <h3 class="font-serif font-bold text-gray-800 text-lg leading-tight">Về Tạp Chí</h3>
-                                <span class="text-xs text-emerald-600 font-medium">Góc Sách Magazine</span>
+                                <span class="text-xs text-emerald-600 font-medium">Góc Bếp Magazine</span>
                             </div>
                         </div>
                         
                         {{-- Content --}}
                         <p class="text-sm text-gray-600 leading-relaxed mb-5 relative">
-                            Góc Sách Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh <span class="text-emerald-600 font-semibold">văn hóa đọc</span>, phỏng vấn tác giả và những tips hay ho cho mọt sách.
+                            Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh <span class="text-emerald-600 font-semibold">văn hóa đọc</span>, phỏng vấn tác giả và những tips hay ho cho mọt sách.
                         </p>
                         
                         {{-- Stats --}}

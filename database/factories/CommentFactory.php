@@ -9,16 +9,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'user_id' => \App\Models\User::factory(),
-            'post_id' => \App\Models\Post::factory(),
+            'recipe_id' => \App\Models\Recipe::factory(),
             'content' => $this->faker->sentence(),
             // Mặc định: Comment gốc
             'parent_id' => null,

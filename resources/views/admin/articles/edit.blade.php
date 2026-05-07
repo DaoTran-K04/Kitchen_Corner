@@ -30,7 +30,7 @@
                                 class="text-red-500">*</span></label>
                         <input type="text" name="title" value="{{ old('title', $article->title) }}"
                             class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white placeholder:italic"
-                            required placeholder="Ví dụ: 10 cuốn sách nên đọc trong mùa hè">
+                            required placeholder="Ví dụ: 10 công thức nên đọc trong mùa hè">
                         @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 

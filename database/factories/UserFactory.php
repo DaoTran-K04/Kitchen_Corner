@@ -14,7 +14,7 @@ class UserFactory extends Factory
     /**
      * The current password being used by the factory.
      */
-    protected static ?strings $password;
+    protected static ?string $password;
 
     /**
      * Define the model's default state.
@@ -27,14 +27,14 @@ class UserFactory extends Factory
 
         // Danh sách bio của bạn
         $bios = [
-            'Một người đam mê sách cuồng nhiệt.',
-            'Thích sách.',
-            'Xin chào, tôi là một mọt sách.',
-            'Đang tìm kiếm những cuốn sách hay để review.',
-            'Tâm hồn tôi thuộc về những trang sách.',
-            'Yêu thích việc khám phá tri thức qua sách vở.',
-            'Mỗi cuốn sách là một cuộc phiêu lưu mới.',
-            'Tôi sống để đọc và đọc để sống.',
+            'Một người đam mê nấu ăn cuồng nhiệt.',
+            'Thích sáng tạo trong góc bếp.',
+            'Xin chào, tôi là một người yêu ẩm thực.',
+            'Đang tìm kiếm những công thức món ngon mỗi ngày.',
+            'Tâm hồn tôi thuộc về những gian bếp ấm áp.',
+            'Yêu thích việc khám phá hương vị qua món ăn.',
+            'Mỗi món ăn là một câu chuyện tình yêu.',
+            'Tôi sống để ăn ngon và nấu ăn để sống rực rỡ.',
             'Chưa thiết lập tiểu sử.',
         ];
 
@@ -54,7 +54,7 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn(array $attributes) => [
-            'bio' => 'Quản trị viên hệ thống Góc Sách.',
+            'bio' => 'Quản trị viên hệ thống Góc Bếp.',
             'role' => 'admin',
         ]);
     }

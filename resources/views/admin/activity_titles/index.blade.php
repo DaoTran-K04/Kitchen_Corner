@@ -5,7 +5,7 @@
 @section('content')
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div class="p-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
-            <h3 class="font-bold text-gray-700 dark:text-slate-200">Danh Sách Danh Hiệu</h3>
+            <h3 class="font-bold text-gray-700 dark:text-slate-200">Danh sách Tiêu Đề Hoạt Động</h3>
             <a href="{{ route('admin.activity-titles.create') }}" class="px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition">
                 <i class="fas fa-plus mr-2"></i>Thêm Mới
             </a>
@@ -56,7 +56,9 @@
                                     <a href="{{ route('admin.activity-titles.edit', $title->id) }}" class="w-8 h-8 flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition" title="Sửa">
                                         <i class="fas fa-edit text-xs"></i>
                                     </a>
-                                    <form action="{{ route('admin.activity-titles.destroy', $title->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa danh hiệu này?')">
+                                    <form action="{{ route('admin.activity-titles.destroy', $title->id) }}" method="POST"
+                                        class="confirm-submit"
+                                        data-confirm="Bạn có chắc muốn xóa danh hiệu này?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-300 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition" title="Xóa">

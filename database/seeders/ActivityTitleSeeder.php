@@ -15,51 +15,51 @@ class ActivityTitleSeeder extends Seeder
     {
         $titles = [
             [
-                'name' => 'Thành viên mới',
+                'name' => 'Tân binh góc bếp',
                 'icon' => '🌱',
                 'color' => '#22C55E', // green-500
                 'min_posts' => 0,
-                'min_books' => 0,
+                'min_recipes' => 0,
                 'priority' => 1,
             ],
             [
-                'name' => 'Người đọc tích cực',
-                'icon' => '📖',
+                'name' => 'Tín đồ ẩm thực',
+                'icon' => '🍽️',
                 'color' => '#3B82F6', // blue-500
                 'min_posts' => 3,
-                'min_books' => 0,
+                'min_recipes' => 0,
                 'priority' => 2,
             ],
             [
-                'name' => 'Tác giả tập sự',
-                'icon' => '✍️',
+                'name' => 'Bếp phó',
+                'icon' => '👨‍🍳',
                 'color' => '#8B5CF6', // purple-500
                 'min_posts' => 5,
-                'min_books' => 1,
+                'min_recipes' => 1,
                 'priority' => 3,
             ],
             [
-                'name' => 'Cộng tác viên',
-                'icon' => '🤝',
+                'name' => 'Bếp trưởng',
+                'icon' => '👑',
                 'color' => '#F97316', // orange-500
                 'min_posts' => 10,
-                'min_books' => 3,
+                'min_recipes' => 3,
                 'priority' => 4,
             ],
             [
-                'name' => 'Nhà phê bình',
+                'name' => 'Chuyên gia ẩm thực',
                 'icon' => '🏆',
                 'color' => '#EAB308', // yellow-500
                 'min_posts' => 20,
-                'min_books' => 5,
+                'min_recipes' => 5,
                 'priority' => 5,
             ],
             [
-                'name' => 'Cây bút vàng',
+                'name' => 'Vua đầu bếp',
                 'icon' => '⭐',
                 'color' => '#EF4444', // red-500
                 'min_posts' => 50,
-                'min_books' => 10,
+                'min_recipes' => 10,
                 'priority' => 6,
             ],
         ];

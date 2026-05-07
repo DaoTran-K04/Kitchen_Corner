@@ -3,39 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Book;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Article;
-use App\Models\Post;     // <--- Đã thêm Post
 use App\Models\Banner;
-use App\Models\Quote;
 use App\Models\Challenge;
 use App\Models\Like;
 use App\Models\CommentLike;
+use App\Models\Recipe;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Notifications\CommentLikedNotification;
 use App\Notifications\CommentRepliedNotification;
-use App\Notifications\PostLikedNotification;
-use App\Notifications\PostCommentedNotification;
+// use App\Models\Post;           // TODO: đã chuyển sang Recipe
+// use App\Models\Book;           // TODO: đã chuyển sang Recipe
+// use App\Models\Quote;          // TODO: sẽ thay bằng mẹo nấu ăn / câu nói ẩm thực
+// use App\Models\Author;         // TODO: sẽ thay bằng Chef / đầu bếp nổi bật
+// use App\Notifications\PostLikedNotification;     // TODO: đổi sang RecipeLikedNotification
+// use App\Notifications\PostCommentedNotification; // TODO: đổi sang RecipeCommentedNotification
+
 class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        // --- 1. XỬ LÝ PHẦN CỘNG ĐỒNG REVIEW (HIỂN THỊ COMMENTS) ---
+        // --- 1. CỘNG ĐỒNG – BÌNH LUẬN CÔNG THỨC ---
         $sortReview = $request->get('sort_review', 'latest');
 
-        // Query từ bảng COMMENTS - chỉ lấy comment cha (không phải reply)
+        // Lấy comment cha có liên kết với recipe (thay vì post->book cũ)
         $reviewQuery = Comment::with([
-            'user.activeBadges', // Load user cùng với badges
-            'post.book', // Lấy thông tin sách qua bài post
+            'user.activeBadges',
+            'recipe',        // ← quan hệ mới (thay 'post.book')
             'likes',
             'replies' => function ($query) {
-                $query->with(['user.activeBadges', 'likes'])->latest(); // Load badges cho cả replies
+                $query->with(['user.activeBadges', 'likes'])->latest();
             }
         ])
-            ->whereNull('parent_id') // Chỉ lấy comment gốc, không phải reply
-            ->whereHas('post.book') // Chỉ lấy comment có liên kết với sách
+            ->whereNull('parent_id')
+            ->whereHas('recipe')       // ← chỉ lấy comment có recipe
             ->withCount('likes');
 
         if ($sortReview == 'popular') {
@@ -46,103 +50,218 @@ class HomeController extends Controller
 
         $latestReviews = $reviewQuery->paginate(5)->withQueryString();
 
-        // Trả về Partial View nếu là Ajax (khi bấm phân trang)
         if ($request->ajax()) {
             return view('partials.home_comments', compact('latestReviews'))->render();
         }
 
-        // --- 2. CÁC PHẦN DỮ LIỆU KHÁC (GIỮ NGUYÊN) ---
+        // --- 2. BANNER SLIDE ---
         $heroSlides = Banner::where('is_active', true)->orderBy('order', 'asc')->latest()->get();
         if ($heroSlides->isEmpty()) {
             $heroSlides = collect([
                 (object) [
-                    'id' => null,
-                    'title' => 'Cây Cam Ngọt Của Tôi',
-                    'tag' => 'Sách Kinh Điển',
-                    'description' => '"Vị chua chát của cái nghèo hòa trộn..."',
-                    'image' => 'https://library.hust.edu.vn/sites/default/files/C%C3%A2y%20cam%20ng%E1%BB%8Dt%20c%E1%BB%A7a%20t%C3%B4i%20-%20%E1%BA%A2nh%20b%C3%ACa.jpg',
-                    'rating' => '4.9/5.0',
-                    'link' => '#'
+                    'id'          => null,
+                    'title'       => 'Tinh Hoa Phở Việt',
+                    'tag'         => 'Món Nước Bổ Dưỡng',
+                    'description' => '"Nước dùng thanh ngọt hầm từ xương, bánh phở mềm dai chuẩn vị truyền thống..."',
+                    'image'       => 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=1200',
+                    'link'        => '#'
+                ],
+                (object) [
+                    'id'          => null,
+                    'title'       => 'Bún Bò Huế Đặc Sản',
+                    'tag'         => 'Hương Vị Cố Đô',
+                    'description' => '"Đậm đà mắm ruốc, cay nồng sa tế hòa quyện trong từng tô bún nghi ngút khói..."',
+                    'image'       => 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=1200',
+                    'link'        => '#'
+                ],
+                (object) [
+                    'id'          => null,
+                    'title'       => 'Bữa Sáng Tràn Năng Lượng',
+                    'tag'         => 'Dinh Dưỡng Dễ Làm',
+                    'description' => '"Khởi đầu ngày mới hoàn hảo với lát bánh mì giòn rụm, bơ sáp béo ngậy và trứng chần mọng nước."',
+                    'image'       => 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=1200',
+                    'link'        => '#'
                 ]
             ]);
         }
 
-        $bookQuery = Book::where('is_approved', true)->with('categories')->withAvg(['posts'], 'rating')->orderBy('created_at', 'desc')->take(10);
-        $books = $bookQuery->get();
-        foreach ($books as $book) {
-            $book->avg_rating = round($book->posts_avg_rating ?? 0, 1);
+        // --- 3. CÔNG THỨC THEO CHỦ ĐỀ MỚI NHẤT ---
+        $siteTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
+            $setting = \App\Models\Setting::where('key', 'active_theme')->first();
+            return $setting ? $setting->value : 'auto';
+        });
+
+        if ($siteTheme === 'auto') {
+            $month = now()->month; $day = now()->day;
+            if ($month == 12 && $day >= 20 && $day <= 26) $siteTheme = 'christmas';
+            elseif (($month == 1 && $day >= 15) || ($month == 2 && $day <= 15)) $siteTheme = 'tet';
+            elseif ($month == 2 && $day >= 12 && $day <= 20) $siteTheme = 'valentine';
+            elseif (($month == 10 && $day >= 25) || ($month == 11 && $day <= 2)) $siteTheme = 'halloween';
         }
 
-        $featuredArticle = Article::with('user')->where('is_featured', true)->where('is_active', true)->latest()->first();
-        $sidebarArticles = Article::with('user')->where('is_featured', false)->where('is_active', true)->latest()->take(2)->get();
-        $categories = Category::withCount('books')->orderBy('name', 'asc')->get();
+        $recipesQuery = Recipe::with('category')->where('status', 'published');
 
-        // --- LẤY QUOTE NGẪU NHIÊN THEO NGÀY ---
-        $quotes = Quote::where('is_active', true)->get();
-        $dailyQuote = null;
-        if ($quotes->count() > 0) {
-            // Dùng ngày hiện tại làm seed để cùng ngày luôn hiển thị cùng quote
-            $dayOfYear = now()->dayOfYear + now()->year;
-            $dailyQuote = $quotes[$dayOfYear % $quotes->count()];
+        $themeKeywords = [];
+        if ($siteTheme === 'valentine') {
+            $themeKeywords = ['socola', 'ngọt', 'bánh', 'kem', 'bít tết', 'dâu', 'rượu', 'tình yêu', 'tráng miệng'];
+        } elseif ($siteTheme === 'tet') {
+            $themeKeywords = ['tết', 'thịt kho', 'bánh chưng', 'bánh tét', 'gà luộc', 'dưa hành', 'chả lụa', 'giò', 'canh măng', 'mứt', 'xôi', 'chè'];
+        } elseif ($siteTheme === 'christmas') {
+            $themeKeywords = ['gà tây', 'bánh kem', 'nướng', 'bò', 'rượu vang', 'súp', 'salad', 'bánh quy', 'giáng sinh', 'noel'];
+        } elseif ($siteTheme === 'halloween') {
+            $themeKeywords = ['bí đỏ', 'súp', 'kẹo', 'huyết', 'máu', 'quỷ', 'ma', 'socola', 'bánh quy', 'halloween'];
+        } elseif ($siteTheme === 'default' || $siteTheme === 'auto') {
+            $m = now()->month;
+            if ($m >= 3 && $m <= 4) { // Mùa Xuân -> mát mẻ, chay, nhẹ bụng
+                $themeKeywords = ['gỏi', 'salad', 'hấp', 'luộc', 'thanh mát', 'chay', 'đậu hũ', 'nước ép', 'thảo mộc', 'canh ngao'];
+            } elseif ($m >= 5 && $m <= 7) { // Mùa Hè -> nóng bức, chè, kem, sinh tố 
+                $themeKeywords = ['giải nhiệt', 'kem', 'chè', 'sinh tố', 'trái cây', 'lạnh', 'rau câu', 'nước ép', 'sữa chua', 'gỏi', 'cuốn'];
+            } elseif ($m >= 8 && $m <= 10) { // Mùa Thu / Trung Thu -> chè ấm, bánh ngọt
+                $themeKeywords = ['trung thu', 'bánh nướng', 'bánh dẻo', 'cốm', 'chè', 'súp', 'hầm', 'canh', 'gà hầm', 'táo đỏ'];
+            } else { // Mùa Đông -> cay nóng
+                $themeKeywords = ['lẩu', 'nướng', 'cay', 'nóng', 'chiên', 'gừng', 'tiêu', 'bò sốt', 'cà ri', 'hầm xương'];
+            }
         }
 
-        // --- THỐNG KÊ CỘNG ĐỒNG ---
-        $communityStats = [
-            'books' => Book::where('is_approved', true)->count(),
-            'members' => \App\Models\User::count(),
-            'reviews' => Post::where('status', 'published')->count(),
-            'comments' => Comment::count(),
-            'book_views' => Book::where('is_approved', true)->sum('view_count'), // Tổng lượt đọc sách
-            'post_views' => Post::where('status', 'published')->sum('view_count'), // Tổng lượt đọc bài
-            'authors' => \App\Models\Author::count(), // Số tác giả
-            'categories' => Category::count(), // Số thể loại
-            'post_likes' => Like::count(), // Lượt thích bài review
-            'comment_likes' => CommentLike::count(), // Lượt thích bình luận
-            'online_users' => \App\Models\SiteVisit::getOnlineCount(), // Số người đang online
-            'total_visits' => \App\Models\SiteStatistic::getTotalPageViews(), // Tổng lượt truy cập
-        ];
-
-        // --- SÁCH NGẪU NHIÊN "HÔM NAY ĐỌC GÌ?" ---
-        $allApprovedBooks = Book::where('is_approved', true)
-            ->withAvg(['posts'], 'rating')
-            ->get();
-        $randomBook = null;
-        if ($allApprovedBooks->count() > 0) {
-            // Dùng ngày làm seed để cùng ngày hiển thị cùng sách
-            $dayOfYear = now()->dayOfYear + now()->year;
-            $randomBook = $allApprovedBooks[$dayOfYear % $allApprovedBooks->count()];
-            // Gán avg_rating từ posts
-            $randomBook->avg_rating = round($randomBook->posts_avg_rating ?? 0, 1);
+        if (!empty($themeKeywords)) {
+            $cases = [];
+            $bindings = [];
+            foreach ($themeKeywords as $keyword) {
+                // Priority by Title
+                $cases[] = "title LIKE ?";
+                $bindings[] = "%{$keyword}%";
+            }
+            
+            // Build the CASE statement to bring matched items to the top
+            $sql = "CASE WHEN (" . implode(" OR ", $cases) . ") THEN 1 ELSE 2 END";
+            $recipesQuery->orderByRaw($sql, $bindings);
         }
 
-        // --- TÁC GIẢ NGÀY HÔM NAY ---
-        $allAuthors = \App\Models\Author::all();
-        $dailyAuthor = null;
-        if ($allAuthors->count() > 0) {
-            // Dùng ngày làm seed để cùng ngày hiển thị cùng tác giả (offset +1 để khác sách)
-            $dayOfYear = now()->dayOfYear + now()->year + 1;
-            $dailyAuthor = $allAuthors[$dayOfYear % $allAuthors->count()];
-        }
+        // Secondary sorting by newest updates
+        $recipesQuery->orderBy('created_at', 'desc');
 
-        // --- BÀI REVIEW NỔI BẬT (FEATURED POSTS) ---
-        // Mới nhất - sắp xếp theo ngày tạo
-        $latestPosts = Post::with(['user', 'book'])
-            ->where('status', 'published')
-            ->whereNotNull('thumbnail')
-            ->orderByDesc('created_at')
-            ->take(8)
+        $recipes = $recipesQuery->take(12)->get();
+
+        $trendingRecipes = Recipe::where('status', 'published')
+            ->orderBy('view_count', 'desc')
+            ->take(5)
             ->get();
 
-        // Hot nhất - sắp xếp theo lượt xem
-        $hotPosts = Post::with(['user', 'book'])
-            ->where('status', 'published')
-            ->whereNotNull('thumbnail')
-            ->orderByDesc('view_count')
-            ->take(8)
-            ->get();
+        // --- 4. BÀI VIẾT TẠP CHÍ (Ưu tiên từ Database, fallback RSS) ---
+        $dbArticles = Article::where('is_active', true)->latest()->take(3)->get();
+        
+        if ($dbArticles->count() >= 3) {
+            $formattedArticles = $dbArticles->map(function($article) {
+                return (object)[
+                    'title' => $article->title,
+                    'link' => route('articles.show', $article->slug),
+                    'description' => $article->excerpt,
+                    'image' => asset('storage/' . $article->thumbnail),
+                    'date' => $article->created_at->format('d/m/Y'),
+                    'author_name' => $article->user->name ?? 'Admin'
+                ];
+            });
+        } else {
+            // Fallback sang RSS nếu không đủ bài trong DB
+            $rssArticles = \Illuminate\Support\Facades\Cache::remember('news_food', 120, function() {
+                try {
+                    $rss = @simplexml_load_file('https://thanhnien.vn/rss/am-thuc.rss');
+                    if (!$rss) {
+                        $rss = @simplexml_load_file('https://tuoitre.vn/rss/am-thuc.rss');
+                    }
+                    $list = collect();
+                    if ($rss && isset($rss->channel->item)) {
+                        foreach ($rss->channel->item as $item) {
+                            $desc = (string) $item->description;
+                            preg_match('/src="([^"]+)"/', $desc, $matches);
+                            $image = $matches[1] ?? 'https://placehold.co/600x400/9b2226/white?text=News';
+                            $list->push((object)[
+                                'title' => (string) $item->title,
+                                'link' => (string) $item->link,
+                                'description' => strip_tags($desc),
+                                'image' => $image,
+                                'date' => date('d/m/Y', strtotime((string)$item->pubDate)) ?? now()->format('d/m/Y'),
+                                'author_name' => 'News API'
+                            ]);
+                            if($list->count() >= 3) break;
+                        }
+                    }
+                    return $list;
+                } catch (\Exception $e) {   
+                    return collect([]);
+                }
+            });
 
-        // --- THỬ THÁCH NGẪU NHIÊN ĐANG HOẠT ĐỘNG ---
-        $today = now()->toDateString();
+            // Gộp bài từ DB và RSS
+            $formattedArticles = $dbArticles->map(function($article) {
+                return (object)[
+                    'title' => $article->title,
+                    'link' => route('articles.show', $article->slug),
+                    'description' => $article->excerpt,
+                    'image' => asset('storage/' . $article->thumbnail),
+                    'date' => $article->created_at->format('d/m/Y'),
+                    'author_name' => $article->user->name ?? 'Admin'
+                ];
+            })->concat($rssArticles)->take(3);
+        }
+
+        $featuredArticle = $formattedArticles->first();
+        $sidebarArticles = $formattedArticles->slice(1, 2);
+
+        $categories = \Illuminate\Support\Facades\Cache::remember('home_categories', 60, function() {
+            return Category::withCount('recipes')->orderBy('name', 'asc')->get();
+        });
+
+        // --- 5. CHÂM NGÔN ẨM THỰC NGẪU NHIÊN ---
+        $dailyQuote = \App\Models\Quote::where('is_active', true)->inRandomOrder()->first();
+
+        // --- 6. THỐNG KÊ CỘNG ĐỒNG (CACHE 60 phút) ---
+        $communityStats = \Illuminate\Support\Facades\Cache::remember('community_stats', 60, function () {
+            return [
+                'recipes'       => Recipe::where('status', 'published')->count(),
+                'members'       => \App\Models\User::count(),
+                'comments'      => Comment::count(),
+                'categories'    => Category::count(),
+                'recipe_views'  => Recipe::where('status', 'published')->sum('view_count'),
+                'comment_likes' => CommentLike::count(),
+                'online_users'  => \App\Models\SiteVisit::getOnlineCount(),
+                'total_visits'  => \App\Models\SiteStatistic::getTotalPageViews(),
+                'books'        => 0,
+                'reviews'      => 0,
+                'post_views'   => 0,
+                'authors'      => 0,
+                'post_likes'   => Like::count(),
+                'book_views'   => 0,
+            ];
+        });
+
+        // Cập nhật lượt người dùng online (không cache)
+        $communityStats['online_users'] = \App\Models\SiteVisit::getOnlineCount();
+        $communityStats['total_visits'] = \App\Models\SiteStatistic::getTotalPageViews();
+
+        // --- 7. CÔNG THỨC "HÔM NAY NẤU GÌ?" (TỐI ƯU HÓA) ---
+        $totalPublishedRecipes = $communityStats['recipes'];
+        $randomRecipe = null;
+        if ($totalPublishedRecipes > 0) {
+            $dayOfYear    = now()->dayOfYear + now()->year;
+            $offsetIndex  = $dayOfYear % $totalPublishedRecipes;
+            $randomRecipe = Recipe::where('status', 'published')->offset($offsetIndex)->limit(1)->with('category')->first();
+        }
+
+        // --- 8. TÁC GIẢ TIÊU BIỂU ---
+        $dailyAuthor = \App\Models\User::whereHas('recipes', function($q) {
+            $q->where('status', 'published');
+        })->inRandomOrder()->first();
+
+        // Lấy 8 công thức nổi bật để hiển thị ở section slider
+        $latestPosts = Recipe::where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
+        if ($latestPosts->isEmpty()) {
+            $latestPosts = Recipe::where('status', 'published')->latest()->take(8)->get();
+        }
+        $hotPosts = Recipe::where('status', 'published')->orderBy('view_count', 'desc')->take(8)->get();
+
+        // --- 9. THỬ THÁCH ---
+        $today           = now()->toDateString();
         $activeChallenge = Challenge::with('badge')
             ->where('is_active', true)
             ->where('start_date', '<=', $today)
@@ -150,17 +269,17 @@ class HomeController extends Controller
             ->inRandomOrder()
             ->first();
 
-        // Truyền biến $latestReviews vào view
         return view('home', compact(
             'heroSlides',
-            'books',
+            'recipes',
             'latestReviews',
             'categories',
             'featuredArticle',
             'sidebarArticles',
             'dailyQuote',
             'communityStats',
-            'randomBook',
+            'randomRecipe',
+            'trendingRecipes',
             'dailyAuthor',
             'latestPosts',
             'hotPosts',
@@ -177,32 +296,31 @@ class HomeController extends Controller
 
         $request->validate(['id' => 'required|integer', 'type' => 'required|in:post,comment']);
         $userId = Auth::id();
-        $id = $request->id;
-        $type = $request->type;
-        $liked = false;
-        $count = 0;
+        $id     = $request->id;
+        $type   = $request->type;
+        $liked  = false;
+        $count  = 0;
 
         if ($type === 'post') {
-            $existingLike = Like::where('user_id', $userId)->where('post_id', $id)->first();
+            $existingLike = Like::where('user_id', $userId)->where('recipe_id', $id)->first();
             if ($existingLike) {
                 $existingLike->delete();
                 $liked = false;
             } else {
-                Like::create(['user_id' => $userId, 'post_id' => $id]);
+                Like::create(['user_id' => $userId, 'recipe_id' => $id]);
                 $liked = true;
-
-                // --- BỔ SUNG GỬI THÔNG BÁO CHO CHỦ BÀI VIẾT ---
-                $post = Post::find($id);
-                if ($post && $post->user_id != $userId) {
+                
+                // Gửi thông báo cho tác giả công thức
+                $recipe = Recipe::find($id);
+                if ($recipe && $recipe->user_id != $userId) {
                     try {
-                        $post->user->notify(new PostLikedNotification(Auth::user(), $post));
+                        $recipe->user->notify(new \App\Notifications\RecipeLikedNotification(Auth::user(), $recipe));
                     } catch (\Exception $e) {
-                        \Log::error("Lỗi gửi thông báo Like Post: " . $e->getMessage());
+                        \Log::error("Lỗi gửi thông báo thích công thức: " . $e->getMessage());
                     }
                 }
-                // --------------------------------------------
             }
-            $count = Like::where('post_id', $id)->count();
+            $count = Like::where('recipe_id', $id)->count();
         } else {
             $existingLike = CommentLike::where('user_id', $userId)->where('comment_id', $id)->first();
             if ($existingLike) {
@@ -211,7 +329,6 @@ class HomeController extends Controller
             } else {
                 CommentLike::create(['user_id' => $userId, 'comment_id' => $id, 'is_like' => 1]);
                 $liked = true;
-                // Notify
                 $comment = Comment::find($id);
                 if ($comment && $comment->user_id != $userId) {
                     try {
@@ -225,38 +342,7 @@ class HomeController extends Controller
         return response()->json(['success' => true, 'liked' => $liked, 'count' => $count, 'type' => $type]);
     }
 
-    // --- LOGIC LƯU BÀI VIẾT (SAVE POST) ---
-    public function toggleSavePost(Request $request)
-    {
-        if (!Auth::check()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
-        }
-
-        $request->validate(['post_id' => 'required|integer|exists:posts,id']);
-        $userId = Auth::id();
-        $postId = $request->post_id;
-
-        $user = Auth::user();
-        $isSaved = $user->savedPosts()->where('post_id', $postId)->exists();
-
-        if ($isSaved) {
-            // Bỏ lưu
-            $user->savedPosts()->detach($postId);
-            $saved = false;
-        } else {
-            // Lưu bài viết
-            $user->savedPosts()->attach($postId);
-            $saved = true;
-        }
-
-        return response()->json([
-            'success' => true,
-            'saved' => $saved,
-            'message' => $saved ? 'Đã lưu bài viết!' : 'Đã bỏ lưu bài viết!'
-        ]);
-    }
-
-    // --- LOGIC REPLY (ĐÃ SỬA LỖI DATABASE) ---
+    // --- LOGIC REPLY ---
     public function storeReply(Request $request, $id)
     {
         if (!Auth::check()) {
@@ -265,25 +351,19 @@ class HomeController extends Controller
         $request->validate(['content' => 'required|max:500']);
 
         $parentComment = Comment::findOrFail($id);
-        $user = Auth::user();
+        $user          = Auth::user();
 
-        $reply = new Comment();
-        $reply->user_id = $user->id;
-        $reply->parent_id = $id;
-        $reply->content = $request->input('content');
-
-        // CHỈ LƯU POST_ID (Bỏ book_id và is_active vì không có trong DB)
-        $reply->post_id = $parentComment->post_id;
-
+        $reply              = new Comment();
+        $reply->user_id     = $user->id;
+        $reply->parent_id   = $id;
+        $reply->content     = $request->input('content');
+        $reply->recipe_id   = $parentComment->recipe_id; // ← dùng recipe_id thay post_id
         $reply->save();
 
-        // LẤY THÔNG TIN NGƯỜI DÙNG CỦA BÌNH LUẬN CHA
         $parentComment = Comment::with('user')->find($id);
 
-        // KIỂM TRA: Nếu người trả lời KHÔNG PHẢI là chủ nhân của bình luận gốc
         if ($parentComment && $parentComment->user_id != Auth::id()) {
             try {
-                // Gửi thông báo cho chủ nhân của bình luận cha
                 $parentComment->user->notify(new CommentRepliedNotification(Auth::user(), $reply));
             } catch (\Exception $e) {
                 \Log::error("Lỗi gửi thông báo: " . $e->getMessage());
@@ -291,7 +371,7 @@ class HomeController extends Controller
         }
 
         $equippedFrame = $user->equippedFrame();
-        $frameUrl = null;
+        $frameUrl      = null;
         if ($equippedFrame) {
             $frameUrl = \Illuminate\Support\Str::startsWith($equippedFrame->frame_image, 'http')
                 ? $equippedFrame->frame_image
@@ -299,14 +379,80 @@ class HomeController extends Controller
         }
 
         return response()->json([
-            'success' => true,
-            'reply_id' => $reply->id,
-            'user_name' => $user->name,
+            'success'     => true,
+            'reply_id'    => $reply->id,
+            'user_name'   => $user->name,
             'user_avatar' => $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random',
-            'user_frame' => $frameUrl,
-            'content' => $reply->content,
-            'time' => 'Vừa xong'
+            'user_frame'  => $frameUrl,
+            'content'     => $reply->content,
+            'time'        => $reply->created_at->diffForHumans(),
         ]);
+    }
+
+    public function updateComment(Request $request, $id)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập'], 401);
+        }
+        $request->validate(['content' => 'required|max:500']);
+
+        $comment = Comment::findOrFail($id);
+        if ($comment->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Bạn không có quyền chỉnh sửa bình luận này!'], 403);
+        }
+
+        $comment->content = $request->input('content');
+        $comment->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã cập nhật bình luận!',
+            'content' => $comment->content
+        ]);
+    }
+
+    public function deleteComment($id)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập'], 401);
+        }
+
+        $comment = Comment::findOrFail($id);
+        if ($comment->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Bạn không có quyền xóa bình luận này!'], 403);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            // 1. Xóa các lượt thích của bình luận này
+            DB::table('comment_likes')->where('comment_id', $id)->delete();
+            
+            // 2. Xóa các báo cáo liên quan
+            DB::table('comment_reports')->where('comment_id', $id)->delete();
+            
+            // 3. Xóa các phản hồi con (và các lượt thích của chúng)
+            $replyIds = $comment->replies()->pluck('id');
+            if ($replyIds->count() > 0) {
+                DB::table('comment_likes')->whereIn('comment_id', $replyIds)->delete();
+                DB::table('comment_reports')->whereIn('comment_id', $replyIds)->delete();
+                $comment->replies()->delete();
+            }
+            
+            // 4. Xóa chính bình luận đó
+            $comment->delete();
+            
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã xóa bình luận!'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("Lỗi xóa bình luận: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Lỗi hệ thống khi xóa: ' . $e->getMessage()], 500);
+        }
     }
 
     public function markAllAsRead()
@@ -318,119 +464,84 @@ class HomeController extends Controller
     public function markAsRead($id)
     {
         $notification = Auth::user()->notifications()->find($id);
-
         if ($notification) {
-            // 1. Đánh dấu đã đọc
             $notification->markAsRead();
-
-            // 2. Lấy link từ data của thông báo
-            // Link này phải có dạng: /chi-tiet/ten-sach-slug#post-123
             $link = $notification->data['link'] ?? null;
-
-            if ($link) {
-                return redirect($link);
-            }
+            if ($link) return redirect($link);
         }
-
         return redirect()->back();
     }
 
     // API lấy thông báo realtime
     public function getNotifications()
     {
-        $user = Auth::user();
+        $user          = Auth::user();
         $notifications = $user->notifications()->take(20)->get();
-        $unreadCount = $user->unreadNotifications->count();
+        $unreadCount   = $user->unreadNotifications->count();
 
         $formattedNotifications = $notifications->map(function ($notification) {
-            $dbType = $notification->type;
+            $dbType   = $notification->type;
             $dataType = $notification->data['type'] ?? '';
 
-            // Danh sách các class Notification là System
             $systemClasses = [
                 'App\Notifications\NewReportNotification',
                 'App\Notifications\NewBookRequestNotification',
                 'App\Notifications\BookApprovedNotification',
+                'App\Notifications\RecipeApprovedNotification',
                 'App\Notifications\AdminNewPostNotification',
                 'App\Notifications\ReportResolvedNotification'
             ];
+            $systemTypes = ['new_report', 'book_request', 'book_approved', 'recipe_approved', 'admin_new_post', 'report_resolved'];
 
-            $systemTypes = ['new_report', 'book_request', 'book_approved', 'admin_new_post', 'report_resolved'];
-
-            // Check nếu là system notification
             $isSystemNotification = in_array($dbType, $systemClasses) || in_array($dataType, $systemTypes) || isset($notification->data['icon']);
 
-            // Xác định Type chuẩn
-            $type = $dataType ?: match ($dbType) {
-                'App\Notifications\NewReportNotification' => 'new_report',
+            $type  = $dataType ?: match ($dbType) {
+                'App\Notifications\NewReportNotification'    => 'new_report',
                 'App\Notifications\NewBookRequestNotification' => 'book_request',
                 'App\Notifications\BookApprovedNotification' => 'book_approved',
+                'App\Notifications\RecipeApprovedNotification' => 'book_approved',
+                'App\Notifications\RecipeLikedNotification'  => 'recipe_liked',
                 'App\Notifications\AdminNewPostNotification' => 'admin_new_post',
                 'App\Notifications\ReportResolvedNotification' => 'report_resolved',
                 default => ''
             };
 
-            // Mặc định cho User notification
             $title = $notification->data['title'] ?? '';
-            $icon = $notification->data['icon'] ?? null;
+            $icon  = $notification->data['icon']  ?? null;
             $color = $notification->data['color'] ?? 'text-green-600';
 
-            // Nếu là System thì set cứng Icon/Title theo Type
             if ($isSystemNotification) {
                 switch ($type) {
-                    case 'new_report':
-                        $icon = 'fas fa-flag';
-                        $title = 'Báo cáo mới';
-                        $color = 'text-yellow-600';
-                        break;
-                    case 'book_request':
-                        $icon = 'fas fa-book';
-                        $title = 'Gợi ý sách mới';
-                        $color = 'text-yellow-600';
-                        break;
-                    case 'book_approved':
-                        $icon = 'fas fa-check-circle';
-                        $title = 'Sách được duyệt';
-                        $color = 'text-green-600';
-                        break;
-                    case 'admin_new_post':
-                        $icon = 'fas fa-file-contract';
-                        $title = 'Bài đăng mới ';
-                        $color = 'text-red-600';
-                        break;
+                    case 'new_report':    $icon = 'fas fa-flag';          $title = 'Báo cáo mới';           $color = 'text-yellow-600'; break;
+                    case 'book_request':  $icon = 'fas fa-utensils';      $title = 'Công thức mới';         $color = 'text-yellow-600'; break;
+                    case 'book_approved': $icon = 'fas fa-check-circle';  $title = 'Công thức được duyệt';  $color = 'text-green-600';  break;
+                    case 'admin_new_post':$icon = 'fas fa-file-contract'; $title = 'Bài đăng mới';          $color = 'text-red-600';    break;
                     case 'report_resolved':
                         $status = $notification->data['status'] ?? 'resolved';
-                        if ($status === 'approved') {
-                            $icon = 'fas fa-check-circle';
-                            $title = 'Báo cáo được chấp thuận';
-                            $color = 'text-green-600';
-                        } else {
-                            $icon = 'fas fa-times-circle';
-                            $title = 'Báo cáo bị từ chối';
-                            $color = 'text-red-600';
-                        }
+                        if ($status === 'approved') { $icon = 'fas fa-check-circle'; $title = 'Báo cáo được chấp thuận'; $color = 'text-green-600'; }
+                        else                        { $icon = 'fas fa-times-circle'; $title = 'Báo cáo bị từ chối';      $color = 'text-red-600';   }
                         break;
                 }
             }
 
             return [
-                'id' => $notification->id,
-                'is_system' => $isSystemNotification,
-                'title' => $title,
-                'icon' => $icon,
-                'color' => $color,
+                'id'          => $notification->id,
+                'is_system'   => $isSystemNotification,
+                'title'       => $title,
+                'icon'        => $icon,
+                'color'       => $color,
                 'user_avatar' => $notification->data['user_avatar'] ?? 'https://ui-avatars.com/api/?name=User',
-                'user_name' => $notification->data['user_name'] ?? '', // Bỏ default "Ai đó" để handle ở fontend nếu cần, hoặc để rỗng
-                'message' => $notification->data['message'] ?? 'đã tương tác với bạn',
-                'post_title' => \Str::limit($notification->data['post_title'] ?? ($notification->data['book_title'] ?? ''), 50),
-                'time' => $notification->created_at->diffForHumans(),
-                'read_at' => $notification->read_at,
-                'link' => route('notification.read', $notification->id)
+                'user_name'   => $notification->data['user_name']   ?? '',
+                'message'     => $notification->data['message']     ?? 'đã tương tác với bạn',
+                'post_title'  => \Str::limit($notification->data['post_title'] ?? ($notification->data['book_title'] ?? ''), 50),
+                'time'        => $notification->created_at->diffForHumans(),
+                'read_at'     => $notification->read_at,
+                'link'        => route('notification.read', $notification->id)
             ];
         });
 
         return response()->json([
-            'unread_count' => $unreadCount,
+            'unread_count'  => $unreadCount,
             'notifications' => $formattedNotifications
         ]);
     }

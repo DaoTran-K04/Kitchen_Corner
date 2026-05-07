@@ -2,7 +2,7 @@
     <div class="grid grid-cols-1 gap-4 sm:gap-6">
         @foreach($latestReviews as $comment)
             @php
-                $book = $comment->post->book ?? null;
+                $recipe = $comment->recipe ?? null;
             @endphp
             {{-- ITEM BÌNH LUẬN (COMMENT) --}}
             <div class="bg-white rounded-2xl p-3 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
@@ -26,14 +26,13 @@
                                 @include('partials.user-badges', ['user' => $comment->user, 'size' => 'xs'])
                             </div>
                             <div class="text-xs text-gray-500 flex items-center gap-1">
-                                <span>Đánh giá về:</span>
-                                @if($book)
-                                    <a href="{{ route('detail', $book->slug ?? '#') }}"
-                                        class="font-bold text-brand-green hover:underline">
-                                        {{ $book->title ?? 'Sách ẩn' }}
-                                    </a>
+                                <span>Bình luận tại:</span>
+                                @if($recipe)
+                                    <span class="font-bold text-brand-green">
+                                        {{ $recipe->title ?? 'Món ăn ẩn' }}
+                                    </span>
                                 @else
-                                    <span class="text-gray-400">Sách không xác định</span>
+                                    <span class="text-gray-400">Món ăn không xác định</span>
                                 @endif
                                 <span class="text-gray-300 mx-1">•</span>
                                 <span>{{ $comment->created_at->diffForHumans() }}</span>
@@ -52,9 +51,24 @@
 
                 {{-- 2. NỘI DUNG BÌNH LUẬN --}}
                 <div class="mb-4 pl-1">
-                    <div class="bg-gray-50 rounded-xl p-3 text-gray-700 text-sm leading-relaxed relative">
+                    <div id="comment-content-{{ $comment->id }}" class="bg-gray-50 rounded-xl p-3 text-gray-700 text-sm leading-relaxed relative">
                         {{ $comment->content }}
                     </div>
+                    @auth
+                        @if($comment->user_id === Auth::id())
+                            <div id="edit-form-{{ $comment->id }}" class="hidden mt-2">
+                                <textarea id="edit-input-{{ $comment->id }}" rows="2"
+                                    class="w-full text-sm p-3 bg-white border border-brand-green rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/20 resize-none shadow-sm"
+                                    oninput="autoResize(this)">{{ $comment->content }}</textarea>
+                                <div class="flex justify-end gap-3 mt-2">
+                                    <button onclick="cancelEdit({{ $comment->id }})" 
+                                        class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-gray-700 transition">Hủy</button>
+                                    <button onclick="saveComment({{ $comment->id }}, event)" 
+                                        class="px-4 py-1 text-xs font-bold bg-brand-green text-white rounded-lg hover:bg-brand-green-dark transition shadow-sm">Lưu thay đổi</button>
+                                </div>
+                            </div>
+                        @endif
+                    @endauth
                 </div>
 
                 {{-- 3. ACTIONS FOOTER --}}
@@ -76,8 +90,21 @@
                                 class="fas fa-chevron-down text-[10px] ml-1 transition-transform duration-300"></i>
                         </button>
 
-                        {{-- Nút Báo cáo Comment --}}
+                        {{-- Nút Sửa Comment (Chỉ chủ sở hữu) --}}
                         @auth
+                            @if($comment->user_id === Auth::id())
+                                <button onclick="editComment({{ $comment->id }})"
+                                    class="flex items-center gap-1.5 md:gap-1 text-xs font-bold text-gray-500 hover:text-brand-green transition">
+                                    <i class="far fa-edit"></i>
+                                    <span class="hidden md:inline">Sửa</span>
+                                </button>
+                                <button onclick="confirmDelete({{ $comment->id }}, event)"
+                                    class="flex items-center gap-1.5 md:gap-1 text-xs font-bold text-gray-500 hover:text-red-500 transition">
+                                    <i class="far fa-trash-alt"></i>
+                                    <span class="hidden md:inline">Xóa</span>
+                                </button>
+                            @endif
+
                             @if($comment->user_id !== Auth::id())
                                 <button onclick="openReportModal({{ $comment->id }}, 'comment')"
                                     class="flex items-center gap-1 text-xs font-bold text-gray-400 hover:text-red-500 transition"
@@ -88,11 +115,10 @@
                         @endauth
                     </div>
 
-                    {{-- Link xem chi tiết sách --}}
-                    @if($book)
-                        <a href="{{ route('detail', $book->slug ?? '#') }}"
-                            class="text-xs text-brand-green font-bold hover:underline">
-                            Xem sách →
+                    {{-- Link xem chi tiết công thức --}}
+                    @if($recipe)
+                        <a href="{{ route('recipes.show', $recipe->slug) }}" class="text-xs text-brand-green font-bold hover:underline transition">
+                            Công thức ngon →
                         </a>
                     @endif
                 </div>
@@ -124,7 +150,24 @@
                                             </div>
                                             <span class="text-[9px] text-gray-400">{{ $reply->created_at->diffForHumans() }}</span>
                                         </div>
-                                        <p class="text-[11px] text-gray-600">{{ $reply->content }}</p>
+                                        <div id="comment-content-{{ $reply->id }}">
+                                            <p class="text-[11px] text-gray-600">{{ $reply->content }}</p>
+                                        </div>
+                                        @auth
+                                            @if($reply->user_id === Auth::id())
+                                                <div id="edit-form-{{ $reply->id }}" class="hidden mt-1">
+                                                    <textarea id="edit-input-{{ $reply->id }}" rows="1"
+                                                        class="w-full text-[11px] p-2 bg-white border border-brand-green rounded-lg focus:outline-none resize-none shadow-sm"
+                                                        oninput="autoResize(this)">{{ $reply->content }}</textarea>
+                                                    <div class="flex justify-end gap-2 mt-1">
+                                                        <button onclick="cancelEdit({{ $reply->id }})" 
+                                                            class="text-[10px] text-gray-500 font-bold">Hủy</button>
+                                                        <button onclick="saveComment({{ $reply->id }}, event)" 
+                                                            class="text-[10px] text-brand-green font-bold">Lưu</button>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endauth
                                     </div>
                                     {{-- Like cho reply --}}
                                     <div class="flex items-center gap-2 ml-2 mt-1">
@@ -134,8 +177,19 @@
                                                 class="{{ Auth::check() && $reply->likes->contains('user_id', Auth::id()) ? 'fas' : 'far' }} fa-heart"></i>
                                             <span id="like-count-comment-{{ $reply->id }}">{{ $reply->likes->count() }}</span>
                                         </button>
-                                        {{-- Nút Báo cáo Reply --}}
+                                        {{-- Nút Sửa Reply --}}
                                         @auth
+                                            @if($reply->user_id === Auth::id())
+                                                <button onclick="editComment({{ $reply->id }})"
+                                                    class="text-[9px] font-bold text-gray-400 hover:text-brand-green transition">
+                                                    Sửa
+                                                </button>
+                                                <button onclick="confirmDelete({{ $reply->id }}, event)"
+                                                    class="text-[9px] font-bold text-gray-400 hover:text-red-500 transition">
+                                                    Xóa
+                                                </button>
+                                            @endif
+
                                             @if($reply->user_id !== Auth::id())
                                                 <button onclick="openReportModal({{ $reply->id }}, 'comment')"
                                                     class="text-[9px] font-bold text-gray-400 hover:text-red-500 transition"

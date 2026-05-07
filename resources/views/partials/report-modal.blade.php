@@ -127,7 +127,7 @@ Functions available:
     function openReportModal(itemId, itemType) {
         @guest
             alert('Bạn cần đăng nhập để báo cáo!');
-            window.location.href = '/login';
+            window.location.href = '{{ route("login") }}';
             return;
         @endguest
 
@@ -168,7 +168,7 @@ Functions available:
         submitBtn.disabled = true;
 
         try {
-            const url = itemType === 'post' ? `/report/post/${itemId}` : `/report/comment/${itemId}`;
+            const url = itemType === 'post' ? `{{ url("/report/post") }}/${itemId}` : `{{ url("/report/comment") }}/${itemId}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

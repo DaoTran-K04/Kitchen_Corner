@@ -86,7 +86,8 @@
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
                                     <form action="{{ route('admin.quotes.destroy', $quote->id) }}" method="POST"
-                                        onsubmit="return confirm('Bạn có chắc muốn xóa châm ngôn này?');">
+                                        class="confirm-submit"
+                                        data-confirm="Bạn có chắc muốn xóa châm ngôn này?">
                                         @csrf @method('DELETE')
                                         <button type="submit"
                                             class="w-8 h-8 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white transition"

@@ -19,7 +19,7 @@
                                     class="text-red-500">*</span></label>
                             <input type="text" name="name" id="category-name" required
                                 class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white placeholder:italic"
-                                placeholder="VD: Trinh thám">
+                                placeholder="VD: Món Việt, Tráng Miệng...">
                             <p id="name-error" class="text-red-500 text-xs mt-1 hidden"></p>
                         </div>
                         <div>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        {{-- Danh sách --}}
+        {{-- Danh sách danh mục --}}
         <div class="lg:col-span-2">
             <div
                 class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
@@ -59,7 +59,7 @@
                                 <th class="px-5 py-3">Tên</th>
                                 <th class="px-5 py-3">Mô tả</th>
                                 <th class="px-5 py-3">Slug</th>
-                                <th class="px-5 py-3 text-center w-24">Số sách</th>
+                                <th class="px-5 py-3 text-center w-24">Số công thức</th>
                                 <th class="px-5 py-3 text-center w-20"></th>
                             </tr>
                         </thead>
@@ -87,7 +87,7 @@
                                     <td class="px-5 py-3 text-center">
                                         <span
                                             class="inline-flex items-center justify-center px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-full min-w-[40px]">
-                                            {{ $cat->books_count }}
+                                            {{ $cat->recipes_count }}
                                         </span>
                                     </td>
                                     <td class="px-5 py-3 text-center">
@@ -176,7 +176,21 @@
 
         // AJAX Delete Category
         async function deleteCategory(id, name) {
-            if (!confirm(`Bạn có chắc muốn xóa danh mục "${name}"?`)) return;
+            const result = await Swal.fire({
+                title: 'Xác nhận xóa',
+                text: `Bạn có chắc muốn xóa danh mục "${name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Xóa ngay',
+                cancelButtonText: 'Hủy',
+                reverseButtons: true,
+                background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+                color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b'
+            });
+
+            if (!result.isConfirmed) return;
 
             const row = document.querySelector(`tr[data-id="${id}"]`);
             row.style.opacity = '0.5';

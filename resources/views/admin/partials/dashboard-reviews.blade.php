@@ -1,11 +1,11 @@
 <div
     class="p-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-700">
     <h4 class="font-bold text-gray-800 dark:text-slate-200">
-        <i class="fas fa-file-alt text-blue-500 mr-2"></i>Bài Viết Tháng {{ $selectedMonth }}/{{ $selectedYear }}
+        <i class="fas fa-utensils text-[#9b2226] mr-2"></i>Công Thức Tháng {{ $selectedMonth }}/{{ $selectedYear }}
     </h4>
     <span
-        class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full font-bold">{{ $monthlyReviewsList->total() }}
-        bài</span>
+        class="text-xs bg-red-100 dark:bg-red-900/50 text-[#9b2226] dark:text-red-300 px-2 py-1 rounded-full font-bold">{{ $monthlyReviewsList->total() }}
+        công thức</span>
 </div>
 @if($monthlyReviewsList->count() > 0)
     <table class="w-full text-left text-sm">
@@ -14,8 +14,8 @@
                 <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                     <td class="px-4 py-3">
                         <p class="font-medium text-gray-800 dark:text-slate-200 line-clamp-1">
-                            {{ $review->book->title ?? 'Sách đã xóa' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-slate-400">Bởi: {{ $review->user->name }} •
+                            {{ $review->title }}</p>
+                        <p class="text-xs text-gray-500 dark:text-slate-400">Bởi: {{ $review->user->name ?? 'N/A' }} •
                             {{ $review->created_at->format('d/m') }}
                         </p>
                     </td>
@@ -37,6 +37,6 @@
 @else
     <div class="flex-1 flex flex-col items-center justify-center p-8 text-gray-400 dark:text-slate-500">
         <i class="fas fa-inbox text-4xl mb-2 opacity-50"></i>
-        <p>Không có bài viết nào trong tháng này.</p>
+        <p>Không có công thức nào trong tháng này.</p>
     </div>
 @endif

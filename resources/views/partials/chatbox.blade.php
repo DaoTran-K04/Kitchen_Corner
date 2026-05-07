@@ -3,7 +3,8 @@
 
     {{-- Chat Window - Responsive: compact on mobile, larger on desktop --}}
     <div id="chatbox-window"
-        class="hidden absolute bottom-14 right-0 w-[90vw] sm:w-[420px] max-w-[420px] h-[70vh] sm:h-auto sm:max-h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-300 origin-bottom-right scale-95 opacity-0 flex flex-col">
+        class="hidden absolute bottom-16 right-0 w-[92vw] sm:w-[460px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-300 origin-bottom-right scale-95 opacity-0 flex flex-col"
+        style="max-height: calc(100vh - 120px); height: clamp(400px, 70vh, 680px);">
 
         {{-- Header --}}
         <div
@@ -13,7 +14,7 @@
                     <i class="fas fa-robot text-lg"></i>
                 </div>
                 <div>
-                    <h4 class="font-bold text-sm">Trợ lý Góc Sách</h4>
+                    <h4 class="font-bold text-sm">Trợ lý Góc Bếp</h4>
                     <p class="text-[10px] text-white/80 flex items-center gap-1">
                         <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Đang hoạt động
                     </p>
@@ -41,8 +42,7 @@
                     <i class="fas fa-robot text-white text-xs"></i>
                 </div>
                 <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[85%] sm:max-w-[80%]">
-                    <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Sách. Tôi có thể giúp bạn tìm
-                        sách hay, gợi ý đọc theo sở thích. Bạn cần gì nào?</p>
+                    <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Bếp. Tôi có thể giúp bạn tìm món ngon, gợi ý công thức theo nguyên liệu hoặc tư vấn dinh dưỡng. Bạn cần gì nào?</p>
                 </div>
             </div>
 
@@ -50,23 +50,23 @@
             <div id="quick-replies" class="flex flex-wrap gap-2 mt-2">
                 <button
                     class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200"
-                    data-message="Gợi ý sách hay">
-                    Gợi ý sách hay
+                    data-message="Gợi ý món ngon">
+                    Gợi ý món ngon
                 </button>
                 <button
                     class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200"
-                    data-message="Có bao nhiêu sách">
+                    data-message="Thống kê Góc Bếp">
                     Thống kê
                 </button>
                 <button
                     class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200"
-                    data-message="Làm sao để viết review">
-                    Cách viết review
+                    data-message="Cách đăng công thức">
+                    Cách đăng công thức
                 </button>
                 <button
                     class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200"
-                    data-message="Tủ sách cá nhân là gì">
-                    Về tủ sách
+                    data-message="Tủ Lạnh Web là gì">
+                    Tủ Lạnh Web
                 </button>
             </div>
         </div>
@@ -99,29 +99,6 @@
             <p class="text-[10px] text-gray-400 text-center mt-2">Powered by Gemini AI</p>
         </div>
 
-        {{-- Custom Confirm Modal --}}
-        <div id="chatbox-confirm-modal"
-            class="hidden absolute inset-0 bg-black/50 flex items-center justify-center z-50 rounded-2xl">
-            <div class="bg-white rounded-xl p-5 mx-4 max-w-[280px] shadow-xl transform transition-all">
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-trash-alt text-red-500 text-lg"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 mb-2">Xóa lịch sử?</h4>
-                    <p class="text-sm text-gray-500 mb-4">Bạn có chắc muốn xóa toàn bộ lịch sử trò chuyện?</p>
-                    <div class="flex gap-3">
-                        <button onclick="hideConfirmModal()"
-                            class="flex-1 px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition text-sm font-medium">
-                            Hủy
-                        </button>
-                        <button onclick="confirmClearHistory()"
-                            class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm font-medium">
-                            Xóa
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     {{-- Floating Buttons Container --}}
@@ -147,7 +124,7 @@
             <a href="https://www.facebook.com/messages/t/1765763684084822" target="_blank" rel="noopener noreferrer"
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-[#00b2ff] to-[#006aff] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group"
                 style="animation-delay: 0s; --glow-color: rgba(0, 132, 255, 0.5);"
-                title="Di chuyển tới Cộng đồng Góc Sách trên Facebook">
+                title="Di chuyển tới Cộng đồng Góc Bếp trên Facebook">
                 <i class="fab fa-facebook-messenger text-lg sm:text-xl relative z-10"></i>
             </a>
 
@@ -155,8 +132,8 @@
             <a href="https://zalo.me/g/fhbbxj936" target="_blank" rel="noopener noreferrer"
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group overflow-hidden"
                 style="animation-delay: 0.3s; --glow-color: rgba(0, 104, 255, 0.5);"
-                title="Di chuyển tới Cộng đồng Góc Sách trên Zalo">
-                <img src="{{ asset('public/zalo.png') }}" alt="Zalo"
+                title="Di chuyển tới Cộng đồng Góc Bếp trên Zalo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/120px-Icon_of_Zalo.svg.png" alt="Zalo"
                     class="w-full h-full object-cover rounded-full relative z-10">
             </a>
 
@@ -236,7 +213,7 @@
 
 <script>
     let chatHistory = [];
-    let isOpen = false;
+    window.isChatboxOpen = false;
     let historyLoaded = false;
     const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
 
@@ -269,19 +246,10 @@
         }
     }
 
-    // Hiển thị modal xác nhận xóa
-    function clearChatHistory() {
-        document.getElementById('chatbox-confirm-modal').classList.remove('hidden');
-    }
-
-    // Ẩn modal
-    function hideConfirmModal() {
-        document.getElementById('chatbox-confirm-modal').classList.add('hidden');
-    }
-
     // Xác nhận xóa lịch sử
-    async function confirmClearHistory() {
-        hideConfirmModal();
+    async function clearChatHistory() {
+        const result = await SwalConfirm('Xóa lịch sử?', 'Bạn có chắc muốn xóa toàn bộ lịch sử trò chuyện?', 'warning', 'Xóa ngay');
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch('{{ route("chatbot.clear") }}', {
@@ -304,14 +272,14 @@
                             <i class="fas fa-robot text-white text-xs"></i>
                         </div>
                         <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[85%] sm:max-w-[80%]">
-                            <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Sách. Tôi có thể giúp bạn tìm sách hay, gợi ý đọc theo sở thích. Bạn cần gì nào?</p>
+                            <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Bếp. Tôi có thể giúp bạn tìm món ngon, gợi ý công thức theo nguyên liệu hoặc tư vấn dinh dưỡng. Bạn cần gì nào?</p>
                         </div>
                     </div>
                     <div id="quick-replies" class="flex flex-wrap gap-2 mt-2">
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Gợi ý sách hay">Gợi ý sách hay</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Có bao nhiêu sách">Thống kê</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Làm sao để viết review">Cách viết review</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Tủ sách cá nhân là gì">Về tủ sách</button>
+                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Gợi ý món ngon">Gợi ý món ngon</button>
+                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Thống kê Góc Bếp">Thống kê</button>
+                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Cách đăng công thức">Cách đăng công thức</button>
+                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Tủ Lạnh Web là gì">Tủ Lạnh Web</button>
                     </div>
                 `;
                 // Re-attach quick reply listeners
@@ -323,18 +291,23 @@
     }
 
     function toggleChatbox() {
-        const window = document.getElementById('chatbox-window');
+        const windowChat = document.getElementById('chatbox-window');
         const toggle = document.getElementById('chatbox-toggle');
         const iconOpen = document.getElementById('chatbox-icon-open');
         const iconClose = document.getElementById('chatbox-icon-close');
         const floatingBtns = document.getElementById('floating-buttons-container');
-        isOpen = !isOpen;
+        window.isChatboxOpen = !window.isChatboxOpen;
 
-        if (isOpen) {
-            window.classList.remove('hidden');
+        if (window.isChatboxOpen) {
+            // Close header dropdowns if they exist
+            if (typeof window.closeAllHeaderDropdowns === 'function') {
+                window.closeAllHeaderDropdowns();
+            }
+
+            windowChat.classList.remove('hidden');
             setTimeout(() => {
-                window.classList.remove('scale-95', 'opacity-0');
-                window.classList.add('scale-100', 'opacity-100');
+                windowChat.classList.remove('scale-95', 'opacity-0');
+                windowChat.classList.add('scale-100', 'opacity-100');
             }, 10);
             document.getElementById('chatbox-input').focus();
             // Switch to X icon
@@ -349,10 +322,10 @@
             // Load lịch sử chat khi mở
             loadChatHistory();
         } else {
-            window.classList.remove('scale-100', 'opacity-100');
-            window.classList.add('scale-95', 'opacity-0');
+            windowChat.classList.remove('scale-100', 'opacity-100');
+            windowChat.classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
-                window.classList.add('hidden');
+                windowChat.classList.add('hidden');
             }, 300);
             // Switch back to comments icon
             iconOpen.classList.remove('hidden');
@@ -427,9 +400,13 @@
 
     function formatMessage(text) {
         // Convert markdown-like formatting
-        return escapeHtml(text)
+        let formatted = escapeHtml(text)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
+            
+        // Auto-link URLs
+        const urlRegex = /(https?:\/\/[^\s<]+)/g;
+        return formatted.replace(urlRegex, '<a href="$1" class="text-blue-500 hover:text-blue-700 underline font-medium">$1</a>');
     }
 
     function showTyping() {
@@ -510,7 +487,7 @@
 
     // Close on ESC
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && isOpen) {
+        if (e.key === 'Escape' && window.isChatboxOpen) {
             toggleChatbox();
         }
     });

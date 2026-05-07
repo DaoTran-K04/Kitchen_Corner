@@ -12,36 +12,36 @@ class CategoryFactory extends Factory
 {
     public function definition(): array
     {
-        // Danh sách thể loại của bạn
+        // Danh mục món ăn cho Góc Bếp
         $categories = [
-            'Văn Học Nước Ngoài',
-            'Văn Học Việt Nam',
-            'Tâm Lý - Kỹ Năng Sống',
-            'Sức Khỏe',
-            'Thiếu Nhi',
-            'Tiểu Thuyết',
-            'Khoa Học Viễn Tưởng',
-            'Ngoại Ngữ',
-            'Nấu Ăn',
-            'Kinh Dị',
-            'Trinh Thám',
-            'Công Nghệ Thông Tin',
-            'Kinh Tế',
-            'Kinh Doanh',
-            'Lịch Sử',
-            'Chính Trị - Xã Hội',
-            'Nghệ Thuật',
-            'Du Lịch',
-            'Người Thành Công Đọc Gì',
-            'Gia Đình - Mối Quan Hệ',
+            'Món chính',
+            'Món khai vị',
+            'Món tráng miệng',
+            'Món ăn sáng',
+            'Món ăn chay',
+            'Món ăn kiêng - Giảm cân',
+            'Salad & Gỏi',
+            'Súp & Cháo',
+            'Lẩu & Nướng',
+            'Bánh ngọt - Dessert',
+            'Đồ uống & Sinh tố',
+            'Hải sản',
+            'Thịt & Gia cầm',
+            'Mì - Bún - Phở',
+            'Cơm - Xôi',
+            'Đồ ăn vặt',
+            'Ẩm thực miền Bắc',
+            'Ẩm thực miền Trung',
+            'Ẩm thực miền Nam',
+            'Ẩm thực quốc tế',
         ];
 
         $name = fake()->unique()->randomElement($categories) ?? fake()->word();
 
         return [
-            'name' => $name,
-            'slug' => Str::slug($name),
-            'description' => 'Tuyển tập những cuốn sách hay nhất về chủ đề ' . $name,
+            'name'        => $name,
+            'slug'        => Str::slug($name),
+            'description' => 'Tổng hợp những công thức nấu ăn ngon nhất về ' . $name,
         ];
     }
 }

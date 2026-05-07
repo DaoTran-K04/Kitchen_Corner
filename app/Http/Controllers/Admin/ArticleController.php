@@ -10,11 +10,33 @@ use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
-    // Hiển thị danh sách (nếu cần sau này)
+    // Hiển thị danh sách (Admin)
     public function index()
     {
         $articles = Article::latest()->paginate(10);
         return view('admin.articles.index', compact('articles'));
+    }
+
+    // Hiển thị danh sách Tạp Chí (Public front-end)
+    public function publicIndex(Request $request)
+    {
+        $tag = $request->get('tag');
+
+        $query = Article::where('is_active', true)->latest();
+        if ($tag) {
+            $query->where('tag', 'like', "%{$tag}%");
+        }
+
+        $articles = $query->paginate(12);
+        $tags = Article::where('is_active', true)
+            ->whereNotNull('tag')
+            ->pluck('tag')
+            ->flatMap(fn($t) => array_map('trim', preg_split('/[,;]+/', $t)))
+            ->filter()
+            ->unique()
+            ->values();
+
+        return view('articles.index', compact('articles', 'tags', 'tag'));
     }
     public function show($slug)
     {

@@ -19,7 +19,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-sm">Địa chỉ</h4>
-                            <p class="text-xs text-white/80 mt-1">123 Đường Sách, Quận 1, TP. Hồ Chí Minh</p>
+                            <p class="text-xs text-white/80 mt-1">123 Phố Ẩm Thực, Quận Hải Châu, TP. Đà Nẵng</p>
                         </div>
                     </div>
                     
@@ -39,7 +39,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-sm">Email</h4>
-                            <p class="text-xs text-white/80 mt-1">contact.gocsach@gmail.com</p>
+                            <p class="text-xs text-white/80 mt-1">contact.gocbep@gmail.com</p>
                         </div>
                     </div>
                 </div>

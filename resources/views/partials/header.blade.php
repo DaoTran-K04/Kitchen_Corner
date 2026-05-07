@@ -1,722 +1,531 @@
-{{-- Top Bar --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="bg-brand-green text-white/80 text-xs py-2 hidden md:block border-b border-white/10">
-    <div class="container mx-auto px-4 flex justify-between items-center">
-        <div class="flex gap-6">
-            <a href="tel:19001234" class="hover:text-brand-accent cursor-pointer transition flex items-center">
-                <i class="fas fa-phone-alt mr-2"></i> Hotline: 1900 1234
-            </a>
-            <a href="mailto:contact@gocsach.com"
-                class="hover:text-brand-accent cursor-pointer transition flex items-center">
-                <i class="fas fa-envelope mr-2"></i> contact@gocsach.com
-            </a>
-        </div>
-        <div class="flex gap-4 items-center">
-            <button onclick="openModal('helpModal')" class="hover:text-white transition focus:outline-none">Trợ
-                giúp</button>
-            <span class="text-white/20">|</span>
-            <button onclick="openModal('rulesModal')" class="hover:text-white transition focus:outline-none">Quy tắc
-                cộng đồng</button>
 
-            <div class="flex gap-3 ml-4">
-                <a href="https://www.facebook.com/profile.php?id=61585413759981" target="_blank" rel="noopener noreferrer" class="hover:text-brand-accent transition"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://youtu.be/mKptA96QMZ0" target="_blank" rel="noopener noreferrer" class="hover:text-brand-accent transition"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
+{{-- Majestic Inverted Footer Header --}}
+<header id="main-header" class="fixed top-0 left-0 right-0 z-[100] w-full transition-all duration-500 group/hdr">
+    {{-- Shadow & Background container (Separate so overflow-hidden doesn't clip absolute dropdowns) --}}
+    <div id="header-bg-container" class="absolute inset-0 z-0 bg-brand-green rounded-b-[40px] shadow-[0_15px_50px_rgba(155,34,38,0.2)] lg:rounded-b-[80px] overflow-hidden transition-all duration-500 origin-top opacity-100 scale-y-100">
+        {{-- Beautiful Background Image with soft dark red overlay --}}
+        <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Header Background">
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-green/95 via-brand-green/90 to-brand-green/95"></div>
     </div>
-</div>
 
-{{-- Header --}}
-<header id="main-header"
-    class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm transition-all duration-300">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex flex-wrap justify-between items-center gap-4">
+    {{-- Main Container --}}
+    <div id="header-container" class="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-5 transition-all duration-300 gap-4 xl:gap-8 max-w-[1600px] mx-auto">
+        
+        {{-- 1. Logo (Left) --}}
+        <div class="flex items-center justify-start shrink-0">
+            <a href="{{ route('home') }}" class="flex items-center gap-3 sm:gap-3 group">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full flex items-center justify-center shadow-lg transform group-hover:rotate-12 group-hover:scale-105 transition-all duration-300">
+                    <span class="text-xl drop-shadow-md">🍳</span>
+                </div>
+                <div class="flex flex-col hidden sm:flex drop-shadow-md">
+                    <span class="text-xl md:text-2xl font-black font-serif text-white leading-none tracking-tight">GÓC BẾP</span>
+                    <span class="text-[8px] md:text-[9px] text-brand-accent uppercase tracking-[0.25em] font-extrabold mt-0.5">Cook & Share</span>
+                </div>
+            </a>
+        </div>
 
-            {{-- Logo --}}
-            <div class="flex items-center gap-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                    <div
-                        class="w-10 h-10 bg-brand-green text-white rounded-lg flex items-center justify-center shadow-md transform group-hover:rotate-6 transition-transform duration-300">
-                        <i class="fas fa-book-reader text-lg"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xl font-bold font-serif text-brand-green leading-none tracking-tight">GÓC
-                            SÁCH</span>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Review &
-                            Share</span>
-                    </div>
+        {{-- 2. Navigation (Center - Desktop) --}}
+        <nav class="hidden lg:flex flex-1 items-center justify-center gap-4 xl:gap-6 text-[13px] xl:text-[14px] font-bold text-white/90 whitespace-nowrap px-4 drop-shadow-sm">
+            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-brand-accent' : 'hover:text-white' }} transition-colors relative group py-2">
+                Trang Chủ
+                <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left {{ request()->routeIs('home') ? 'scale-x-100' : '' }}"></span>
+            </a>
+            <a href="{{ route('recipes.list') }}" class="{{ request()->routeIs('recipes.list', 'recipes.show', 'recipes.search') ? 'text-brand-accent' : 'hover:text-white' }} transition-colors relative group py-2">
+                Công Thức
+                <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left {{ request()->routeIs('recipes.list', 'recipes.show', 'recipes.search') ? 'scale-x-100' : '' }}"></span>
+            </a>
+            @auth
+                <a href="{{ route('recipes.smart-search') }}" class="{{ request()->routeIs('recipes.smart-search') ? 'text-brand-accent' : 'hover:text-white' }} transition-colors relative group py-2" title="Gợi ý món từ nguyên liệu bạn có">
+                    Tủ Lạnh Web
+                    <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left {{ request()->routeIs('recipes.smart-search') ? 'scale-x-100' : '' }}"></span>
                 </a>
-            </div>
+            @else
+                <a href="{{ route('login') }}" class="hover:text-white transition-colors relative group py-2 opacity-70" title="Đăng nhập để dùng Tủ Lạnh Web AI">
+                    Tủ Lạnh Web <i class="fas fa-lock text-[10px] text-brand-accent ml-1 animate-pulse"></i>
+                    <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                </a>
+            @endauth
+            <a href="{{ route('authors.index') }}" class="{{ request()->routeIs('authors.index') ? 'text-brand-accent' : 'hover:text-white' }} transition-colors relative group py-2">
+                Tác Giả
+                <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left {{ request()->routeIs('authors.index') ? 'scale-x-100' : '' }}"></span>
+            </a>
+            <a href="{{ route('articles.index') }}" class="{{ request()->routeIs('articles.index', 'articles.show') ? 'text-brand-accent' : 'hover:text-white' }} transition-colors relative group py-2">
+                Tạp Chí
+                <span class="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left {{ request()->routeIs('articles.index', 'articles.show') ? 'scale-x-100' : '' }}"></span>
+            </a>
+            <a href="{{ route('challenges.index') }}" class="relative inline-flex items-center gap-1.5 text-brand-green hover:text-brand-green transition-colors group px-4 py-1.5 bg-brand-accent rounded-full shadow-md hover:shadow-lg hover:bg-amber-100 hover:scale-105">
+                <i class="fas fa-fire text-[#ff5500] group-hover:animate-bounce"></i> Thử Thách
+            </a>
+        </nav>
 
-            {{-- Search Bar - Ẩn trên trang Tìm kiếm vì đã có form riêng --}}
-            @if(!request()->routeIs('books.search'))
-                <div class="hidden md:flex flex-1 max-w-2xl px-8 relative z-40">
-                    <form action="{{ route('books.list') }}" method="GET" class="relative w-full flex items-center"
-                        id="header-search-form">
-                        
-                        {{-- Hidden Input cho Category --}}
-                        <input type="hidden" name="categories[]" id="header-category-input" value="">
+        {{-- 3. Right Side Actions --}}
+        <div class="flex items-center justify-end gap-2 xl:gap-4 shrink-0">
+            {{-- Search Toggle Button --}}
+            <button id="search-toggle-btn" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-brand-green flex items-center justify-center transition-all shadow-lg hover:shadow-xl [&.active]:bg-white [&.active]:text-brand-green [&.active]:shadow-xl [&.active]:border-white transform hover:-translate-y-0.5">
+                <i class="fas fa-search text-base sm:text-lg"></i>
+            </button>
 
-                        {{-- Dropdown Danh Mục --}}
-                        <div class="absolute left-0 pl-1 z-50 group pb-4 -mb-4">
-                            <div
-                                class="flex items-center cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition relative z-20">
-                                <span id="header-category-label" class="text-gray-600 text-xs font-bold mr-1 max-w-[80px] truncate">Danh mục</span>
-                                <i class="fas fa-chevron-down text-[10px] text-gray-500 transition-transform group-hover:rotate-180"></i>
-                            </div>
-                            <div
-                                class="dropdown-menu dropdown-bridge absolute top-full left-0 mt-0 bg-white rounded-xl shadow-2xl border border-gray-100 p-4 min-w-[600px] max-w-[800px] z-10">
-                                <div class="grid grid-rows-[repeat(10,minmax(0,1fr))] grid-flow-col gap-x-8 gap-y-2">
-                                    <div onclick="selectHeaderCategory('', 'Danh mục')"
-                                        class="text-sm text-gray-600 hover:text-brand-green hover:font-bold truncate flex items-center cursor-pointer py-0.5">
-                                        <i class="fas fa-caret-right text-gray-300 mr-2 text-xs"></i> Tất cả
-                                    </div>
-                                    @if(isset($menuCategories))
-                                        @foreach($menuCategories as $cat)
-                                            <div onclick="selectHeaderCategory('{{ $cat->name }}', '{{ $cat->name }}')"
-                                                class="text-sm text-gray-600 hover:text-brand-green hover:font-bold truncate block py-0.5 cursor-pointer">{{ $cat->name }}</div>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
+            <div class="w-[1px] h-6 bg-white/20 hidden sm:block mx-1"></div>
+
+            @auth
+                {{-- Notification Bell --}}
+                <div class="relative" id="notification-dropdown-container">
+                    <button type="button" id="notification-dropdown-trigger"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-brand-green transition-all relative group shadow-lg">
+                        <i class="far fa-bell text-lg sm:text-xl group-hover:animate-swing"></i>
+                        @if(Auth::user()->unreadNotifications->count() > 0)
+                            <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-brand-accent border-2 border-brand-green rounded-full animate-pulse"></span>
+                        @endif
+                    </button>
+                    {{-- Dropdown Notification --}}
+                    <div id="notification-dropdown-menu"
+                        class="hidden absolute right-0 top-full mt-5 w-[320px] sm:w-[380px] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden animate-fade-in z-[100] origin-top-right">
+                        <div class="px-5 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
+                            <span class="text-sm font-bold text-gray-800"><i class="fas fa-inbox mr-2 text-brand-green"></i>Thông báo</span>
+                            <button type="button" onclick="markAllNotificationsAsRead()" id="mark-all-read-btn"
+                                class="{{ Auth::user()->unreadNotifications->count() > 0 ? '' : 'hidden' }} text-[11px] font-bold text-brand-accent hover:underline cursor-pointer">
+                                Đánh dấu đã đọc
+                            </button>
                         </div>
+                        <div id="notification-list" class="max-h-[350px] overflow-y-auto custom-scrollbar">
+                            @forelse(Auth::user()->notifications as $notification)
+                                @php
+                                    $dbType = $notification->type;
+                                    $dataType = $notification->data['type'] ?? '';
+                                    $systemClasses = ['App\Notifications\NewReportNotification', 'App\Notifications\NewBookRequestNotification', 'App\Notifications\BookApprovedNotification', 'App\Notifications\AdminNewPostNotification'];
+                                    $systemTypes = ['new_report', 'book_request', 'book_approved', 'admin_new_post'];
+                                    $isSystemNotification = in_array($dbType, $systemClasses) || in_array($dataType, $systemTypes);
+                                    
+                                    $type = $dataType ?: match($dbType) {
+                                        'App\Notifications\NewReportNotification' => 'new_report',
+                                        'App\Notifications\NewBookRequestNotification' => 'book_request',
+                                        'App\Notifications\BookApprovedNotification' => 'book_approved',
+                                        'App\Notifications\AdminNewPostNotification' => 'admin_new_post',
+                                        default => ''
+                                    };
 
-                        {{-- Input tìm kiếm --}}
-                        <input type="text" id="header-search-input" name="keyword" value="{{ request('keyword') }}"
-                            autocomplete="off" placeholder="Nhập tên sách, tác giả..."
-                            class="w-full bg-gray-50 border border-gray-200 hover:border-brand-green/30 focus:border-brand-green/50 rounded-full py-2.5 pl-40 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green/10 transition-all text-gray-700 placeholder-gray-400 shadow-inner">
+                                    $icon = 'fas fa-bell'; $iconColor = 'text-amber-600'; $title = ''; $bgColor = 'bg-amber-100';
+                                    
+                                    switch($type) {
+                                        case 'new_report': $icon = 'fas fa-flag'; $iconColor = 'text-red-600'; $title = 'Báo cáo mới'; $bgColor = 'bg-red-100'; break;
+                                        case 'book_request': $icon = 'fas fa-book'; $iconColor = 'text-amber-600'; $title = 'Gợi ý công thức mới'; $bgColor = 'bg-amber-100'; break;
+                                        case 'book_approved': $icon = 'fas fa-check-circle'; $iconColor = 'text-green-600'; $title = 'Sách được duyệt'; $bgColor = 'bg-green-100'; break;
+                                        case 'admin_new_post': $icon = 'fas fa-file-contract'; $iconColor = 'text-brand-green'; $title = 'Bài đăng mới'; $bgColor = 'bg-brand-green/10'; break;
+                                    }
+                                @endphp
 
-                        <button type="submit"
-                            class="absolute right-2 top-1.5 w-8 h-8 bg-brand-green text-white rounded-full flex items-center justify-center hover:bg-brand-accent transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                            <i class="fas fa-search text-xs"></i>
-                        </button>
-                    </form>
-                    
-                    <script>
-                        function selectHeaderCategory(value, label) {
-                            document.getElementById('header-category-input').value = value;
-                            document.getElementById('header-category-label').innerText = label;
-                        }
-                    </script>
-
-                    {{-- Kết quả Ajax (Đặt NGOÀI form để tránh form submit) --}}
-                    <div id="header-search-results"
-                        class="absolute top-full left-0 w-full bg-white shadow-xl rounded-xl mt-2 hidden z-[60] overflow-hidden border border-gray-100 max-h-[400px] overflow-y-auto">
-                        {{-- JS sẽ render kết quả vào đây --}}
+                                <a href="{{ route('notification.read', $notification->id) }}"
+                                    class="flex gap-4 px-5 py-4 hover:bg-red-50/30 transition border-b border-gray-50 {{ $notification->read_at ? 'opacity-60' : 'bg-red-50/10' }}">
+                                    <div class="flex-shrink-0 mt-1">
+                                        @if($isSystemNotification)
+                                            <div class="w-10 h-10 rounded-full {{ $bgColor }} flex items-center justify-center shadow-sm">
+                                                <i class="{{ $icon }} {{ $iconColor }} text-sm"></i>
+                                            </div>
+                                        @else
+                                            <img src="{{ $notification->data['avatar'] ?? 'https://ui-avatars.com/api/?name=User' }}"
+                                                class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        @if($isSystemNotification)
+                                            <p class="text-[13px] font-bold text-gray-800">{{ $title }}</p>
+                                            <p class="text-xs text-gray-600 line-clamp-2 mt-1 leading-relaxed">{{ $notification->data['message'] ?? '' }}</p>
+                                        @else
+                                            <p class="text-xs text-gray-700 leading-relaxed">
+                                                @php $displayName = $notification->data['uploader_name'] ?? ($notification->data['user_name'] ?? ''); @endphp
+                                                @if($displayName && $displayName !== 'Ai đó') <span class="font-bold text-gray-900">{{ $displayName }}</span> @endif
+                                                {{ $notification->data['message'] ?? 'đã tương tác với bạn' }}
+                                                <span class="font-bold block text-brand-green italic mt-1">"{{ Str::limit($notification->data['post_title'] ?? ($notification->data['book_title'] ?? ''), 50) }}"</span>
+                                            </p>
+                                        @endif
+                                        <p class="text-[10px] font-bold text-gray-400 mt-2 flex items-center uppercase tracking-wider"><i class="far fa-clock mr-1"></i>{{ $notification->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    @if(!$notification->read_at)
+                                        <div class="w-2 h-2 bg-brand-accent rounded-full mt-2 shrink-0"></div>
+                                    @endif
+                                </a>
+                            @empty
+                                <div class="text-center py-10 text-gray-400">
+                                    <i class="far fa-bell-slash text-3xl mb-3 text-gray-200"></i>
+                                    <p class="text-xs font-medium">Bạn chưa có thông báo nào mới</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
-            @endif
 
-            {{-- User & Notification Actions --}}
-            <div class="flex items-center gap-3 md:gap-5">
-                @auth
-                    {{-- Notification Bell - Click to Open --}}
-                    <div class="relative" id="notification-dropdown-container">
-                        <button type="button" id="notification-dropdown-trigger"
-                            class="text-gray-500 transition relative p-2 focus:outline-none rounded-xl hover:bg-green-100 hover:text-brand-green hover:shadow-[0_0_15px_rgba(62,95,78,0.3)]">
-                            <i class="far fa-bell text-xl"></i>
-                            <span id="notification-badge"
-                                class="{{ Auth::user()->unreadNotifications->count() > 0 ? '' : 'hidden' }} absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white animate-bounce">
-                                <span id="notification-count">{{ Auth::user()->unreadNotifications->count() }}</span>
-                            </span>
-                        </button>
-                        <div id="notification-dropdown-menu"
-                            class="hidden fixed sm:absolute left-0 sm:left-auto right-0 top-16 sm:top-full sm:mt-2 w-full sm:w-80 bg-white rounded-none sm:rounded-xl shadow-xl border-t sm:border border-gray-100 overflow-hidden animate-fade-in z-[100] sm:origin-top-right">
-                            <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
-                                <span class="text-sm font-bold text-gray-700">Thông báo</span>
-                                <button type="button" onclick="markAllNotificationsAsRead()" id="mark-all-read-btn"
-                                    class="{{ Auth::user()->unreadNotifications->count() > 0 ? '' : 'hidden' }} text-[10px] text-blue-500 hover:underline cursor-pointer">Đánh
-                                    dấu đã đọc</button>
-                            </div>
-                            <div id="notification-list" class="max-h-80 overflow-y-auto">
-                                @forelse(Auth::user()->notifications as $notification)
-                                    @php
-                                        // Check both Class Name (DB type column) and Data Type (json data)
-                                        $dbType = $notification->type;
-                                        $dataType = $notification->data['type'] ?? '';
-                                        
-                                        $systemClasses = [
-                                            'App\Notifications\NewReportNotification',
-                                            'App\Notifications\NewBookRequestNotification', 
-                                            'App\Notifications\BookApprovedNotification',
-                                            'App\Notifications\AdminNewPostNotification'
-                                        ];
-                                        
-                                        $systemTypes = ['new_report', 'book_request', 'book_approved', 'admin_new_post'];
-                                        
-                                        $isSystemNotification = in_array($dbType, $systemClasses) || in_array($dataType, $systemTypes);
-                                        
-                                        // Map Icon & Color based on dataType (preferred) or infer from dbType
-                                        $type = $dataType ?: match($dbType) {
-                                            'App\Notifications\NewReportNotification' => 'new_report',
-                                            'App\Notifications\NewBookRequestNotification' => 'book_request',
-                                            'App\Notifications\BookApprovedNotification' => 'book_approved',
-                                            'App\Notifications\AdminNewPostNotification' => 'admin_new_post',
-                                            default => ''
-                                        };
-
-                                        $icon = 'fas fa-bell';
-                                        $iconColor = 'text-yellow-600';
-                                        $title = '';
-                                        
-                                        switch($type) {
-                                            case 'new_report':
-                                                $icon = 'fas fa-flag';
-                                                $title = 'Báo cáo mới';
-                                                break;
-                                            case 'book_request':
-                                                $icon = 'fas fa-book';
-                                                $title = 'Gợi ý sách mới';
-                                                break;
-                                            case 'book_approved':
-                                                $icon = 'fas fa-check-circle';
-                                                $iconColor = 'text-green-600';
-                                                $title = 'Sách được duyệt';
-                                                break;
-                                            case 'admin_new_post':
-                                                $icon = 'fas fa-file-contract';
-                                                $iconColor = 'text-red-600';
-                                                $title = 'Bài đăng mới ';
-                                                break;
-                                            case 'new_book_follower':
-                                                $icon = 'fas fa-book-open';
-                                                $title = 'Sách mới từ người dùng';
-                                                break;
-                                        }
-                                        
-                                        $bgColor = str_contains($iconColor, 'red') ? 'bg-red-100' : 'bg-green-100';
-                                    @endphp
-
-                                    <a href="{{ route('notification.read', $notification->id) }}"
-                                        class="flex gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 {{ $notification->read_at ? 'opacity-60 grayscale-[0.5]' : 'bg-blue-50/30' }}">
-                                        {{-- DEBUG removed --}}
-                                        <div class="flex-shrink-0 mt-1">
-                                            @if($isSystemNotification)
-                                                <div class="w-8 h-8 rounded-full {{ $bgColor }} flex items-center justify-center">
-                                                    <i class="{{ $icon }} {{ $iconColor }} text-sm"></i>
-                                                </div>
-                                            @else
-                                                <img src="{{ $notification->data['avatar'] ?? 'https://ui-avatars.com/api/?name=User' }}"
-                                                    class="w-8 h-8 rounded-full border border-gray-100 object-cover">
-                                            @endif
-                                        </div>
-
-                                        <div class="flex-1">
-                                            @if($isSystemNotification)
-                                                <p class="text-sm font-bold text-gray-800">{{ $title }}</p>
-                                                <p class="text-xs text-gray-600 line-clamp-2 mt-0.5">
-                                                    {{ $notification->data['message'] ?? '' }}</p>
-                                            @else
-                                                <p class="text-sm text-gray-700 line-clamp-2">
-                                                    @php
-                                                        $displayName = $notification->data['uploader_name'] ?? ($notification->data['user_name'] ?? '');
-                                                    @endphp
-                                                    
-                                                    @if($displayName && $displayName !== 'Ai đó')
-                                                        <span class="font-bold text-gray-900">{{ $displayName }}</span>
-                                                    @endif
-                                                    
-                                                    {{ $notification->data['message'] ?? 'đã tương tác với bạn' }}
-                                                    <span
-                                                        class="font-bold block text-xs text-gray-500 italic mt-0.5">"{{ Str::limit($notification->data['post_title'] ?? ($notification->data['book_title'] ?? ''), 50) }}"</span>
-                                                </p>
-                                            @endif
-                                            <p class="text-[10px] text-gray-400 mt-1 flex items-center"><i
-                                                    class="far fa-clock mr-1"></i>
-                                                {{ $notification->created_at->diffForHumans() }}</p>
-                                        </div>
-
-                                        @if(!$notification->read_at)
-                                            <div class="w-2 h-2 bg-brand-green rounded-full mt-2 shrink-0"></div>
-                                        @endif
-                                    </a>
-                                @empty
-                                    <div class="text-center py-8 text-gray-400" id="empty-notification">
-                                        <i class="far fa-bell-slash text-2xl mb-2 text-gray-300"></i>
-                                        <p class="text-xs">Không có thông báo mới</p>
-                                    </div>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
-
-                    <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const notifTrigger = document.getElementById('notification-dropdown-trigger');
-                        const notifMenu = document.getElementById('notification-dropdown-menu');
-                        const notifContainer = document.getElementById('notification-dropdown-container');
-
-                        if (notifTrigger && notifMenu) {
-                            notifTrigger.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const isOpen = !notifMenu.classList.contains('hidden');
-                                
-                                // Close user dropdown if open
-                                const userMenu = document.getElementById('user-dropdown-menu');
-                                if (userMenu) userMenu.classList.add('hidden');
-                                
-                                if (isOpen) {
-                                    notifMenu.classList.add('hidden');
-                                } else {
-                                    notifMenu.classList.remove('hidden');
-                                }
-                            });
-
-                            document.addEventListener('click', function(e) {
-                                if (!notifContainer.contains(e.target)) {
-                                    notifMenu.classList.add('hidden');
-                                }
-                            });
-
-                            document.addEventListener('keydown', function(e) {
-                                if (e.key === 'Escape') {
-                                    notifMenu.classList.add('hidden');
-                                }
-                            });
-                        }
-                    });
-                    </script>
-
-                    {{-- User Dropdown - Click to Open --}}
-                    <div class="relative z-50" id="user-dropdown-container">
-                        <button type="button" id="user-dropdown-trigger"
-                            class="flex items-center gap-2 focus:outline-none py-1 cursor-pointer relative z-20 rounded-xl px-2 transition-all duration-300 hover:bg-green-100 hover:shadow-[0_0_15px_rgba(62,95,78,0.3)]">
+                {{-- User Avatar Dropdown --}}
+                <div class="relative z-50" id="user-dropdown-container">
+                    <button type="button" id="user-dropdown-trigger" class="flex items-center focus:outline-none cursor-pointer relative z-20 rounded-full transition-transform hover:scale-105 shadow-lg border border-white/20 bg-white/10 backdrop-blur-md hover:border-white">
+                        @include('partials.user-avatar-with-frame', [
+                            'user' => Auth::user(),
+                            'size' => 'w-9 h-9 sm:w-10 sm:h-10',
+                            'avatarSize' => 'w-7 h-7 sm:w-8 sm:h-8'
+                        ])
+                    </button>
+                    {{-- Dropdown User Menu --}}
+                    <div id="user-dropdown-menu"
+                        class="hidden absolute right-0 top-full mt-6 w-64 bg-white rounded-3xl shadow-2xl border border-gray-100 py-2 animate-fade-in origin-top-right z-10">
+                        <div class="px-5 py-4 border-b border-gray-50 bg-gray-50/50 rounded-t-3xl mb-2 flex flex-col items-center">
                             @include('partials.user-avatar-with-frame', [
                                 'user' => Auth::user(),
-                                'size' => 'w-12 h-12',
-                                'avatarSize' => 'w-9 h-9'
+                                'size' => 'w-16 h-16',
+                                'avatarSize' => 'w-12 h-12'
                             ])
-                            <div class="hidden lg:flex flex-col items-start">
-                                <span
-                                    class="text-xs font-bold text-gray-700 truncate max-w-[80px]">{{ Auth::user()->name }}</span>
-                                <span class="text-[10px] text-gray-400">{{ Auth::user()->role == 'admin' ? 'Quản trị viên' : 'Thành viên' }}</span>
-                            </div>
-                            <i class="fas fa-chevron-down text-xs text-gray-400 ml-1 transition-transform duration-300" id="user-dropdown-arrow"></i>
-                        </button>
-
-                        <div id="user-dropdown-menu"
-                            class="hidden absolute right-0 top-full mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-fade-in origin-top-right z-10">
-                            <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/50 rounded-t-xl mb-1">
-                                <p class="text-xs text-gray-400 uppercase tracking-wider font-bold">Tài khoản</p>
-                                <p class="text-sm font-bold text-brand-green truncate">{{ Auth::user()->email }}</p>
-                            </div>
-
-                            @if(Auth::user()->role == 'admin')
-                                <a href="{{ route('admin.dashboard') }}"
-                                    class="flex items-center px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 transition font-bold border-l-2 border-transparent hover:border-red-600 mx-2 rounded-md mb-1">
-                                    <i class="fas fa-tachometer-alt w-5 mr-2"></i> Quản Trị Viên
-                                </a>
-                            @endif
-
-                            <a href="{{ route('profile') }}"
-                                class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-brand-green transition mx-2 rounded-md">
-                                <i class="fas fa-user-circle w-5 mr-2 text-gray-400"></i> Hồ sơ cá nhân
-                            </a>
-
-                            <a href="{{ route('change.password') }}"
-                                class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-brand-green transition mx-2 rounded-md">
-                                <i class="fas fa-key w-5 mr-2 text-gray-400"></i> Đổi mật khẩu
-                            </a>
-
-                            <div class="border-t border-gray-100 my-1 pt-1"></div>
-
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit"
-                                    class="w-full text-left flex items-center px-4 py-2.5 text-gray-500 hover:bg-red-50 hover:text-red-600 transition font-medium mx-2 rounded-md">
-                                    <i class="fas fa-sign-out-alt w-5 mr-2"></i> Đăng Xuất
-                                </button>
-                            </form>
+                            <p class="text-sm font-bold text-brand-green mt-3">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-gray-400 mt-1 font-medium">{{ Auth::user()->email }}</p>
                         </div>
-                    </div>
-
-                    <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const trigger = document.getElementById('user-dropdown-trigger');
-                        const menu = document.getElementById('user-dropdown-menu');
-                        const arrow = document.getElementById('user-dropdown-arrow');
-                        const container = document.getElementById('user-dropdown-container');
-
-                        if (trigger && menu) {
-                            // Toggle dropdown on click
-                            trigger.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const isOpen = !menu.classList.contains('hidden');
-                                
-                                // Close notification dropdown if open
-                                const notifMenu = document.getElementById('notification-dropdown-menu');
-                                if (notifMenu) notifMenu.classList.add('hidden');
-                                
-                                if (isOpen) {
-                                    menu.classList.add('hidden');
-                                    arrow.classList.remove('rotate-180');
-                                } else {
-                                    menu.classList.remove('hidden');
-                                    arrow.classList.add('rotate-180');
-                                }
-                            });
-
-                            // Close dropdown when clicking outside
-                            document.addEventListener('click', function(e) {
-                                if (!container.contains(e.target)) {
-                                    menu.classList.add('hidden');
-                                    arrow.classList.remove('rotate-180');
-                                }
-                            });
-
-                            // Close on ESC key
-                            document.addEventListener('keydown', function(e) {
-                                if (e.key === 'Escape') {
-                                    menu.classList.add('hidden');
-                                    arrow.classList.remove('rotate-180');
-                                }
-                            });
-                        }
-                    });
-                    </script>
-                @else
-                    {{-- Guest - Hide on very small screens, show in mobile menu instead --}}
-                    <div class="hidden xs:flex items-center gap-2 sm:gap-3">
-                        <a href="{{ route('login') }}"
-                            class="bg-brand-green text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full hover:bg-[#16271f] transition font-bold shadow-md text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
-                            <i class="fas fa-sign-in-alt text-xs"></i> <span class="hidden sm:inline">Đăng Nhập</span><span class="sm:hidden">Đăng nhập</span>
+                        @if(Auth::user()->role == 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-5 py-3 text-brand-green bg-red-50/50 hover:bg-red-50 transition font-bold mx-2 rounded-xl mb-1">
+                                <i class="fas fa-crown w-5 mr-3 text-brand-accent"></i> Trang Quản Trị
+                            </a>
+                        @endif
+                        <a href="{{ route('profile') }}" class="flex items-center px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-brand-green transition mx-2 rounded-xl">
+                            <i class="fas fa-user w-5 mr-3 text-gray-400"></i> Hồ sơ cá nhân
                         </a>
-                        <a href="{{ route('register') }}"
-                            class="hidden sm:flex items-center gap-2 text-gray-600 hover:text-brand-green font-bold text-sm px-3 py-2 rounded-lg border border-gray-200 hover:border-brand-green hover:bg-gray-50 transition">
-                            <i class="fas fa-user-plus text-xs"></i> <span>Đăng Ký</span>
+                        <a href="{{ route('change.password') }}" class="flex items-center px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-brand-green transition mx-2 rounded-xl">
+                            <i class="fas fa-lock w-5 mr-3 text-gray-400"></i> Đổi mật khẩu
                         </a>
-                    </div>
-                @endauth
+                        
+                        <div class="border-t border-gray-100 my-2 pt-2"></div>
+                        
+                        <div class="px-2 cursor-pointer" onclick="openModal('rulesModal')">
+                            <span class="flex items-center px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-brand-accent transition rounded-xl text-xs"><i class="fas fa-gavel w-5 mr-3 text-gray-400"></i> Quy tắc cộng đồng</span>
+                        </div>
+                        <div class="px-2 cursor-pointer" onclick="openModal('helpModal')">
+                            <span class="flex items-center px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-brand-accent transition rounded-xl text-xs"><i class="fas fa-question-circle w-5 mr-3 text-gray-400"></i> Trợ giúp</span>
+                        </div>
+                        
+                        <div class="border-t border-gray-100 my-2 pt-2"></div>
 
-                {{-- Mobile Menu Button --}}
-                <button id="mobile-menu-btn"
-                    class="md:hidden p-2 text-gray-600 hover:text-brand-green hover:bg-gray-100 rounded-lg transition">
-                    <i class="fas fa-bars text-xl" id="mobile-menu-icon"></i>
+                        <form method="POST" action="{{ route('logout') }}" class="px-2 pb-2">
+                            @csrf
+                            <button type="submit" class="w-full flex justify-center items-center px-5 py-3 text-white bg-gray-900 hover:bg-black transition font-bold rounded-xl shadow-lg">
+                                Đăng Xuất <i class="fas fa-sign-out-alt ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @else
+                {{-- Guest Buttons --}}
+                <a href="{{ route('login') }}" class="hidden sm:flex text-[13px] xl:text-[14px] font-bold text-white/90 hover:text-white transition px-3 xl:px-4 py-2 hover:bg-white/10 rounded-xl whitespace-nowrap">
+                    Đăng Nhập
+                </a>
+                <a href="{{ route('register') }}" class="hidden sm:flex items-center justify-center bg-brand-accent text-brand-green text-[13px] xl:text-[14px] font-bold px-5 xl:px-7 py-2.5 rounded-full hover:bg-amber-100 transition-all shadow-lg hover:-translate-y-0.5 whitespace-nowrap">
+                    Đăng Ký
+                </a>
+            @endauth
+
+            {{-- Mobile Menu Button --}}
+            <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 flex items-center justify-center transition ml-1 shadow-md">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    {{-- Dropdown Expandable Live Search Area (Attached closely to Pill) --}}
+    <div id="expandable-search-pane" class="absolute top-[80px] sm:top-[100px] left-0 right-0 mx-2 sm:mx-10 bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-[0_40px_80px_-20px_rgba(155,34,38,0.2)] border border-white overflow-hidden transform origin-top scale-y-0 opacity-0 transition-all duration-300 pointer-events-none z-40">
+        <div class="absolute inset-0 bg-brand-green/5 pointer-events-none"></div>
+        <form action="{{ route('recipes.search') }}" method="GET" class="relative p-4 sm:p-6 pb-2" id="header-search-form">
+            <h4 class="text-brand-green text-sm font-serif font-bold mb-3 px-2 flex items-center"><i class="fas fa-utensils mr-2"></i> Hôm nay bạn muốn nấu món gì?</h4>
+            <div class="relative flex items-center bg-white rounded-full h-14 sm:h-16 px-6 border-2 border-brand-green/20 focus-within:border-brand-accent focus-within:shadow-[0_0_20px_rgba(232,93,4,0.15)] transition-all">
+                <i class="fas fa-search text-brand-accent text-lg mr-4"></i>
+                <input type="text" id="header-search-input" name="keyword" value="{{ request('keyword') }}"
+                    autocomplete="off" placeholder="Gõ tên món ăn, nguyên liệu..."
+                    class="flex-1 bg-transparent border-none p-0 text-gray-800 placeholder-gray-400 font-medium text-base sm:text-lg focus:outline-none focus:ring-0">
+                <button type="submit" class="bg-brand-green text-white font-bold px-6 py-2.5 rounded-full hover:bg-[#7a1a1e] transition shadow-[0_4px_15px_rgba(155,34,38,0.3)] whitespace-nowrap hidden sm:block">
+                    Tìm Kiếm
                 </button>
             </div>
-        </div>
+            
+            {{-- Quick Categories / Tags for Search --}}
+            <div class="mt-4 px-2 flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                <span class="px-4 py-1.5 rounded-full bg-red-50 text-brand-green text-xs font-bold cursor-pointer hover:bg-red-100 transition whitespace-nowrap"><i class="fas fa-heart text-red-400 mr-1"></i> Món ăn nhanh</span>
+                <span class="px-4 py-1.5 rounded-full bg-green-50 text-green-700 text-xs font-bold cursor-pointer hover:bg-green-100 transition whitespace-nowrap"><i class="fas fa-leaf text-green-500 mr-1"></i> Ăn Chay</span>
+                <span class="px-4 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold cursor-pointer hover:bg-amber-100 transition whitespace-nowrap"><i class="fas fa-bread-slice text-amber-500 mr-1"></i> Ăn Sáng</span>
+            </div>
 
-        {{-- Navigation --}}
-        <div class="hidden md:flex justify-center mt-2 border-t border-gray-100 pt-3">
-            <nav class="flex items-center gap-8 text-sm font-semibold text-gray-500">
-                <a href="{{ route('home') }}"
-                    class="hover:text-brand-green hover:border-b-2 hover:border-brand-green pb-3 -mb-3.5 transition-all {{ request()->routeIs('home') ? 'text-brand-green border-b-2 border-brand-green' : '' }}">Trang
-                    Chủ</a>
-                <a href="{{ route('books.list') }}"
-                    class="hover:text-brand-green hover:border-b-2 hover:border-brand-green pb-3 -mb-3.5 transition-all {{ request()->routeIs('books.list') ? 'text-brand-green border-b-2 border-brand-green' : '' }}">Danh
-                    Sách</a>
-                <a href="{{ route('books.search') }}"
-                    class="hover:text-brand-green hover:border-b-2 hover:border-brand-green pb-3 -mb-3.5 transition-all {{ request()->routeIs('books.search') ? 'text-brand-green border-b-2 border-brand-green' : '' }}">Review
-                    Hay</a>
-                <a href="{{ route('authors.index') }}"
-                    class="hover:text-brand-green hover:border-b-2 hover:border-brand-green pb-3 -mb-3.5 transition-all {{ request()->routeIs('authors.*') ? 'text-brand-green border-b-2 border-brand-green' : '' }}">Tác
-                    Giả</a>
-                <a href="{{ route('challenges.index') }}"
-                    class="relative flex items-center gap-1.5 px-3 py-1.5 -my-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 group {{ request()->routeIs('challenges.index') ? 'ring-2 ring-yellow-400 ring-offset-2' : '' }}">
-                    <i class="fas fa-fire text-yellow-300 group-hover:animate-pulse"></i>
-                    <span>Thử Thách</span>
-                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping"></span>
-                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-yellow-400 rounded-full"></span>
-                </a>
-            </nav>
-        </div>
+            {{-- Search Results Pane --}}
+            <div id="header-search-results" class="mt-2 hidden max-h-[300px] overflow-y-auto w-full custom-scrollbar text-sm px-2 pb-4">
+                {{-- JS renders here --}}
+            </div>
+        </form>
     </div>
 </header>
 
 {{-- Mobile Menu Overlay --}}
-<div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
-    {{-- Backdrop --}}
-    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-
-    {{-- Menu Panel --}}
-    <div id="mobile-menu-panel"
-        class="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-out">
+<div id="mobile-menu" class="fixed inset-0 z-[120] hidden">
+    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"></div>
+    <div id="mobile-menu-panel" class="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
         {{-- Header --}}
-        <div class="flex items-center justify-between p-4 border-b border-gray-100 bg-brand-green text-white">
+        <div class="flex items-center justify-between p-5 bg-white border-b border-gray-100">
             <div class="flex items-center gap-2">
-                <i class="fas fa-book-reader"></i>
-                <span class="font-bold">GÓC SÁCH</span>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-green to-brand-accent flex justify-center items-center text-white"><i class="fas fa-utensils text-xs"></i></div>
+                <span class="font-serif font-black text-brand-green text-lg tracking-tight">GÓC BẾP</span>
             </div>
-            <button id="close-mobile-menu" class="p-2 hover:bg-white/10 rounded-lg transition">
-                <i class="fas fa-times text-xl"></i>
+            <button id="close-mobile-menu" class="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition">
+                <i class="fas fa-times"></i>
             </button>
         </div>
 
-        {{-- Search --}}
-        <div class="p-4 border-b border-gray-100">
-            <form action="{{ route('books.search') }}" method="GET" class="relative">
-                <input type="text" name="keyword" placeholder="Tìm kiếm sách..."
-                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-brand-green">
-                <button type="submit"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-green text-white rounded-full flex items-center justify-center">
-                    <i class="fas fa-search text-xs"></i>
-                </button>
-            </form>
-        </div>
+        {{-- Mobile Nav --}}
+        <nav class="p-5 flex-1 overflow-y-auto space-y-2">
+            <a href="{{ route('home') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition {{ request()->routeIs('home') ? 'bg-red-50 text-brand-green font-bold' : 'text-gray-700 hover:bg-gray-50' }}">
+                <div class="w-8 flex justify-center"><i class="fas fa-home"></i></div> Trang Chủ
+            </a>
+            <a href="{{ route('recipes.list') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition {{ request()->routeIs('recipes.*') && !request()->routeIs('recipes.smart-search') ? 'bg-red-50 text-brand-green font-bold' : 'text-gray-700 hover:bg-gray-50' }}">
+                <div class="w-8 flex justify-center"><i class="fas fa-book-open"></i></div> Công Thức
+            </a>
+            @auth
+                <a href="{{ route('recipes.smart-search') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition {{ request()->routeIs('recipes.smart-search') ? 'bg-red-50 text-brand-green font-bold' : 'text-gray-700 hover:bg-gray-50' }}">
+                    <div class="w-8 flex justify-center"><i class="fas fa-shopping-basket"></i></div> Tủ Lạnh Web
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition text-gray-400 hover:bg-gray-50 relative">
+                    <div class="w-8 flex justify-center"><i class="fas fa-shopping-basket"></i></div>
+                    Tủ Lạnh Web
+                    <span class="ml-auto text-[10px] bg-brand-accent/20 text-brand-accent font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fas fa-lock text-[9px]"></i> Đăng nhập</span>
+                </a>
+            @endauth
+            <a href="{{ route('articles.index') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition {{ request()->routeIs('articles.*') ? 'bg-red-50 text-brand-green font-bold' : 'text-gray-700 hover:bg-gray-50' }}">
+                <div class="w-8 flex justify-center"><i class="fas fa-newspaper"></i></div> Tạp Chí
+            </a>
+            <a href="{{ route('challenges.index') }}" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-gradient-to-r from-brand-accent to-red-500 text-white font-bold shadow-md shadow-amber-500/20 mt-4">
+                <div class="w-8 flex justify-center"><i class="fas fa-fire animate-pulse text-yellow-300"></i></div> Mùa Thử Thách
+            </a>
 
-        {{-- Navigation Links --}}
-        <nav class="p-4 space-y-1">
-            <a href="{{ route('home') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition {{ request()->routeIs('home') ? 'bg-brand-green/10 text-brand-green font-bold' : 'text-gray-700' }}">
-                <i class="fas fa-home w-5"></i> Trang Chủ
+            <div class="border-t border-gray-100 my-4 pt-4"></div>
+            <a onclick="openModal('rulesModal')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-medium cursor-pointer">
+                <div class="w-8 flex justify-center"><i class="fas fa-gavel text-gray-400"></i></div> Quy tắc cộng đồng
             </a>
-            <a href="{{ route('books.list') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition {{ request()->routeIs('books.list') ? 'bg-brand-green/10 text-brand-green font-bold' : 'text-gray-700' }}">
-                <i class="fas fa-book w-5"></i> Danh Sách Sách
-            </a>
-            <a href="{{ route('books.search') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition {{ request()->routeIs('books.search') ? 'bg-brand-green/10 text-brand-green font-bold' : 'text-gray-700' }}">
-                <i class="fas fa-star w-5"></i> Review Hay
-            </a>
-            <a href="{{ route('authors.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition {{ request()->routeIs('authors.*') ? 'bg-brand-green/10 text-brand-green font-bold' : 'text-gray-700' }}">
-                <i class="fas fa-user-edit w-5"></i> Tác Giả
-            </a>
-            <a href="{{ route('challenges.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold">
-                <i class="fas fa-fire w-5"></i> Thử Thách Đọc Sách
+            <a onclick="openModal('helpModal')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-medium cursor-pointer">
+                <div class="w-8 flex justify-center"><i class="fas fa-question-circle text-gray-400"></i></div> Trợ giúp
             </a>
         </nav>
 
-        {{-- User Section --}}
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-gray-50">
-                @auth
-                <div class="flex items-center gap-3 mb-3">
-                    @include('partials.user-avatar-with-frame', [
-                        'user' => Auth::user(),
-                        'size' => 'w-12 h-12',
-                        'avatarSize' => 'w-10 h-10'
-                    ])
+        {{-- Mobile User Bottom --}}
+        <div class="p-5 border-t border-gray-100 bg-gray-50/50">
+            @auth
+                <div class="flex items-center gap-4 mb-4">
+                    @include('partials.user-avatar-with-frame', ['user' => Auth::user(), 'size' => 'w-12 h-12', 'avatarSize' => 'w-10 h-10'])
                     <div>
                         <p class="font-bold text-gray-800 text-sm">{{ Auth::user()->name }}</p>
-                        <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+                        <p class="text-[11px] text-gray-500 font-medium">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <a href="{{ route('profile') }}"
-                        class="flex-1 text-center px-3 py-2 bg-brand-green text-white rounded-lg text-sm font-bold">Hồ
-                        sơ</a>
+                <div class="flex gap-3">
+                    <a href="{{ route('profile') }}" class="flex-1 text-center py-2.5 bg-brand-green text-white rounded-xl text-sm font-bold shadow-md">Hồ sơ</a>
                     <form method="POST" action="{{ route('logout') }}" class="flex-1">
                         @csrf
-                        <button type="submit"
-                            class="w-full px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-300 transition">Đăng
-                            xuất</button>
+                        <button type="submit" class="w-full py-2.5 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition">Đăng xuất</button>
                     </form>
                 </div>
             @else
-                <div class="space-y-2">
-                    <a href="{{ route('login') }}"
-                        class="block text-center px-4 py-2.5 bg-brand-green text-white rounded-lg font-bold hover:bg-[#16271f] transition shadow-md">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Đăng Nhập</a>
-                    <a href="{{ route('register') }}"
-                        class="block text-center px-4 py-2.5 border-2 border-gray-200 text-gray-600 rounded-lg font-bold hover:border-brand-green hover:text-brand-green transition">
-                        <i class="fas fa-user-plus mr-2"></i>Đăng Ký Miễn Phí</a>
+                <div class="space-y-3">
+                    <a href="{{ route('login') }}" class="block text-center py-3 bg-brand-green text-white rounded-xl font-bold hover:bg-[#7a1a1e] transition shadow-md">Đăng Nhập</a>
+                    <a href="{{ route('register') }}" class="block text-center py-3 border-2 border-brand-green/20 text-brand-green rounded-xl font-bold hover:border-brand-green transition bg-white">Đăng Ký Tài Khoản</a>
                 </div>
             @endauth
         </div>
     </div>
 </div>
 
-{{-- Modals --}}
-<div id="rulesModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="fixed inset-0 modal-overlay transition-opacity" onclick="closeModal('rulesModal')"></div>
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center">
-            <div
-                class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:w-full sm:max-w-lg animate-scale-up">
-                <div class="bg-brand-green px-4 py-3 sm:px-6 flex justify-between items-center">
-                    <h3 class="text-lg font-bold leading-6 text-white" id="modal-title"><i
-                            class="fas fa-gavel mr-2"></i> Quy Tắc Cộng Đồng</h3>
-                    <button onclick="closeModal('rulesModal')" class="text-white/70 hover:text-white transition"><i
-                            class="fas fa-times text-xl"></i></button>
-                </div>
-                <div class="px-4 py-5 sm:p-6 text-sm text-gray-600 space-y-3 max-h-[400px] overflow-y-auto">
-                    <p class="font-bold text-gray-800">1. Tôn trọng lẫn nhau:</p>
-                    <p>Không sử dụng ngôn từ đả kích, xúc phạm hoặc phân biệt đối xử với các thành viên khác.</p>
-                    <p class="font-bold text-gray-800 mt-2">2. Không Spam:</p>
-                    <p>Không đăng tải các nội dung quảng cáo, tin rác hoặc bình luận trùng lặp nhiều lần.</p>
-                    <p class="font-bold text-gray-800 mt-2">3. Bản quyền nội dung:</p>
-                    <p>Chỉ chia sẻ những nội dung bạn có quyền sở hữu hoặc trích dẫn nguồn rõ ràng. Không đăng tải sách
-                        lậu.</p>
-                    <p class="font-bold text-gray-800 mt-2">4. Review trung thực:</p>
-                    <p>Đánh giá sách dựa trên trải nghiệm thực tế, không thiên vị hoặc cố tình dìm hàng.</p>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="button"
-                        class="inline-flex w-full justify-center rounded-md bg-brand-green px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90 sm:ml-3 sm:w-auto"
-                        onclick="closeModal('rulesModal')">Đã hiểu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="helpModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="fixed inset-0 modal-overlay transition-opacity" onclick="closeModal('helpModal')"></div>
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center">
-            <div
-                class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:w-full sm:max-w-lg animate-scale-up">
-                <div class="bg-blue-600 px-4 py-3 sm:px-6 flex justify-between items-center">
-                    <h3 class="text-lg font-bold leading-6 text-white"><i class="fas fa-question-circle mr-2"></i> Trung
-                        Tâm Trợ Giúp</h3>
-                    <button onclick="closeModal('helpModal')" class="text-white/70 hover:text-white transition"><i
-                            class="fas fa-times text-xl"></i></button>
-                </div>
-                <div class="px-4 py-5 sm:p-6 text-sm text-gray-600 space-y-4">
-                    <div class="flex items-start gap-3">
-                        <div class="bg-blue-100 p-2 rounded-full text-blue-600"><i class="fas fa-user-plus"></i></div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Làm sao để đăng ký?</h4>
-                            <p>Nhấn vào nút "Đăng Ký" ở góc phải màn hình và điền thông tin email của bạn.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="bg-blue-100 p-2 rounded-full text-blue-600"><i class="fas fa-star"></i></div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Cách viết Review?</h4>
-                            <p>Tìm cuốn sách bạn muốn, vào trang chi tiết và kéo xuống phần "Viết đánh giá của bạn".</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="bg-blue-100 p-2 rounded-full text-blue-600"><i class="fas fa-envelope"></i></div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Liên hệ hỗ trợ?</h4>
-                            <p>Email: <a href="mailto:support@gocsach.com"
-                                    class="text-blue-600 hover:underline">support@gocsach.com</a><br>Hotline: 1900 1234
-                                (8h-17h)</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="button"
-                        class="inline-flex w-full justify-center rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 sm:ml-3 sm:w-auto"
-                        onclick="closeModal('helpModal')">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+{{-- Script for Toggles (Dropdowns & Mobile Menu & Search Pane) --}}
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const header = document.getElementById('main-header');
+        const bgContainer = document.getElementById('header-bg-container');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('py-0');
+                if (bgContainer) {
+                    bgContainer.classList.remove('rounded-b-[40px]', 'lg:rounded-b-[80px]');
+                    bgContainer.classList.add('opacity-95', 'shadow-xl');
+                }
+            } else {
+                header.classList.remove('py-0');
+                if (bgContainer) {
+                    bgContainer.classList.add('rounded-b-[40px]', 'lg:rounded-b-[80px]');
+                    bgContainer.classList.remove('opacity-95', 'shadow-xl');
+                }
+            }
+        });
+
+        // Toggle Search Pane
+        const searchBtn = document.getElementById('search-toggle-btn');
+        const searchPane = document.getElementById('expandable-search-pane');
+        const searchInput = document.getElementById('header-search-input');
+        
+        if (searchBtn && searchPane) {
+            searchBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Close others
+                if (typeof toggleChatbox === 'function' && window.isChatboxOpen) {
+                    toggleChatbox();
+                }
+                closeDropdown('notification-dropdown-menu');
+                closeDropdown('user-dropdown-menu');
+
+                const isClosed = searchPane.classList.contains('scale-y-0');
+                if (isClosed) {
+                    searchPane.classList.remove('scale-y-0', 'opacity-0', 'pointer-events-none');
+                    searchBtn.classList.add('active');
+                    setTimeout(() => searchInput.focus(), 300);
+                } else {
+                    closeSearchPane();
+                }
+            });
+        }
+
+        function closeSearchPane() {
+            if (searchPane) {
+                searchPane.classList.add('scale-y-0', 'opacity-0', 'pointer-events-none');
+                searchBtn.classList.remove('active');
+            }
+        }
+
+        // Toggle Generic Dropdowns
+        function setupDropdown(triggerId, menuId, containerId) {
+            const trigger = document.getElementById(triggerId);
+            const menu = document.getElementById(menuId);
+            const container = document.getElementById(containerId);
+
+            if (trigger && menu) {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const isOpen = !menu.classList.contains('hidden');
+                    
+                    // Close others
+                    if (typeof toggleChatbox === 'function' && window.isChatboxOpen) {
+                        toggleChatbox();
+                    }
+                    closeSearchPane();
+                    if (menuId !== 'notification-dropdown-menu') closeDropdown('notification-dropdown-menu');
+                    if (menuId !== 'user-dropdown-menu') closeDropdown('user-dropdown-menu');
+                    
+                    if (isOpen) {
+                        menu.classList.add('hidden');
+                    } else {
+                        menu.classList.remove('hidden');
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (container && !container.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function closeDropdown(menuId) {
+            const menu = document.getElementById(menuId);
+            if (menu) menu.classList.add('hidden');
+        }
+
+        window.closeAllHeaderDropdowns = function() {
+            closeSearchPane();
+            closeDropdown('notification-dropdown-menu');
+            closeDropdown('user-dropdown-menu');
+        }
+
+        setupDropdown('notification-dropdown-trigger', 'notification-dropdown-menu', 'notification-dropdown-container');
+        setupDropdown('user-dropdown-trigger', 'user-dropdown-menu', 'user-dropdown-container');
+
+        // Close on Esc
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearchPane();
+                closeDropdown('notification-dropdown-menu');
+                closeDropdown('user-dropdown-menu');
+                closeModal('rulesModal');
+                closeModal('helpModal');
+            }
+        });
+
+        // Mobile Menu Logic
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileBtn = document.getElementById('close-mobile-menu');
+        const mobilePanel = document.getElementById('mobile-menu-panel');
+
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => mobilePanel.classList.remove('translate-x-full'), 10);
+            });
+
+            closeMobileBtn.addEventListener('click', () => {
+                mobilePanel.classList.add('translate-x-full');
+                setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+            });
+        }
+    });
+
+    // Modals
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById('mobile-menu').classList.add('hidden'); // Close mobile menu if open
     }
-
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
     }
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Escape") {
-            document.querySelectorAll('[id$="Modal"]').forEach(el => el.classList.add('hidden'));
-        }
-    });
 </script>
 
-<style>
-    .dropdown-menu {
-        display: none;
-    }
+{{-- Modals Content (Help & Rules) --}}
+<div id="rulesModal" class="fixed inset-0 z-[200] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal('rulesModal')"></div>
+    <div class="flex min-h-screen items-center justify-center p-4 text-center">
+        <div class="relative transform overflow-hidden rounded-[2rem] bg-white text-left shadow-2xl transition-all sm:w-full sm:max-w-lg">
+            <div class="bg-brand-green px-6 py-5 flex justify-between items-center">
+                <h3 class="text-xl font-bold leading-6 text-white font-serif"><i class="fas fa-gavel mr-2"></i> Quy Tắc Cộng Đồng</h3>
+                <button onclick="closeModal('rulesModal')" class="text-white/70 hover:text-white transition"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="px-6 py-6 text-sm text-gray-700 space-y-4 max-h-[50vh] overflow-y-auto">
+                <p class="font-bold text-gray-900 text-base">1. Tôn trọng tinh thần ẩm thực:</p>
+                <p class="text-gray-600">Luôn sử dụng ngôn từ hòa nhã, lịch sự. Góc Bếp là nơi chia sẻ tình yêu nấu nướng, không đả kích hay phân biệt.</p>
+                <p class="font-bold text-gray-900 text-base mt-2">2. Không nội dung rác (Spam):</p>
+                <p class="text-gray-600">Nghiêm cấm quảng cáo sai sự thật, đăng tải công thức trùng lặp hoặc chứa link độc hại.</p>
+                <p class="font-bold text-gray-900 text-base mt-2">3. Trân trọng bản quyền:</p>
+                <p class="text-gray-600">Mỗi công thức là một tâm huyết. Quý khách vui lòng trích dẫn nguồn rõ ràng nếu tham khảo từ nơi khác.</p>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end">
+                <button type="button" class="rounded-xl bg-brand-green px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-black transition" onclick="closeModal('rulesModal')">Tuyệt vời, Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    .group:hover .dropdown-menu {
-        display: block;
-    }
+<div id="helpModal" class="fixed inset-0 z-[200] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal('helpModal')"></div>
+    <div class="flex min-h-screen items-center justify-center p-4 text-center">
+        <div class="relative transform overflow-hidden rounded-[2rem] bg-white text-left shadow-2xl transition-all sm:w-full sm:max-w-lg">
+            <div class="bg-brand-accent px-6 py-5 flex justify-between items-center">
+                <h3 class="text-xl font-bold leading-6 text-white font-serif"><i class="fas fa-headset mr-2"></i> Trung Tâm Hỗ Trợ</h3>
+                <button onclick="closeModal('helpModal')" class="text-white/70 hover:text-white transition"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="px-6 py-6 text-sm text-gray-700 space-y-5">
+                <div class="flex items-start gap-4">
+                    <div class="bg-amber-100 p-3 rounded-2xl text-amber-600"><i class="fas fa-utensils"></i></div>
+                    <div><h4 class="font-bold text-gray-900">Chia sẻ công thức thế nào?</h4><p class="text-gray-600 mt-1">Góc Bếp hiện đang trong quá trình thử nghiệm. Tính năng "Đăng công thức" sẽ ra mắt trong bản cập nhật sắp tới.</p></div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="bg-amber-100 p-3 rounded-2xl text-amber-600"><i class="fas fa-envelope"></i></div>
+                    <div><h4 class="font-bold text-gray-900">Gặp lỗi trong quá trình sử dụng?</h4><p class="text-gray-600 mt-1">Xin vui lòng gửi phản hồi về <a href="mailto:support@kitchencorner.com" class="text-brand-accent font-bold hover:underline">support@kitchencorner.com</a> để được hỗ trợ 24/7.</p></div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end">
+                <button type="button" class="rounded-xl bg-gray-200 px-6 py-2.5 text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-300 transition" onclick="closeModal('helpModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    /* Fix: Disable hover khi trang mới load để tránh dropdown tự hiện */
-    .page-loading .dropdown-menu {
-        display: none !important;
-        pointer-events: none;
-    }
-
-    .page-loading .group:hover .dropdown-menu {
-        display: none !important;
-    }
-
-    .dropdown-bridge::before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: 0;
-        width: 100%;
-        height: 10px;
-        background: transparent;
-    }
-
-    .modal-overlay {
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-    }
-
-    .animate-fade-in {
-        animation: fadeIn 0.2s ease-in-out;
-    }
-
-    .animate-scale-up {
-        animation: scaleUp 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes scaleUp {
-        0% {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    /* Header Shrink */
-    .header-scrolled {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-
-    .header-scrolled .logo-text {
-        font-size: 1rem !important;
-    }
-
-    .header-scrolled .logo-icon {
-        width: 2rem !important;
-        height: 2rem !important;
-    }
-
-    .header-scrolled .nav-section {
-        margin-top: 0.25rem !important;
-        padding-top: 0.5rem !important;
-    }
-</style>
-
-{{-- Fix dropdown tự hiện khi chuyển trang --}}
-<script>
-    // Thêm class page-loading ngay khi script chạy
-    document.body.classList.add('page-loading');
-
-    // Xóa class sau 500ms để cho phép hover hoạt động
-    window.addEventListener('load', function () {
-        setTimeout(function () {
-            document.body.classList.remove('page-loading');
-        }, 500);
-    });
-</script>
-
-{{-- Live Search Script --}}
+{{-- Live Search Ajax Script --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('header-search-input');
@@ -724,7 +533,6 @@
         let timeout = null;
 
         if (searchInput && resultsBox) {
-            // 1. Khi người dùng gõ phím
             searchInput.addEventListener('input', function () {
                 const keyword = this.value.trim();
                 clearTimeout(timeout);
@@ -735,291 +543,55 @@
                     return;
                 }
 
-                // Hiển thị loading
-                resultsBox.innerHTML = '<div class="p-4 text-center text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tìm kiếm...</div>';
+                resultsBox.innerHTML = '<div class="p-6 text-center text-gray-400 font-medium"><i class="fas fa-spinner fa-spin mr-2 text-brand-green"></i>Đang tìm món ngon...</div>';
                 resultsBox.classList.remove('hidden');
 
-                // Debounce 300ms
                 timeout = setTimeout(() => {
-                    fetchResults(keyword);
+                    fetch(`/ajax-search?keyword=${encodeURIComponent(keyword)}`)
+                        .then(response => response.json())
+                        .then(data => renderResults(data, keyword))
+                        .catch(() => { resultsBox.innerHTML = '<div class="p-4 text-center text-red-400">Có lỗi cực nhỏ xảy ra, vui lòng thử lại sau.</div>'; });
                 }, 300);
             });
 
-            // 2. Gửi Ajax lên Server
-            function fetchResults(keyword) {
-                fetch(`/ajax-search?keyword=${encodeURIComponent(keyword)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        renderResults(data, keyword);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        resultsBox.innerHTML = '<div class="p-4 text-center text-red-400">Có lỗi xảy ra</div>';
-                    });
-            }
-
-            // 3. Hiển thị kết quả
-            function renderResults(books, keyword) {
-                if (books.length > 0) {
-                    let html = '<ul class="divide-y divide-gray-100">';
-
-                    books.forEach(book => {
-                        // Xử lý ảnh bìa
-                        let imgUrl = book.cover_image
-                            ? (book.cover_image.startsWith('http') ? book.cover_image : '/storage/' + book.cover_image)
-                            : 'https://placehold.co/50x70?text=No+Image';
-
-                        // URL chi tiết sách (dùng slug hoặc ID nếu slug không có)
-                        let detailUrl = `/chi-tiet/${book.slug || book.id}`;
-
-                        // Highlight từ khóa trong title
-                        let highlightedTitle = book.title.replace(
-                            new RegExp(`(${keyword})`, 'gi'),
-                            '<span class="bg-yellow-200 text-gray-900 font-bold">$1</span>'
-                        );
+            function renderResults(recipes, keyword) {
+                if (recipes.length > 0) {
+                    let html = '<div class="grid grid-cols-1 gap-2 pt-2">';
+                    recipes.forEach(recipe => {
+                        let imgUrl = recipe.image ? (recipe.image.startsWith('http') ? recipe.image : '/storage/' + recipe.image) : 'https://placehold.co/50x50?text=Food';
+                        let detailUrl = `/recipe/${recipe.slug || recipe.id}`;
+                        let highlightedTitle = recipe.title.replace(new RegExp(`(${keyword})`, 'gi'), '<span class="bg-amber-100 text-brand-accent font-black">$1</span>');
 
                         html += `
-                        <li>
-                            <a href="${detailUrl}" class="search-result-link flex items-center gap-3 p-3 hover:bg-gray-50 transition cursor-pointer">
-                                <img src="${imgUrl}" class="w-10 h-14 object-cover rounded shadow-sm border border-gray-200 flex-shrink-0" onerror="this.src='https://placehold.co/50x70?text=No+Image'">
-                                <div class="flex-1 min-w-0">
-                                    <h4 class="text-sm font-bold text-gray-800 line-clamp-1">${highlightedTitle}</h4>
-                                    <p class="text-xs text-gray-500">${book.author_name || 'Đang cập nhật'}</p>
-                                    ${book.avg_rating ? `<div class="flex items-center gap-1 mt-0.5"><i class="fas fa-star text-yellow-400 text-[10px]"></i><span class="text-[10px] text-gray-400">${parseFloat(book.avg_rating).toFixed(1)}</span></div>` : ''}
-                                </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
-                            </a>
-                        </li>
-                    `;
+                        <a href="${detailUrl}" class="flex items-center gap-4 p-3 hover:bg-red-50/50 rounded-2xl transition cursor-pointer group border border-transparent hover:border-red-100">
+                            <img src="${imgUrl}" class="w-14 h-14 object-cover rounded-[1rem] shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/50x50?text=Food'">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-[13px] font-bold text-gray-800 line-clamp-1 group-hover:text-brand-green transition-colors">${highlightedTitle}</h4>
+                                <p class="text-[11px] text-gray-500 font-medium mt-1 uppercase tracking-wider flex gap-3">
+                                    <span><i class="far fa-clock mr-1 text-gray-400"></i>${recipe.cooking_time || 0} Phút</span>
+                                    <span><i class="far fa-eye mr-1 text-gray-400"></i>${recipe.view_count || 0} Lượt xem</span>
+                                </p>
+                            </div>
+                            <div class="w-8 flex justify-center text-gray-300 group-hover:text-brand-green transition-colors"><i class="fas fa-angle-right"></i></div>
+                        </a>`;
                     });
-
-                    html += '</ul>';
+                    html += '</div>';
                     resultsBox.innerHTML = html;
                 } else {
-                    resultsBox.innerHTML = `
-                    <div class="p-6 text-center">
-                        <i class="far fa-frown text-3xl text-gray-300 mb-2"></i>
-                        <p class="text-sm text-gray-400">Không tìm thấy sách nào với từ khóa "<strong>${keyword}</strong>"</p>
-                        <a href="/danh-sach-sach" class="text-xs text-brand-green hover:underline mt-2 inline-block">Xem tất cả sách →</a>
-                    </div>
-                `;
+                    resultsBox.innerHTML = '<div class="p-8 text-center text-gray-500"><i class="fas fa-search-minus text-3xl mb-3 text-gray-300"></i><p class="font-medium text-sm">Tiếc quá, chưa tìm thấy công thức nào phù hợp.</p></div>';
                 }
-                resultsBox.classList.remove('hidden');
             }
-
-            // 4. Click ra ngoài thì ẩn dropdown (nhưng cho phép click vào link bên trong)
-            document.addEventListener('click', function (e) {
-                // Nếu click vào link bên trong resultsBox thì cho phép navigation
-                if (e.target.closest('#header-search-results a')) {
-                    return; // Không làm gì, để link hoạt động bình thường
-                }
-
-                if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
-                    resultsBox.classList.add('hidden');
-                }
-            });
-
-            // 5. Nhấn ESC để đóng dropdown
-            searchInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    resultsBox.classList.add('hidden');
-                }
-            });
-
-            // 6. Focus lại input thì hiện dropdown nếu có kết quả
-            searchInput.addEventListener('focus', function () {
-                if (resultsBox.innerHTML.trim() !== '' && this.value.length >= 2) {
-                    resultsBox.classList.remove('hidden');
-                }
-            });
         }
     });
+
+    /* Styling to ensure scrolling inside max-height */
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(155,34,38,0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(155,34,38,0.5); }
+    `;
+    document.head.appendChild(style);
 </script>
 
-{{-- Notification Polling Script --}}
-@auth
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let lastUnreadCount = {{ Auth::user()->unreadNotifications->count() }};
-    
-    // Hàm fetch thông báo mới
-    function fetchNotifications() {
-        fetch('/api/notifications', {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateNotificationUI(data);
-        })
-        .catch(error => console.log('Notification fetch error:', error));
-    }
-    
-    // Hàm cập nhật giao diện
-    function updateNotificationUI(data) {
-        const badge = document.getElementById('notification-badge');
-        const countSpan = document.getElementById('notification-count');
-        const markAllBtn = document.getElementById('mark-all-read-btn');
-        const listContainer = document.getElementById('notification-list');
-        
-        if (!badge || !countSpan) return;
-        
-        // Cập nhật badge số lượng
-        if (data.unread_count > 0) {
-            badge.classList.remove('hidden');
-            countSpan.innerText = data.unread_count;
-            if (markAllBtn) markAllBtn.classList.remove('hidden');
-            
-            // Nếu có thông báo mới, hiệu ứng rung chuông
-            if (data.unread_count > lastUnreadCount) {
-                badge.classList.add('animate-ping');
-                setTimeout(() => badge.classList.remove('animate-ping'), 1000);
-                
-                // Phát âm thanh thông báo (optional)
-                // playNotificationSound();
-            }
-        } else {
-            badge.classList.add('hidden');
-            if (markAllBtn) markAllBtn.classList.add('hidden');
-        }
-        
-        lastUnreadCount = data.unread_count;
-        
-        // Cập nhật danh sách thông báo
-        if (listContainer && data.notifications.length > 0) {
-            let html = '';
-            data.notifications.forEach(n => {
-                const isRead = n.read_at !== null;
-                const bgClass = isRead ? 'opacity-60 grayscale-[0.5]' : 'bg-blue-50/30';
-                // Xác định màu nền icon động (đỏ cho từ chối, xanh cho duyệt)
-                const iconBgColor = n.color && n.color.includes('red') ? 'bg-red-100' : 'bg-green-100';
-                
-                html += `
-                    <a href="${n.link}" class="flex gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-50 ${bgClass}">
-                        <div class="flex-shrink-0 mt-1">
-                            ${n.is_system 
-                                ? `<div class="w-8 h-8 rounded-full ${iconBgColor} flex items-center justify-center"><i class="${n.icon} ${n.color} text-sm"></i></div>`
-                                : `<img src="${n.user_avatar}" class="w-8 h-8 rounded-full border border-gray-100 object-cover">`
-                            }
-                        </div>
-                        <div class="flex-1">
-                            ${n.is_system 
-                                ? `<p class="text-sm font-bold text-gray-800">${n.title || 'Thông báo hệ thống'}</p><p class="text-xs text-gray-600 line-clamp-2 mt-0.5">${n.message}</p>`
-                                : `<p class="text-sm text-gray-700 line-clamp-2"><span class="font-bold text-gray-900">${n.user_name}</span> ${n.message}<span class="font-bold block text-xs text-gray-500 italic mt-0.5">"${n.post_title}"</span></p>`
-                            }
-                            <p class="text-[10px] text-gray-400 mt-1 flex items-center"><i class="far fa-clock mr-1"></i> ${n.time}</p>
-                        </div>
-                        ${!isRead ? '<div class="w-2 h-2 bg-brand-green rounded-full mt-2 shrink-0"></div>' : ''}
-                    </a>
-                `;
-            });
-            listContainer.innerHTML = html;
-        } else if (listContainer && data.notifications.length === 0) {
-            listContainer.innerHTML = `
-                <div class="text-center py-8 text-gray-400">
-                    <i class="far fa-bell-slash text-2xl mb-2 text-gray-300"></i>
-                    <p class="text-xs">Không có thông báo mới</p>
-                </div>
-            `;
-        }
-    }
-    
-    // Polling mỗi 10 giây
-    setInterval(fetchNotifications, 10000);
-    
-    // Fetch ngay khi trang load (sau 2 giây để tránh lag)
-    setTimeout(fetchNotifications, 2000);
-    
-    // ====== NOTIFICATION BELL CLICK HANDLER ======
-    const bellBtn = document.getElementById('notification-bell-btn');
-    const dropdown = document.getElementById('notification-dropdown');
-    const badge = document.getElementById('notification-badge');
-    const wrapper = document.getElementById('notification-wrapper');
-    
-    if (bellBtn && dropdown) {
-        // Khi click vào chuông thông báo
-        bellBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            // Toggle dropdown
-            const isHidden = dropdown.classList.contains('hidden');
-            dropdown.classList.toggle('hidden');
-            
-            // Nếu mở dropdown và có thông báo chưa đọc -> chỉ ẩn badge số, KHÔNG đánh dấu đã đọc
-            // Người dùng vẫn thấy các thông báo chưa đọc với chấm xanh
-            if (isHidden && badge && !badge.classList.contains('hidden')) {
-                // Chỉ ẩn badge số trên chuông, không gọi API đánh dấu đã đọc
-                badge.classList.add('hidden');
-            }
-        });
-        
-        // ====== MARK ALL AS READ (AJAX) ======
-        window.markAllNotificationsAsRead = function() {
-            const markAllBtn = document.getElementById('mark-all-read-btn');
-            const listContainer = document.getElementById('notification-list');
-            
-            // Disable button và hiện loading
-            if (markAllBtn) {
-                markAllBtn.innerText = 'Đang xử lý...';
-                markAllBtn.disabled = true;
-            }
-            
-            fetch('{{ route("notification.readAll") }}', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Ẩn nút "Đánh dấu đã đọc"
-                    if (markAllBtn) markAllBtn.classList.add('hidden');
-                    
-                    // Cập nhật UI: xóa chấm xanh và thêm class đã đọc cho tất cả thông báo
-                    if (listContainer) {
-                        // Xóa tất cả chấm xanh (unread indicator)
-                        listContainer.querySelectorAll('.bg-brand-green.rounded-full').forEach(dot => dot.remove());
-                        
-                        // Thêm class đã đọc cho tất cả thông báo
-                        listContainer.querySelectorAll('a').forEach(item => {
-                            item.classList.remove('bg-blue-50/30');
-                            item.classList.add('opacity-60', 'grayscale-[0.5]');
-                        });
-                    }
-                    
-                    // Ẩn badge số trên chuông (nếu chưa ẩn)
-                    const badge = document.getElementById('notification-badge');
-                    if (badge) badge.classList.add('hidden');
-                }
-            })
-            .catch(err => {
-                console.log('Mark all read error:', err);
-                // Restore button nếu lỗi
-                if (markAllBtn) {
-                    markAllBtn.innerText = 'Đánh dấu đã đọc';
-                    markAllBtn.disabled = false;
-                }
-            });
-        };
-        
-        // Click ra ngoài thì đóng dropdown
-        document.addEventListener('click', function(e) {
-            if (wrapper && !wrapper.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-        
-        // Nhấn ESC để đóng dropdown
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                dropdown.classList.add('hidden');
-            }
-        });
-    }
-});
-</script>
-@endauth

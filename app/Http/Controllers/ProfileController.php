@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\User;
-use App\Models\Book;
+use App\Models\Recipe;
 
 class ProfileController extends Controller
 {
@@ -93,13 +93,17 @@ class ProfileController extends Controller
 
         // 2. THỐNG KÊ
 
-        $totalReviews = $user->posts()->count();
+        if (Auth::id() == $user->id) {
+            $totalReviews = $user->recipes()->count();
+        } else {
+            $totalReviews = $user->recipes()->where('status', 'published')->count();
+        }
         $totalFollowing = $user->followings()->count();
         $totalFollowers = $user->followers()->count();
 
         // 3. Lấy danh sách bài Review (CÓ PHÂN QUYỀN) - PHÂN TRANG 10 BÀI
-        $reviewsQuery = $user->posts()
-            ->with('book') // Lấy kèm thông tin sách
+        $reviewsQuery = $user->recipes()
+            ->with('user') // Lấy kèm thông tin user (thay vì book)
             ->withCount(['likes', 'comments'])
             ->orderBy('created_at', 'desc');
 
@@ -121,16 +125,16 @@ class ProfileController extends Controller
 
         if ($isOwnProfile) {
             // Chủ profile: thấy TẤT CẢ sách (kể cả chờ duyệt)
-            $totalSuggestedBooks = Book::where('created_by_user_id', $user->id)->count();
-            $suggestedBooks = Book::where('created_by_user_id', $user->id)
+            $totalSuggestedBooks = Recipe::where('user_id', $user->id)->count();
+            $suggestedBooks = Recipe::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->paginate(12, ['*'], 'book_page')->withQueryString();
         } else {
             // Khách: chỉ thấy sách ĐÃ DUYỆT
-            $totalSuggestedBooks = Book::where('created_by_user_id', $user->id)
-                ->where('is_approved', true)->count();
-            $suggestedBooks = Book::where('created_by_user_id', $user->id)
-                ->where('is_approved', true)
+            $totalSuggestedBooks = Recipe::where('user_id', $user->id)
+                ->where('status', 'published')->count();
+            $suggestedBooks = Recipe::where('user_id', $user->id)
+                ->where('status', 'published')
                 ->orderBy('created_at', 'desc')
                 ->paginate(12, ['*'], 'book_page')->withQueryString();
         }
@@ -139,16 +143,19 @@ class ProfileController extends Controller
         $savedPosts = collect();
         $trashedPosts = collect();
         if ($isOwnProfile) {
-            $savedPosts = $user->savedPosts()
-                ->with(['user', 'book', 'likes', 'comments.user'])
-                ->withCount(['likes', 'comments'])
-                ->orderByPivot('created_at', 'desc')
-                ->get();
+            // Lấy công thức đã lưu qua Collection model
+            $defaultCollection = \App\Models\Collection::where('user_id', $user->id)
+                ->where('is_default', true)
+                ->with(['recipes.category', 'recipes.user'])
+                ->first();
+
+            if ($defaultCollection) {
+                $savedPosts = $defaultCollection->recipes()->latest()->get();
+            }
 
             // 7. Lấy danh sách bài review đã xóa (thùng rác)
-            $trashedPosts = $user->posts()
+            $trashedPosts = $user->recipes()
                 ->onlyTrashed()
-                ->with('book')
                 ->orderBy('deleted_at', 'desc')
                 ->get();
         }
@@ -181,8 +188,7 @@ class ProfileController extends Controller
         $user = User::with('activeBadges')->findOrFail($id);
 
         // Lấy danh sách bài Review (CÓ PHÂN QUYỀN)
-        $reviewsQuery = $user->posts()
-            ->with('book')
+        $reviewsQuery = $user->recipes()
             ->withCount(['likes', 'comments'])
             ->orderBy('created_at', 'desc');
 
@@ -212,7 +218,7 @@ class ProfileController extends Controller
             return redirect()->route('profile', $id)->with('error', 'Bạn không có quyền xem trang này.');
         }
 
-        $suggestedBooks = Book::where('created_by_user_id', $user->id)
+        $suggestedBooks = Recipe::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 

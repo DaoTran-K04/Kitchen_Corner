@@ -38,7 +38,7 @@
                         </label>
                         <input type="text" name="name" value="{{ old('name', $badge->name) }}" maxlength="50"
                             class="w-full px-4 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white transition-all duration-200 hover:border-gray-300 dark:hover:border-slate-500"
-                            placeholder="VD: Mọt Sách Mùa Đông"
+                            placeholder="VD: Mọt Công thức Mùa Đông"
                             oninput="document.getElementById('name-count').textContent = this.value.length">
                         @error('name') <p class="text-red-500 text-xs mt-2 flex items-center"><i
                         class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror

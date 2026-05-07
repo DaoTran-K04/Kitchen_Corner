@@ -8,6 +8,20 @@ use Illuminate\Support\Facades\Cache;
 
 class ArticleController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Article::with('user')->where('is_active', true);
+
+        if ($request->has('tag') && !empty($request->tag)) {
+            $query->where('tag', 'like', '%' . $request->tag . '%');
+        }
+
+        $articles = $query->latest()->paginate(9);
+        $popularArticles = Article::where('is_active', true)->orderByDesc('view_count')->take(5)->get();
+
+        return view('articles.index', compact('articles', 'popularArticles'));
+    }
+
     /**
      * Hiển thị trang chi tiết bài viết
      */

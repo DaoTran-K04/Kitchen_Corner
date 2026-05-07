@@ -6,7 +6,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-gray-100 dark:border-slate-700 flex flex-wrap justify-between items-center gap-4">
             <div>
-                <h2 class="font-bold text-gray-800 dark:text-white text-lg">Danh sách Tạp Chí Đọc</h2>
+                <h2 class="font-bold text-gray-800 dark:text-white text-lg">Danh sách Bài viết Tạp Chí</h2>
                 <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Các bài viết trong mục Tạp Chí Đọc trên trang chủ</p>
             </div>
             
@@ -125,7 +125,8 @@
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
                                     <form action="{{ route('admin.articles.destroy', $article->id) }}" method="POST"
-                                        onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?');">
+                                        class="confirm-submit"
+                                        data-confirm="Bạn có chắc muốn xóa bài viết này?">
                                         @csrf @method('DELETE')
                                         <button type="submit"
                                             class="w-8 h-8 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white transition"

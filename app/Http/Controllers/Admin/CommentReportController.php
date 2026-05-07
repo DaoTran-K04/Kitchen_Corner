@@ -16,7 +16,7 @@ class CommentReportController extends Controller
      */
     public function index(Request $request)
     {
-        $query = CommentReport::with(['comment.user', 'comment.post', 'user', 'resolvedBy']);
+        $query = CommentReport::with(['comment.user', 'comment.recipe', 'user', 'resolvedBy']);
 
         // Lọc theo trạng thái
         if ($request->filled('status')) {
@@ -43,7 +43,7 @@ class CommentReportController extends Controller
      */
     public function show(CommentReport $commentReport)
     {
-        $commentReport->load(['comment.user', 'comment.post.book', 'user', 'resolvedBy']);
+        $commentReport->load(['comment.user', 'comment.recipe', 'user', 'resolvedBy']);
         return view('admin.comment-reports.show', compact('commentReport'));
     }
 

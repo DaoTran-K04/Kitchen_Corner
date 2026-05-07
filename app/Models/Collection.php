@@ -13,6 +13,7 @@ class Collection extends Model
         'name',
         'description',
         'is_public',
+        'is_default',
     ];
 
     protected $casts = [

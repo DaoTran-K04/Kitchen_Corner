@@ -6,7 +6,7 @@
     <div
         class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-gray-100 dark:border-slate-700 flex flex-wrap justify-between items-center gap-4">
-            <h2 class="font-bold text-gray-800 dark:text-white">Danh sách Trình Chiếu Nội Dung</h2>
+            <h2 class="font-bold text-gray-800 dark:text-white">Danh sách Banner</h2>
             
             <div class="flex items-center gap-2">
                 {{-- Reset Filter (only icon) --}}
@@ -83,7 +83,8 @@
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
                                     <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"
-                                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa banner này?');">
+                                        class="confirm-submit"
+                                        data-confirm="Bạn có chắc chắn muốn xóa banner này?">
                                         @csrf @method('DELETE')
                                         <button type="submit"
                                             class="w-8 h-8 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white transition"

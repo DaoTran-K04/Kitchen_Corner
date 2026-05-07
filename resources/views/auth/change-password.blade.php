@@ -5,15 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Đổi Mật Khẩu - Góc Sách</title>
+    <title>Đổi Mật Khẩu - Góc Bếp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'brand-green': '#3E5F4E', 'brand-cream': '#FDFBF7', 'brand-brown': '#8C6B4B' },
-                    fontFamily: { sans: ['Segoe UI', 'Roboto', 'sans-serif'], serif: ['Merriweather', 'serif'] }
+                    colors: {
+                        'brand-green': '#9B2226',
+                        'brand-cream': '#FAFAF8',
+                        'brand-accent': '#E85D04'
+                    },
+                    fontFamily: {
+                        sans: ['Nunito Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
                 }
             }
         }
@@ -33,117 +41,120 @@
 </head>
 
 <body class="bg-brand-cream font-sans min-h-screen flex items-center justify-center p-4">
-    <div
-        class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
+    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-amber-50">
         <!-- Left Side - Decorative -->
-        <div
-            class="md:w-1/2 bg-brand-green flex flex-col justify-center items-center text-white p-8 relative overflow-hidden">
-            <div class="text-center">
-                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-shield-alt text-4xl"></i>
+        <div class="md:w-1/2 bg-brand-green flex flex-col justify-center items-center text-white p-10 relative overflow-hidden group">
+            <!-- Kitchen Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img src="{{ asset('images/auth/kitchen_3.png') }}" alt="Kitchen Spices" class="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-black/30 transition duration-500 group-hover:bg-black/20"></div>
+                <div class="absolute inset-0 bg-brand-green/20 mix-blend-multiply"></div>
+            </div>
+
+            <div class="relative z-20 w-full max-w-md text-center transform transition duration-500 group-hover:scale-105">
+                <div class="w-20 h-20 border-2 border-white/80 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-md bg-white/10 shadow-inner">
+                    <i class="fas fa-shield-alt text-4xl drop-shadow-sm"></i>
                 </div>
-                <h2 class="text-3xl font-serif font-bold mb-2">Bảo Mật Tài Khoản</h2>
-                <p class="opacity-90">Thay đổi mật khẩu thường xuyên để bảo vệ tài khoản của bạn an toàn hơn.</p>
-                <div class="mt-6 space-y-2 text-sm opacity-80">
-                    <div class="flex items-center justify-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Mật khẩu tối thiểu 6 ký tự</span>
+                <h2 class="text-3xl font-serif font-bold mb-3 tracking-wide drop-shadow-md">Bảo Mật Góc Bếp</h2>
+                <p class="text-white/90 font-light leading-relaxed drop-shadow-md">Giữ an toàn cho góc nhỏ của bạn. Đổi mật khẩu định kỳ là một thói quen tốt.</p>
+                
+                <div class="mt-8 space-y-3 text-sm font-light opacity-90 text-left w-max mx-auto bg-black/20 p-5 rounded-2xl backdrop-blur-sm border border-white/10">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check text-brand-accent"></i>
+                        <span>Mật khẩu tối thiểu 8 ký tự</span>
                     </div>
-                    <div class="flex items-center justify-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Kết hợp chữ và số</span>
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check text-brand-accent"></i>
+                        <span>Bao gồm cả chữ và số</span>
                     </div>
-                    <div class="flex items-center justify-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Không dùng thông tin cá nhân</span>
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check text-brand-accent"></i>
+                        <span>Tránh những thông tin dễ đoán</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Right Side - Form -->
-        <div class="md:w-1/2 p-8 md:p-12">
-            <div class="text-center mb-8">
-                <a href="{{ route('home') }}"
-                    class="text-brand-green text-2xl font-bold flex items-center justify-center gap-2 mb-2">
-                    <h3 class="text-xl font-bold text-gray-800 font-serif">Đổi Mật Khẩu</h3>
-                </a>
-                <hr>
-                <p class="text-gray-500 text-sm mt-1">Xin chào, <strong
-                        class="text-brand-green">{{ Auth::user()->name }}</strong></p>
+        <div class="md:w-1/2 p-10 md:p-12">
+            <div class="text-center mb-10">
+                <h3 class="text-2xl font-bold text-gray-800 font-serif">Đổi Mật Khẩu</h3>
+                <div class="w-16 h-1 bg-brand-green mx-auto my-4 rounded-full"></div>
+                <p class="text-gray-500 text-sm">Xin chào, <strong class="text-brand-green">{{ Auth::user()->name ?? 'Người dùng' }}</strong></p>
             </div>
 
             <form id="change-password-form">
                 @csrf
 
-                <!-- Message Container (for AJAX responses) -->
+                <!-- Message Container -->
                 <div id="message-container"></div>
 
-                <!-- Current Password -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu hiện tại</label>
+                <div class="mb-5">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Mật khẩu hiện tại</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i
-                                class="fas fa-lock"></i></span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                            <i class="fas fa-unlock-alt"></i>
+                        </span>
                         <input type="password" name="current_password" id="current_password"
-                            class="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green transition"
+                            class="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 transition duration-300 focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green focus:bg-white"
                             placeholder="Nhập mật khẩu hiện tại" required>
                         <button type="button" onclick="togglePassword('current_password', 'eye-1')"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer">
+                            class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer transition duration-300">
                             <i class="fas fa-eye" id="eye-1"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- New Password -->
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu mới</label>
+                <div class="mb-5">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Mật khẩu mới</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i
-                                class="fas fa-key"></i></span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                            <i class="fas fa-key"></i>
+                        </span>
                         <input type="password" name="new_password" id="new_password"
-                            class="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green transition"
-                            placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" required>
+                            class="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 transition duration-300 focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green focus:bg-white"
+                            placeholder="Tối thiểu 8 ký tự" required>
                         <button type="button" onclick="togglePassword('new_password', 'eye-2')"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer">
+                            class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer transition duration-300">
                             <i class="fas fa-eye" id="eye-2"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Confirm New Password -->
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Xác nhận mật khẩu mới</label>
+                <div class="mb-8">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Xác nhận mật khẩu mới</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i
-                                class="fas fa-check-double"></i></span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                            <i class="fas fa-check-double"></i>
+                        </span>
                         <input type="password" name="new_password_confirmation" id="new_password_confirmation"
-                            class="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green transition"
+                            class="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 transition duration-300 focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green focus:bg-white"
                             placeholder="Nhập lại mật khẩu mới" required>
                         <button type="button" onclick="togglePassword('new_password_confirmation', 'eye-3')"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer">
+                            class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-brand-green focus:outline-none cursor-pointer transition duration-300">
                             <i class="fas fa-eye" id="eye-3"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Buttons -->
-                <div class="flex gap-3">
-                    <a href="{{ route('profile') }}"
-                        class="flex-1 text-center bg-gray-100 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-200 transition border border-gray-200">
-                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
-                    </a>
+                <div class="flex flex-col sm:flex-row gap-3">
                     <button type="submit" id="submit-btn"
-                        class="flex-1 bg-brand-green text-white font-bold py-3 rounded-lg hover:bg-[#2C3E36] transition transform hover:-translate-y-0.5 shadow-md">
-                        <i class="fas fa-save mr-2"></i>Lưu Thay Đổi
+                        class="flex-[2] bg-brand-green text-white font-bold py-3.5 rounded-xl hover:bg-[#7a1a1f] transition duration-300 shadow-[0_4px_14px_0_rgba(155,34,38,0.39)] hover:shadow-[0_6px_20px_rgba(155,34,38,0.23)] transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i> Lưu Thay Đổi
                     </button>
+                    <a href="{{ route('profile') }}"
+                        class="flex-1 text-center bg-white text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition border border-gray-200 shadow-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i> Hủy
+                    </a>
                 </div>
             </form>
 
-            <!-- Footer Link -->
-            <div class="text-center mt-6 pt-4 border-t border-gray-100">
-                <a href="{{ route('password.request') }}" class="text-sm text-brand-brown hover:underline">
-                    <i class="fas fa-question-circle mr-1"></i>Quên mật khẩu?
+            <div class="text-center mt-8 pt-6 border-t border-gray-100 flex justify-between items-center text-sm">
+                <a href="{{ route('password.request') }}" class="text-gray-500 hover:text-brand-accent transition duration-300">
+                    <i class="fas fa-question-circle mr-1"></i> Quên mật khẩu?
+                </a>
+                <a href="{{ route('home') }}" class="text-gray-500 hover:text-brand-green transition duration-300 group">
+                    Về Trang Chủ <i class="fas fa-arrow-right ml-1 transform group-hover:translate-x-1 transition duration-300"></i>
                 </a>
             </div>
         </div>
@@ -155,24 +166,19 @@
             const icon = document.getElementById(iconId);
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
 
-        // AJAX Form Submission - Sticky Form
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('change-password-form');
             const messageContainer = document.getElementById('message-container');
             const submitBtn = document.getElementById('submit-btn');
 
-            // Function to show toast notification
             function showToast(message, isError = true) {
-                // Remove existing toast if any
                 const existingToast = document.getElementById('toast-notification');
                 if (existingToast) existingToast.remove();
 
@@ -181,17 +187,16 @@
 
                 const toast = document.createElement('div');
                 toast.id = 'toast-notification';
-                toast.className = `fixed top-4 right-4 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 text-sm max-w-xs animate-slide-in`;
+                toast.className = `fixed top-4 right-4 ${bgColor} text-white px-5 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 text-sm max-w-sm animate-slide-in font-medium`;
                 toast.innerHTML = `
-                    <i class="fas ${icon}"></i>
+                    <i class="fas ${icon} text-xl"></i>
                     <span>${message}</span>
-                    <button onclick="this.parentElement.remove()" class="ml-2 hover:text-white/80">
+                    <button onclick="this.parentElement.remove()" class="ml-auto hover:text-white/80 transition focus:outline-none">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
                 document.body.appendChild(toast);
 
-                // Auto remove after 5 seconds
                 setTimeout(() => {
                     if (toast.parentElement) {
                         toast.classList.add('animate-slide-out');
@@ -203,14 +208,20 @@
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
-                // Disable button and show loading
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý...';
+                // Validation check client-side
+                const newPass = document.getElementById('new_password').value;
+                const newPassConfirm = document.getElementById('new_password_confirmation').value;
+                
+                if (newPass !== newPassConfirm) {
+                    showToast('Đã xảy ra lỗi: Mật khẩu xác nhận không khớp.', true);
+                    return;
+                }
 
-                // Clear previous messages
+                submitBtn.disabled = true;
+                const originalBtnContent = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang xử lý...';
                 messageContainer.innerHTML = '';
 
-                // Get form data
                 const formData = new FormData(form);
 
                 try {
@@ -226,23 +237,22 @@
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        // Success - show message with countdown (keep this inline as it's important)
                         messageContainer.innerHTML = `
-                            <div id="success-message" class="bg-green-50 text-green-700 p-3 rounded-lg mb-4 border border-green-200 text-sm">
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-check-circle text-green-600"></i>
-                                    <span class="font-medium">${data.message || 'Đổi mật khẩu thành công!'}</span>
-                                    <span class="ml-auto text-xs">
-                                        <i class="fas fa-home mr-1"></i>Về trang chủ sau <strong id="countdown">3</strong>s
+                            <div class="bg-green-50 text-green-700 p-4 rounded-xl mb-6 border-l-4 border-green-500 shadow-sm text-sm">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                                        <span class="font-medium">${data.message || 'Đổi mật khẩu thành công!'}</span>
+                                    </div>
+                                    <span class="sm:ml-auto text-xs bg-white px-3 py-1.5 rounded-lg border border-green-100 shadow-sm whitespace-nowrap">
+                                        Về trang chủ sau <strong id="countdown" class="text-green-600">3</strong>s
                                     </span>
                                 </div>
                             </div>
                         `;
 
-                        // Clear form fields
                         form.reset();
 
-                        // Start countdown
                         let seconds = 3;
                         const countdownEl = document.getElementById('countdown');
                         const countdownInterval = setInterval(function () {
@@ -255,32 +265,25 @@
                         }, 1000);
 
                     } else {
-                        // Error - show toast notification (form values are preserved!)
-                        let errorMessage = '';
-
+                        let errorMessage = 'Có lỗi xảy ra, vui lòng thử lại.';
                         if (data.errors) {
-                            // Get first error message only for toast
                             for (const field in data.errors) {
                                 errorMessage = data.errors[field][0];
                                 break;
                             }
                         } else if (data.message) {
                             errorMessage = data.message;
-                        } else {
-                            errorMessage = 'Có lỗi xảy ra, vui lòng thử lại.';
                         }
-
                         showToast(errorMessage, true);
                     }
-
                 } catch (error) {
-                    console.error('Error:', error);
-                    showToast('Không thể kết nối đến server. Vui lòng thử lại.', true);
+                    showToast('Không thể kết nối đến máy chủ. Vui lòng thử lại.', true);
                 }
 
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Lưu Thay Đổi';
+                if (!document.getElementById('countdown')) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnContent;
+                }
             });
         });
     </script>

@@ -1,14 +1,50 @@
 @extends('layouts.app')
 
-@section('title', 'Thử Thách Đọc Sách - Góc Sách')
+@section('title', 'Thử Thách Đọc Công thức - Góc Bếp')
 
 @section('content')
     
-    {{-- 1. HEADER NHỎ GỌN --}}
-    <div class="bg-white border-b border-gray-100 py-8">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl font-serif font-bold text-brand-green mb-2">Sàn Đấu Thử Thách</h1>
-            <p class="text-gray-500 text-sm">Tham gia sự kiện, hoàn thành mục tiêu và nhận huy hiệu vinh danh.</p>
+    {{-- 1. HEADER HERO NỔI BẬT --}}
+    <div class="relative overflow-hidden bg-gradient-to-br from-[#7a1a1e] via-[#5c1316] to-[#3d0c0e] text-white py-16 sm:py-24 shadow-2xl">
+        {{-- Background Image Overlay --}}
+        <div class="absolute inset-0 opacity-20 mix-blend-overlay">
+            <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="Background">
+        </div>
+        
+        {{-- Decorative Orbs --}}
+        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-brand-accent rounded-full blur-[120px] opacity-50 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-yellow-500 rounded-full blur-[100px] opacity-40 pointer-events-none"></div>
+
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <span class="inline-flex items-center gap-2 bg-yellow-500/20 border border-yellow-400/30 text-yellow-300 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider mb-5 shadow-lg shadow-yellow-500/20 backdrop-blur-sm">
+                <i class="fas fa-fire animate-pulse text-yellow-400"></i> Sự kiện đặc biệt
+            </span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-black mb-4 leading-tight drop-shadow-lg text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-100 to-yellow-300">
+                Sàn Đấu Thử Thách
+            </h1>
+            <p class="text-white/80 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed font-medium">
+                Vượt qua giới hạn, hoàn thành mục tiêu để nhận ngay những 
+                <strong class="text-yellow-400 drop-shadow-md">huy hiệu danh giá</strong> và 
+                <strong class="text-yellow-400 drop-shadow-md">khung avatar độc quyền</strong> từ Góc Bếp.
+            </p>
+            
+            {{-- Quick Info Badges --}}
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <div class="flex items-center gap-3 bg-black/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 shadow-lg hover:bg-black/40 transition">
+                    <i class="fas fa-trophy text-yellow-400 text-2xl"></i>
+                    <div class="text-left">
+                        <p class="text-white font-bold leading-none mb-1">Vinh Danh</p>
+                        <p class="text-[11px] text-white/60 leading-none">Bảng xếp hạng</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-black/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 shadow-lg hover:bg-black/40 transition">
+                    <i class="fas fa-gift text-brand-accent text-2xl"></i>
+                    <div class="text-left">
+                        <p class="text-white font-bold leading-none mb-1">Quà Tặng</p>
+                        <p class="text-[11px] text-white/60 leading-none">Vật phẩm độc quyền</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -177,9 +213,9 @@
                                 </div>
                                 
                                 {{-- CTA Button --}}
-                                <a href="{{ route('reviews.create') }}" class="inline-flex items-center gap-2 bg-brand-green text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg hover:bg-[#1e3a2f] transition transform hover:-translate-y-0.5 hover:shadow-xl">
+                                <a href="#" onclick="alert('Tính năng đăng công thức đang được phát triển!')" class="inline-flex items-center gap-2 bg-brand-green text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg hover:bg-[#1e3a2f] transition transform hover:-translate-y-0.5 hover:shadow-xl">
                                     <i class="fas fa-feather-alt"></i>
-                                    Viết Review Ngay
+                                    Đăng Công Thức (Sắp RM)
                                 </a>
                             </div>
                             

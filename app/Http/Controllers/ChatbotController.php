@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
-use App\Models\Post;
+use App\Models\Recipe;
+use App\Models\User;
 use App\Models\Category;
-use App\Models\Author;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,26 +16,42 @@ class ChatbotController extends Controller
     private $apiKey;
     private $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
-    /**
-     * FAQ - Câu trả lời nhanh cho các câu hỏi phổ biến
-     */
+    // Kiến thức nấu ăn có sẵn — dùng khi Gemini không khả dụng
+    private $cookingKnowledge = [
+        'bánh mì' => "Cách làm bánh mì:\n1. Trộn 500g bột mì, 7g men nở, 1 tbsp đường, 1 tsp muối, 300ml nước ấm.\n2. Nhồi bột đến khi mịn (10 phút), ũ 1 tiếng cho nở gấp đôi.\n3. Chia bột thành từng phần, tạo hình oval dài.\n4. Ụ thêm 30 phút, rạch mặt bánh, nướng 200°C trong 20-25 phút.\n5. Vẩy nước lên lò khi nướng để vỏ giòn.",
+        'bánh mỳ' => "Cách làm bánh mỳ giòn:\n1. Trộn 500g bột mì, men nở, đường, muối với nước ấm.\n2. Nhồi 10 phút, ũ 1 tiếng.\n3. Tạo hình, nướng 200-220°C, phụn nước tạo hơi để vỏ giòn.",
+        'gà kho' => "Gà kho gừng:\n1. Gà chặt miếng ướp muối, tiêu, nước mắm, đường 15 phút.\n2. Phi hành tỏi, cho gà vào xào vàng.\n3. Thêm gừng thái sợi, 2 tbsp nước mắm, 1 tbsp đường, chút nước.\n4. Kho lửa vừa 15-20 phút đến khi nước sánh lại.",
+        'phở' => "Nước phở bò chuẩn vị:\n1. Nướng gừng và hành tây cho thơm.\n2. Hầm xương bò 4-6 tiếng với quế, hồi, thảo quả, đinh hương.\n3. Nêm nước mắm, muối, đường phèn vừa ăn.\n4. Trụng bánh phở, xếp thịt bò tái/chín, chan nước dùng sôi.",
+        'cơm chiên' => "Cơm chiên dương châu:\n1. Dùng cơm nguội (để cơm qua đêm tốt nhất).\n2. Xào tỏi vàng, cho cơm vào đảo lửa to.\n3. Tạo chỗ trống, đập trứng vào xào nhanh rồi trộn với cơm.\n4. Thêm hành lá, đậu hà lan, nêm nước mắm, tiêu.",
+        'canh' => "Canh cải thịt băm:\n1. Thịt heo băm nhỏ, ướp nước mắm, tiêu.\n2. Nước sôi cho thịt vào, đảo tan.\n3. Cho cải vào nấu 5 phút.\n4. Nêm muối, nước mắm vừa ăn, thêm hành lá.",
+        'bún bò' => "Bún bò Huế:\n1. Hầm xương heo và bò 2 tiếng.\n2. Phi sả, mắm ruốc Huế, ớt xào thơm rồi cho vào nồi.\n3. Luộc bắp bò, chân giò đến mềm.\n4. Nêm nước mắm, muối, đường. Chan lên bún, thêm rau sống.",
+        'mì' => "Mì xoào hải sản:\n1. Luộc mì vừa chín, vớt ra xục lạnh.\n2. Xào tởi, cho hải sản vào xào thơm.\n3. Cho mì vào đảo cùng, nêm dầu hào, nước tương, chút dầu mè.\n4. Thêm giá sống, hành lá lên trên.",
+    ];
+
     private $faqs = [
         'faq_account' => [
             'keywords' => ['đăng ký', 'tạo tài khoản', 'register', 'sign up', 'làm sao để đăng ký'],
-            'answer' => 'Để đăng ký tài khoản Góc Sách, bạn click vào nút "Đăng ký" ở góc trên bên phải trang web. Chỉ cần nhập email, tên hiển thị và mật khẩu là xong. Sau khi đăng ký, bạn có thể viết review, bình luận và tạo tủ sách cá nhân.'
+            'answer'   => 'Để đăng ký tài khoản Góc Bếp, bạn bấm nút "Đăng Ký" ở góc trên bên phải trang web. Chỉ cần nhập email, tên hiển thị và mật khẩu là xong. Sau khi đăng ký, bạn có thể đăng công thức, bình luận và lưu công thức yêu thích!',
         ],
         'faq_login' => [
             'keywords' => ['đăng nhập', 'login', 'quên mật khẩu', 'không vào được'],
-            'answer' => 'Để đăng nhập, click vào nút "Đăng nhập" ở góc trên bên phải. Nếu quên mật khẩu, bạn có thể sử dụng chức năng "Quên mật khẩu" để lấy lại qua email đã đăng ký.'
+            'answer'   => 'Để đăng nhập, bấm nút "Đăng Nhập" ở góc trên bên phải. Nếu quên mật khẩu, bạn chọn "Quên mật khẩu" để lấy lại qua email đã đăng ký.',
         ],
-        'faq_review' => [
-            'keywords' => ['viết review', 'đăng review', 'cách review', 'làm sao review'],
-            'answer' => 'Để viết review sách, bạn cần đăng nhập trước. Sau đó vào trang chi tiết cuốn sách muốn review và click vào nút "Viết Review". Chia sẻ cảm nhận, đánh giá sao và nội dung review của bạn.'
+        'faq_post' => [
+            'keywords' => ['đăng công thức', 'đăng bài', 'chia sẻ món', 'làm sao đăng', 'cách đăng công thức'],
+            'answer'   => 'Để đăng công thức, bạn cần đăng nhập và xác thực email. Sau đó bấm "Đăng Công Thức" trên menu. Bạn có thể nhập tên món, nguyên liệu (kèm định lượng để tự động tính Calo), các bước thực hiện và ảnh minh họa.',
         ],
-
+        'faq_nutrition' => [
+            'keywords' => ['tính calo', 'dinh dưỡng', 'kcal', 'nutrition', 'tính dinh dưỡng', 'bao nhiêu calo'],
+            'answer'   => 'Góc Bếp tự động tính Calo, Protein, Fat và Carb cho mỗi công thức. Khi bạn nhập nguyên liệu kèm định lượng (ví dụ: 200g thịt gà), hệ thống sẽ tra cứu dữ liệu dinh dưỡng và cộng dồn tổng cho toàn bộ món ăn.',
+        ],
+        'faq_smart_search' => [
+            'keywords' => ['tủ lạnh', 'nguyên liệu có sẵn', 'tìm theo nguyên liệu', 'tủ lạnh web là gì', 'nấu gì hôm nay'],
+            'answer'   => 'Tính năng "Tủ Lạnh Web" cho phép bạn nhập các nguyên liệu đang có (ví dụ: thịt heo, cà chua, hành lá) và hệ thống sẽ gợi ý những món ăn phù hợp nhất dựa trên thuật toán Jaccard Similarity. Tính năng này yêu cầu đăng nhập.',
+        ],
         'faq_about' => [
-            'keywords' => ['góc sách là gì', 'giới thiệu', 'về góc sách', 'website này'],
-            'answer' => 'Góc Sách là cộng đồng yêu sách Việt Nam, nơi bạn có thể khám phá sách hay, đọc và viết review, tham gia thảo luận với những người cùng đam mê đọc sách. Website có hàng nghìn đầu sách với đa dạng thể loại.'
+            'keywords' => ['góc bếp là gì', 'giới thiệu', 'về góc bếp', 'website này'],
+            'answer'   => 'Góc Bếp là nền tảng chia sẻ công thức nấu ăn của người Việt. Tại đây bạn có thể khám phá hàng ngàn công thức, tự tính toán dinh dưỡng, dùng AI gợi ý món từ nguyên liệu có sẵn, và kết nối với cộng đồng đầu bếp đam mê.',
         ],
     ];
 
@@ -45,132 +60,65 @@ class ChatbotController extends Controller
         $this->apiKey = config('services.gemini.api_key');
     }
 
-    /**
-     * Lấy lịch sử chat của user hiện tại
-     */
     public function getHistory()
     {
         if (!Auth::check()) {
-            return response()->json([
-                'success' => true,
-                'messages' => []
-            ]);
+            return response()->json(['success' => true, 'messages' => []]);
         }
-
         $messages = ChatMessage::where('user_id', Auth::id())
             ->orderBy('created_at', 'asc')
-            ->limit(50) // Giới hạn 50 tin nhắn gần nhất
+            ->limit(50)
             ->get(['role', 'content', 'created_at']);
-
-        return response()->json([
-            'success' => true,
-            'messages' => $messages
-        ]);
+        return response()->json(['success' => true, 'messages' => $messages]);
     }
 
-    /**
-     * Xóa lịch sử chat của user hiện tại
-     */
     public function clearHistory()
     {
         if (!Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Bạn cần đăng nhập để xóa lịch sử chat.'
-            ], 401);
+            return response()->json(['success' => false, 'message' => 'Bạn cần đăng nhập.'], 401);
         }
-
         ChatMessage::where('user_id', Auth::id())->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã xóa lịch sử chat.'
-        ]);
+        return response()->json(['success' => true, 'message' => 'Đã xóa lịch sử chat.']);
     }
 
-    /**
-     * Lưu tin nhắn vào database
-     */
     private function saveMessage($role, $content)
     {
         if (Auth::check()) {
-            ChatMessage::create([
-                'user_id' => Auth::id(),
-                'role' => $role,
-                'content' => $content,
-            ]);
+            ChatMessage::create(['user_id' => Auth::id(), 'role' => $role, 'content' => $content]);
+        }
+        if ($role === 'assistant') {
+            session(['last_bot_message' => $content]);
+            
+            // Nếu tin nhắn có dạng danh sách số (Menu công thức), hãy lưu vào bộ nhớ menu riêng biệt
+            if (preg_match('/^\d+\./m', $content)) {
+                session(['last_recipe_menu' => $content]);
+            }
         }
     }
 
-    /**
-     * Phát hiện intent (ý định) của người dùng
-     */
     private function detectIntent($message)
     {
-        $message = mb_strtolower($message);
+        $msg = mb_strtolower($message);
         $intents = [];
 
-        // Greeting - Chào hỏi
-        if (preg_match('/(xin chào|hello|hi|chào bạn|chào|hey|alo)/ui', $message)) {
-            $intents[] = 'greeting';
-        }
+        if (preg_match('/(xin chào|hello|hi|chào bạn|chào|hey|alo)/ui', $msg))              $intents[] = 'greeting';
+        if (preg_match('/(tạm biệt|bye|goodbye|chào nhé|hẹn gặp lại)/ui', $msg))            $intents[] = 'farewell';
+        if (preg_match('/(cảm ơn|thank|cám ơn|thanks)/ui', $msg))                            $intents[] = 'thanks';
+        if (preg_match('/(gợi ý|đề xuất|recommend|nên nấu|món hay|ăn gì|nấu gì ngon)/ui', $msg)) $intents[] = 'recommend';
+        if (preg_match('/(thống kê|bao nhiêu công thức|tổng số|có mấy món|số lượng)/ui', $msg))   $intents[] = 'statistics';
 
-        // Farewell - Tạm biệt
-        if (preg_match('/(tạm biệt|bye|goodbye|chào nhé|hẹn gặp lại)/ui', $message)) {
-            $intents[] = 'farewell';
-        }
-
-        // Thanks - Cảm ơn
-        if (preg_match('/(cảm ơn|thank|cám ơn|thanks)/ui', $message)) {
-            $intents[] = 'thanks';
-        }
-
-        // Search book by title
-        if (preg_match('/(tìm sách|tìm cuốn|có sách|có cuốn|kiếm sách|search)/ui', $message)) {
-            $intents[] = 'search_book';
-        }
-
-        // Search by author
-        if (preg_match('/(sách của|tác giả|author|viết bởi|của tác giả)/ui', $message)) {
-            $intents[] = 'search_author';
-        }
-
-        // Category/Genre
-        if (preg_match('/(thể loại|category|loại sách|sách về|sách thuộc|genre)/ui', $message)) {
-            $intents[] = 'search_category';
-        }
-
-        // Recommendation
-        if (preg_match('/(gợi ý|đề xuất|recommend|nên đọc|sách hay|đọc gì|hay nhất)/ui', $message)) {
-            $intents[] = 'recommend';
-        }
-
-        // Statistics
-        if (preg_match('/(thống kê|bao nhiêu|tổng số|có mấy|đếm|số lượng)/ui', $message)) {
-            $intents[] = 'statistics';
-        }
-
-        // Help
-        if (preg_match('/(giúp|help|hướng dẫn|làm sao|cách|hỗ trợ)/ui', $message)) {
-            $intents[] = 'help';
-        }
-
-        // FAQ detection
         foreach ($this->faqs as $faqKey => $faq) {
             foreach ($faq['keywords'] as $keyword) {
-                if (mb_strpos($message, $keyword) !== false) {
+                if (mb_strpos($msg, mb_strtolower($keyword)) !== false) {
                     $intents[] = $faqKey;
                     break;
                 }
             }
         }
 
-        return empty($intents) ? ['general'] : array_unique($intents);
+        return empty($intents) ? ['search'] : array_unique($intents);
     }
 
-    /**
-     * Lấy câu trả lời FAQ nếu có
-     */
     private function getFaqResponse($intents)
     {
         foreach ($intents as $intent) {
@@ -181,392 +129,267 @@ class ChatbotController extends Controller
         return null;
     }
 
-    /**
-     * Tìm kiếm thông minh trong database
-     */
-    private function smartSearch($message, $intents)
-    {
-        $message = mb_strtolower($message);
-        $results = [];
-
-        // Tìm theo tác giả
-        if (in_array('search_author', $intents) || preg_match('/(sách|tác phẩm|của|tác giả|author)\s+(.+)/ui', $message, $matches)) {
-            $keyword = isset($matches[2]) ? trim($matches[2]) : $this->extractKeyword($message);
-            if ($keyword) {
-                $books = Book::where('is_approved', true)
-                    ->where(function ($q) use ($keyword) {
-                        $q->where('author_name', 'like', "%{$keyword}%")
-                            ->orWhereHas('author', function ($q) use ($keyword) {
-                                $q->where('name', 'like', "%{$keyword}%");
-                            });
-                    })
-                    ->select('title', 'author_name', 'average_rating', 'slug')
-                    ->orderByDesc('average_rating')
-                    ->limit(10)
-                    ->get();
-
-                if ($books->count() > 0) {
-                    $results['type'] = 'author_books';
-                    $results['keyword'] = $keyword;
-                    $results['books'] = $books->toArray();
-                }
-            }
-        }
-
-        // Tìm theo thể loại
-        if (in_array('search_category', $intents) || preg_match('/(thể loại|category|loại sách|sách về|sách thuộc)\s+(.+)/ui', $message, $matches)) {
-            $keyword = isset($matches[2]) ? trim($matches[2]) : $this->extractKeyword($message);
-            if ($keyword && empty($results)) {
-                $books = Book::where('is_approved', true)
-                    ->whereHas('categories', function ($q) use ($keyword) {
-                        $q->where('name', 'like', "%{$keyword}%");
-                    })
-                    ->select('title', 'author_name', 'average_rating', 'slug')
-                    ->orderByDesc('average_rating')
-                    ->limit(10)
-                    ->get();
-
-                if ($books->count() > 0) {
-                    $results['type'] = 'category_books';
-                    $results['keyword'] = $keyword;
-                    $results['books'] = $books->toArray();
-                }
-            }
-        }
-
-        // Tìm sách theo tên (mở rộng: tìm trong title và description)
-        if ((in_array('search_book', $intents) || preg_match('/(tìm sách|sách|tìm|có cuốn|cuốn)\s+(.+)/ui', $message, $matches)) && empty($results)) {
-            $keyword = isset($matches[2]) ? trim($matches[2]) : $this->extractKeyword($message);
-            if ($keyword) {
-                $books = Book::where('is_approved', true)
-                    ->where(function ($q) use ($keyword) {
-                        $q->where('title', 'like', "%{$keyword}%")
-                            ->orWhere('description', 'like', "%{$keyword}%");
-                    })
-                    ->select('title', 'author_name', 'average_rating', 'slug')
-                    ->orderByDesc('average_rating')
-                    ->limit(10)
-                    ->get();
-
-                if ($books->count() > 0) {
-                    $results['type'] = 'search_books';
-                    $results['keyword'] = $keyword;
-                    $results['books'] = $books->toArray();
-                }
-            }
-        }
-
-        // Đếm số lượng sách
-        if (in_array('statistics', $intents) && preg_match('/(bao nhiêu|tổng số|có mấy|đếm)\s*(sách|cuốn)/ui', $message)) {
-            $totalBooks = Book::where('is_approved', true)->count();
-            $results['type'] = 'count_books';
-            $results['total'] = $totalBooks;
-        }
-
-        // Thống kê chung
-        if (in_array('statistics', $intents) && preg_match('/(thống kê|thong ke|tổng quan|overview)/ui', $message)) {
-            $results['type'] = 'statistics';
-            $results['stats'] = [
-                'total_books' => Book::where('is_approved', true)->count(),
-                'total_reviews' => Post::where('status', 'published')->whereNotNull('book_id')->count(),
-                'total_categories' => Category::count(),
-                'total_authors' => Author::count(),
-            ];
-        }
-
-        // Sách hay nhất / Gợi ý
-        if (in_array('recommend', $intents) && empty($results)) {
-            $books = Book::where('is_approved', true)
-                ->where('average_rating', '>', 0)
-                ->orderByDesc('average_rating')
-                ->select('title', 'author_name', 'average_rating', 'slug')
-                ->limit(10)
-                ->get();
-
-            if ($books->count() > 0) {
-                $results['type'] = 'top_books';
-                $results['books'] = $books->toArray();
-            }
-        }
-
-        // Tìm bài review liên quan (mới)
-        if (empty($results)) {
-            $keyword = $this->extractKeyword($message);
-            if ($keyword && strlen($keyword) >= 3) {
-                $posts = Post::where('status', 'published')
-                    ->where(function ($q) use ($keyword) {
-                        $q->where('title', 'like', "%{$keyword}%")
-                            ->orWhere('content', 'like', "%{$keyword}%");
-                    })
-                    ->with('book:id,title,slug')
-                    ->limit(5)
-                    ->get(['id', 'title', 'book_id']);
-
-                if ($posts->count() > 0) {
-                    $results['type'] = 'related_posts';
-                    $results['keyword'] = $keyword;
-                    $results['posts'] = $posts->toArray();
-                }
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Trích xuất từ khóa chính từ message
-     */
-    private function extractKeyword($message)
-    {
-        // Loại bỏ các từ phổ biến không có ý nghĩa tìm kiếm
-        $stopWords = ['tìm', 'sách', 'của', 'có', 'không', 'cho', 'tôi', 'mình', 'bạn', 'xin', 'vui lòng', 'giúp', 'với', 'về', 'là', 'được', 'hay', 'nhất', 'thể loại', 'tác giả'];
-
-        $words = preg_split('/\s+/', mb_strtolower($message));
-        $keywords = [];
-
-        foreach ($words as $word) {
-            $word = trim($word);
-            if (strlen($word) >= 2 && !in_array($word, $stopWords)) {
-                $keywords[] = $word;
-            }
-        }
-
-        return implode(' ', array_slice($keywords, 0, 3));
-    }
-
-    /**
-     * Tạo context từ kết quả tìm kiếm
-     */
-    private function buildDatabaseContext($searchResults)
-    {
-        if (empty($searchResults)) {
-            return '';
-        }
-
-        $context = "\n\n[DỮ LIỆU TỪ DATABASE GÓC SÁCH]\n";
-
-        switch ($searchResults['type']) {
-            case 'author_books':
-                $context .= "Tìm thấy " . count($searchResults['books']) . " sách của \"{$searchResults['keyword']}\":\n";
-                foreach ($searchResults['books'] as $book) {
-                    $rating = $book['average_rating'] ? " (Rating: " . number_format($book['average_rating'], 1) . "/5)" : "";
-                    $context .= "- {$book['title']} - {$book['author_name']}{$rating}\n";
-                }
-                break;
-
-            case 'category_books':
-                $context .= "Sách thể loại \"{$searchResults['keyword']}\":\n";
-                foreach ($searchResults['books'] as $book) {
-                    $rating = $book['average_rating'] ? " (Rating: " . number_format($book['average_rating'], 1) . "/5)" : "";
-                    $context .= "- {$book['title']} - {$book['author_name']}{$rating}\n";
-                }
-                break;
-
-            case 'search_books':
-                $context .= "Kết quả tìm kiếm \"{$searchResults['keyword']}\":\n";
-                foreach ($searchResults['books'] as $book) {
-                    $rating = $book['average_rating'] ? " (Rating: " . number_format($book['average_rating'], 1) . "/5)" : "";
-                    $context .= "- {$book['title']} - {$book['author_name']}{$rating}\n";
-                }
-                break;
-
-            case 'count_books':
-                $context .= "Tổng số sách trên Góc Sách: {$searchResults['total']} cuốn\n";
-                break;
-
-            case 'statistics':
-                $stats = $searchResults['stats'];
-                $context .= "Thống kê Góc Sách:\n";
-                $context .= "- Tổng sách: {$stats['total_books']} cuốn\n";
-                $context .= "- Tổng bài review: {$stats['total_reviews']} bài\n";
-                $context .= "- Số thể loại: {$stats['total_categories']} loại\n";
-                $context .= "- Số tác giả: {$stats['total_authors']} người\n";
-                break;
-
-            case 'top_books':
-                $context .= "Top sách được đánh giá cao nhất:\n";
-                foreach ($searchResults['books'] as $index => $book) {
-                    $rank = $index + 1;
-                    $context .= "{$rank}. {$book['title']} - {$book['author_name']} (Rating: " . number_format($book['average_rating'], 1) . "/5)\n";
-                }
-                break;
-
-            case 'related_posts':
-                $context .= "Bài review liên quan đến \"{$searchResults['keyword']}\":\n";
-                foreach ($searchResults['posts'] as $post) {
-                    $bookTitle = $post['book']['title'] ?? 'Bài viết';
-                    $context .= "- {$post['title']} (về sách: {$bookTitle})\n";
-                }
-                break;
-        }
-
-        $context .= "\nHãy dựa vào dữ liệu trên để trả lời người dùng một cách chính xác và hữu ích.";
-
-        return $context;
-    }
-
-    /**
-     * Xử lý các intent đặc biệt và trả về response nhanh
-     */
     private function getQuickResponse($intents)
     {
         if (in_array('greeting', $intents) && count($intents) === 1) {
-            return 'Xin chào! Tôi là trợ lý AI của Góc Sách. Tôi có thể giúp bạn tìm sách hay, gợi ý sách theo thể loại, hoặc trả lời các câu hỏi về website. Bạn cần gì nào?';
+            return 'Xin chào! Tôi là trợ lý AI của Góc Bếp. Tôi có thể giúp bạn tìm món ngon, gợi ý công thức theo nguyên liệu, hoặc tư vấn dinh dưỡng. Bạn cần gì nào?';
         }
-
         if (in_array('farewell', $intents)) {
-            return 'Tạm biệt bạn! Chúc bạn đọc sách vui vẻ. Hẹn gặp lại!';
+            return 'Tạm biệt! Chúc bạn nấu ăn ngon và thành công. Hẹn gặp lại!';
+        }
+        if (in_array('thanks', $intents) && count($intents) === 1) {
+            return 'Không có gì! Rất vui được giúp bạn. Nếu cần gì thêm về nấu ăn, cứ hỏi nhé!';
+        }
+        return null;
+    }
+
+    /**
+     * Tìm công thức trong DB dựa trên keyword thô (KHÔNG qua extractKeyword)
+     * Tìm từng từ riêng lẻ để bắt được "mì tôn", "gà kho", "bánh mì"...
+     */
+    private function searchRecipesByRawMessage($message)
+    {
+        $cleanMsg = mb_strtolower(trim($message));
+
+        // Loại bỏ các tiền tố/hậu tố để lấy cụm từ món ăn cốt lõi
+        $remove = ['cách làm', 'hướng dẫn nấu', 'hướng dẫn', 'làm sao để', 'chỉ tôi làm', 'nấu món', 'món', 'tôi muốn', 'cách nấu'];
+        foreach ($remove as $phrase) {
+            // Regex replace using word boundaries for exact phrase ignoring extra spaces
+            $cleanMsg = trim(preg_replace('/\b' . preg_quote($phrase, '/') . '\b/u', '', $cleanMsg));
         }
 
-        if (in_array('thanks', $intents) && count($intents) === 1) {
-            return 'Không có gì! Rất vui được giúp bạn. Nếu cần gì thêm, cứ hỏi nhé!';
+        // Bỏ qua các chuỗi quá ngắn hoặc vô nghĩa
+        if (mb_strlen($cleanMsg) < 2) return null;
+
+        // Ưu tiên 1: Tìm kiếm cụm từ đầy đủ trong tiêu đề
+        $recipes = Recipe::where('status', 'published')
+            ->where('title', 'like', "%{$cleanMsg}%")
+            ->select('id', 'title', 'cooking_time', 'difficulty')
+            ->orderByDesc('view_count')
+            ->limit(5)->get();
+
+        if ($recipes->count() > 0) {
+            return ['recipes' => $recipes, 'keyword' => $cleanMsg];
+        }
+
+        // Ưu tiên 2: Tìm kiếm cụm từ đầy đủ trong mô tả (nếu tên món có thể không khớp chính xác 100%)
+        $recipes = Recipe::where('status', 'published')
+            ->where('description', 'like', "%{$cleanMsg}%")
+            ->select('id', 'title', 'cooking_time', 'difficulty')
+            ->orderByDesc('view_count')
+            ->limit(5)->get();
+
+        if ($recipes->count() > 0) {
+            return ['recipes' => $recipes, 'keyword' => $cleanMsg];
         }
 
         return null;
     }
 
+    private function formatRecipeList($recipes, $keyword)
+    {
+        $list = $recipes->map(function ($r, $i) {
+            $time = $r->cooking_time ? " ({$r->cooking_time} phút)" : '';
+            $diff = match($r->difficulty ?? '') {
+                'easy'   => ' - Dễ',
+                'hard'   => ' - Khó',
+                'medium' => ' - Trung bình',
+                default  => '',
+            };
+            return ($i + 1) . ". {$r->title}{$time}{$diff}";
+        })->implode("\n");
+
+        return "Tìm thấy {$recipes->count()} công thức về \"{$keyword}\":\n{$list}\n\nBạn muốn xem chi tiết món nào?";
+    }
+
     public function chat(Request $request)
     {
-        $request->validate([
-            'message' => 'required|string|max:1000',
-        ]);
+        $request->validate(['message' => 'required|string|max:1000']);
+        $userMessage = trim($request->input('message'));
 
-        $userMessage = $request->input('message');
-
-        // Lưu tin nhắn của user vào database
         $this->saveMessage('user', $userMessage);
 
-        // Phát hiện intent
-        $intents = $this->detectIntent($userMessage);
-
-        // Kiểm tra quick response (greeting, farewell, thanks)
-        $quickResponse = $this->getQuickResponse($intents);
-        if ($quickResponse) {
-            // Lưu response vào database
-            $this->saveMessage('assistant', $quickResponse);
-            return response()->json([
-                'success' => true,
-                'reply' => $quickResponse
-            ]);
-        }
-
-        // Kiểm tra FAQ
-        $faqResponse = $this->getFaqResponse($intents);
-        if ($faqResponse) {
-            // Lưu response vào database
-            $this->saveMessage('assistant', $faqResponse);
-            return response()->json([
-                'success' => true,
-                'reply' => $faqResponse
-            ]);
-        }
-
-        // Lấy lịch sử chat từ database thay vì từ request
-        $history = [];
-        if (Auth::check()) {
-            $dbMessages = ChatMessage::where('user_id', Auth::id())
-                ->orderBy('created_at', 'asc')
-                ->limit(20) // Lấy 20 tin nhắn gần nhất cho context
-                ->get(['role', 'content']);
-
-            foreach ($dbMessages as $msg) {
-                $history[] = [
-                    'role' => $msg->role,
-                    'content' => $msg->content
-                ];
+        // 0. Xử lý trường hợp người dùng chọn số (1, 2, 3...) từ danh sách gợi ý
+        if (is_numeric($userMessage) && (int)$userMessage > 0 && (int)$userMessage <= 10) {
+            $menuContent = session('last_recipe_menu');
+                
+            if ($menuContent) {
+                // Parse the list from the last saved menu.
+                if (preg_match('/^' . preg_quote($userMessage, '/') . '\.\s*([^\(]+)/m', $menuContent, $matches) || 
+                    preg_match('/^' . preg_quote($userMessage, '/') . '\.\s*(.*?)(\n|$)/m', $menuContent, $matches)) {
+                    $recipeName = trim($matches[1]);
+                    // Clean up trailing dash if exists
+                    $recipeName = trim(preg_replace('/-.*$/', '', $recipeName));
+                    
+                    $recipe = Recipe::where('status', 'published')
+                                    ->where('title', 'like', "%{$recipeName}%")
+                                    ->first();
+                    if ($recipe) {
+                        $recipeUrl = route('recipes.show', $recipe->slug);
+                        $reply = "Bạn có thể xem chi tiết món **{$recipe->title}** tại đây:\n" . $recipeUrl;
+                        $this->saveMessage('assistant', $reply);
+                        return response()->json(['success' => true, 'reply' => $reply]);
+                    }
+                }
             }
         }
 
-        // Tìm kiếm thông minh trong database
-        $searchResults = $this->smartSearch($userMessage, $intents);
-        $databaseContext = $this->buildDatabaseContext($searchResults);
+        $intents = $this->detectIntent($userMessage);
 
-        // System prompt cải tiến - KHÔNG CÓ EMOJI
-        $systemPrompt = "Bạn là trợ lý AI của website Góc Sách - một cộng đồng yêu sách Việt Nam.
-
-KIẾN THỨC VỀ GÓC SÁCH:
-- Website chuyên về sách và review sách tiếng Việt
-- Các thể loại phổ biến: Tiểu thuyết, Văn học Việt Nam, Self-help, Kinh doanh, Tâm lý, Light Novel, Manga
-- Cho phép người dùng: đăng review, bình luận, đánh giá sách, tạo tủ sách cá nhân
-- Các tác giả nổi tiếng Việt Nam: Nguyễn Nhật Ánh, Nguyễn Ngọc Tư, Nam Cao, Ngô Tất Tố
-
-QUY TẮC TRẢ LỜI (RẤT QUAN TRỌNG):
-- Trả lời bằng tiếng Việt, thân thiện và tự nhiên như một người bạn yêu sách
-- KHÔNG sử dụng emoji trong câu trả lời
-- Trả lời ngắn gọn 3-5 câu, đi thẳng vào vấn đề
-- Khi gợi ý sách, đề cập tên tác giả và rating nếu có
-- Nếu không tìm thấy trong database, nói rõ 'Góc Sách hiện chưa có sách này' và gợi ý sách tương tự nếu có thể
-- Khi có dữ liệu từ database, sử dụng chính xác thông tin đó
-- Format danh sách sách rõ ràng, dễ đọc
-
-VÍ DỤ TRẢ LỜI TỐT:
-User: Có sách của Nguyễn Nhật Ánh không?
-Bot: Góc Sách có nhiều sách của Nguyễn Nhật Ánh. Một số tác phẩm nổi bật: Mắt Biếc (Rating 4.8/5), Tôi Thấy Hoa Vàng Trên Cỏ Xanh (Rating 4.7/5), Cho Tôi Xin Một Vé Đi Tuổi Thơ. Bạn muốn tìm cuốn nào cụ thể?" . $databaseContext;
-
-        // Build conversation history
-        $contents = [];
-
-        // Add system context as first message
-        $contents[] = [
-            'role' => 'user',
-            'parts' => [['text' => $systemPrompt]]
-        ];
-        $contents[] = [
-            'role' => 'model',
-            'parts' => [['text' => 'Xin chào! Tôi là trợ lý AI của Góc Sách. Tôi có thể giúp bạn tìm sách hay, gợi ý đọc theo sở thích, hoặc trả lời các câu hỏi về website. Bạn cần gì nào?']]
-        ];
-
-        // Add conversation history from database
-        foreach ($history as $msg) {
-            $contents[] = [
-                'role' => $msg['role'] === 'user' ? 'user' : 'model',
-                'parts' => [['text' => $msg['content']]]
-            ];
+        // 1. Greeting / farewell / thanks
+        $quick = $this->getQuickResponse($intents);
+        if ($quick) {
+            $this->saveMessage('assistant', $quick);
+            return response()->json(['success' => true, 'reply' => $quick]);
         }
 
+        // 2. FAQ
+        $faq = $this->getFaqResponse($intents);
+        if ($faq) {
+            $this->saveMessage('assistant', $faq);
+            return response()->json(['success' => true, 'reply' => $faq]);
+        }
+
+        // 3. Thống kê trực tiếp từ DB
+        if (in_array('statistics', $intents)) {
+            try {
+                $total = Recipe::where('status', 'published')->count();
+                $cats  = Category::count();
+                $chefs = User::whereHas('recipes', fn($q) => $q->where('status', 'published'))->count();
+                $reply = "Thống kê Góc Bếp hiện tại:\n"
+                    . "- Tổng số công thức: {$total} món\n"
+                    . "- Số thể loại ẩm thực: {$cats} loại\n"
+                    . "- Đầu bếp đang chia sẻ: {$chefs} người\n\n"
+                    . "Bạn có muốn khám phá thêm công thức không?";
+                $this->saveMessage('assistant', $reply);
+                return response()->json(['success' => true, 'reply' => $reply]);
+            } catch (\Exception $e) {
+                Log::error('Chatbot statistics error: ' . $e->getMessage());
+            }
+        }
+
+        // 4. Gợi ý top món từ DB
+        if (in_array('recommend', $intents)) {
+            try {
+                $recipes = Recipe::where('status', 'published')
+                    ->orderByDesc('view_count')
+                    ->select('id', 'title', 'cooking_time', 'difficulty')
+                    ->limit(5)->get();
+                if ($recipes->count() > 0) {
+                    $reply = $this->formatRecipeList($recipes, 'phổ biến nhất');
+                    $this->saveMessage('assistant', $reply);
+                    return response()->json(['success' => true, 'reply' => $reply]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Chatbot recommend error: ' . $e->getMessage());
+            }
+        }
+
+        // 5. Tìm kiếm công thức bằng tên món (chính) — KHÔNG dùng extractKeyword
         try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($this->apiUrl . '?key=' . $this->apiKey, [
+            $found = $this->searchRecipesByRawMessage($userMessage);
+            if ($found) {
+                $reply = $this->formatRecipeList($found['recipes'], $found['keyword']);
+                $this->saveMessage('assistant', $reply);
+                return response()->json(['success' => true, 'reply' => $reply]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Chatbot recipe search error: ' . $e->getMessage());
+        }
+
+        // 5b. Tra cứu kiến thức nấu ăn có sẵn (khi DB không có công thức cụ thể)
+        $msgLower = mb_strtolower($userMessage);
+        foreach ($this->cookingKnowledge as $keyword => $knowledge) {
+            if (mb_strpos($msgLower, $keyword) !== false) {
+                $this->saveMessage('assistant', $knowledge);
+                return response()->json(['success' => true, 'reply' => $knowledge]);
+            }
+        }
+
+
+        if (!empty($this->apiKey)) {
+            $history = [];
+            if (Auth::check()) {
+                ChatMessage::where('user_id', Auth::id())
+                    ->orderBy('created_at', 'asc')
+                    ->limit(10)
+                    ->get(['role', 'content'])
+                    ->each(fn($m) => $history[] = ['role' => $m->role, 'content' => $m->content]);
+            }
+
+            $systemPrompt = "Bạn là trợ lý AI đa năng của website Góc Bếp. Trả lời thân thiện, ngắn gọn 3-5 câu bằng tiếng Việt, không dùng emoji. Ưu tiên về ẩm thực, nấu ăn, dinh dưỡng nhưng có thể trả lời mọi câu hỏi khác một cách ngắn gọn và hữu ích.";
+
+            $contents = [
+                ['role' => 'user',  'parts' => [['text' => $systemPrompt]]],
+                ['role' => 'model', 'parts' => [['text' => 'Tôi sẵn sàng tư vấn về ẩm thực và nấu nướng.']]],
+            ];
+
+            foreach ($history as $msg) {
+                $contents[] = [
+                    'role'  => $msg['role'] === 'user' ? 'user' : 'model',
+                    'parts' => [['text' => $msg['content']]],
+                ];
+            }
+            $contents[] = ['role' => 'user', 'parts' => [['text' => $userMessage]]];
+
+            try {
+                $response = Http::timeout(15)
+                    ->withoutVerifying()
+                    ->withHeaders(['Content-Type' => 'application/json'])
+                    ->post($this->apiUrl . '?key=' . $this->apiKey, [
                         'contents' => $contents,
                         'generationConfig' => [
                             'temperature' => 0.7,
-                            'topK' => 40,
-                            'topP' => 0.95,
                             'maxOutputTokens' => 800,
-                        ],
-                        'safetySettings' => [
-                            ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
-                            ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
-                            ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
-                            ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_MEDIUM_AND_ABOVE'],
                         ],
                     ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                $reply = $data['candidates'][0]['content']['parts'][0]['text'] ?? 'Xin lỗi, tôi không thể trả lời lúc này.';
+                // Nếu 503 hoặc 429, thử fallback sang model cũ hơn nhưng ổn định hơn
+                if ($response->status() === 503 || $response->status() === 429) {
+                    $fallbackUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+                    $response = Http::timeout(15)
+                        ->withoutVerifying()
+                        ->withHeaders(['Content-Type' => 'application/json'])
+                        ->post($fallbackUrl . '?key=' . $this->apiKey, [
+                            'contents' => $contents,
+                            'generationConfig' => [
+                                'temperature' => 0.7,
+                                'maxOutputTokens' => 800,
+                            ],
+                        ]);
+                }
 
-                // Lưu response của bot vào database
-                $this->saveMessage('assistant', $reply);
+                if ($response->successful()) {
+                    $data  = $response->json();
+                    $reply = $data['candidates'][0]['content']['parts'][0]['text']
+                        ?? ($data['candidates'][0]['content']['parts'][1]['text']
+                        ?? 'Tôi chưa có thông tin cụ thể. Bạn thử tìm trực tiếp tại trang Công Thức nhé!');
+                    // Trim empty reply
+                    if (empty(trim($reply))) {
+                        $reply = 'Tôi chưa có thông tin cụ thể. Bạn thử tìm trực tiếp tại trang Công Thức nhé!';
+                    }
+                    $this->saveMessage('assistant', $reply);
+                    return response()->json(['success' => true, 'reply' => $reply]);
+                }
 
-                return response()->json([
-                    'success' => true,
-                    'reply' => $reply
+                Log::error('Gemini API Error', [
+                    'status' => $response->status(),
+                    'body'   => substr($response->body(), 0, 500),
                 ]);
-            } else {
-                Log::error('Gemini API Error', ['response' => $response->body()]);
-                return response()->json([
-                    'success' => false,
-                    'reply' => 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau!'
-                ], 500);
+            } catch (\Exception $e) {
+                Log::error('Chatbot Gemini Exception: ' . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            Log::error('Chatbot Exception', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'reply' => 'Xin lỗi, không thể kết nối đến AI. Vui lòng thử lại!'
-            ], 500);
         }
+
+        // 7. Fallback — cả DB lẫn Gemini đều không có kết quả
+        // Kiểm tra câu hỏi có liên quan đến ẩm thực không
+        $isCooking = preg_match('/(nấu|ăn|món|công thức|nguyên liệu|bếp|bánh|cơm|canh|xào|chiên|luộc|hầm|kho|nướng)/ui', $userMessage);
+        if ($isCooking) {
+            $reply = "Góc Bếp hiện chưa có công thức về \"" . mb_substr($userMessage, 0, 30) . "\". Bạn thử tìm trực tiếp tại trang Công Thức hoặc dùng Tủ Lạnh Web để gợi ý theo nguyên liệu nhé!";
+        } else {
+            $reply = "Tôi là trợ lý của Góc Bếp, có thể thông tin về \"" . mb_substr($userMessage, 0, 30) . "\" nằm ngoài chuyên môn của tôi. Tôi giỏi nhất về tư vấn ẩm thực, nấu ăn và dinh dưỡng. Bạn có muốn hỏi gì về món ăn không?";
+        }
+        $this->saveMessage('assistant', $reply);
+        return response()->json(['success' => true, 'reply' => $reply]);
     }
 }

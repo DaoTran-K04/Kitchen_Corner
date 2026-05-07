@@ -4,7 +4,10 @@
 
 @section('content')
     @php
-        $currentTheme = session('admin_theme_override', 'auto');
+        $currentTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
+            $setting = \App\Models\Setting::where('key', 'active_theme')->first();
+            return $setting ? $setting->value : 'auto';
+        });
         $themeSettings = session('theme_settings', []);
         
         $themes = [

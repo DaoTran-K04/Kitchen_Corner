@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Recipe extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -27,6 +28,7 @@ class Recipe extends Model
         'image',
         'view_count',
         'is_featured',
+        'is_premium',
         'status',
     ];
 
@@ -64,5 +66,25 @@ class Recipe extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'collection_recipes')
+            ->withTimestamps();
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
+
+    public function getDescriptionAttribute($value)
+    {
+        if (!$value) {
+            return $value;
+        }
+        
+        return preg_replace('/\[TheMealDB\]\s*\[MealID:\d+\]\s*/i', '', $value);
     }
 }
