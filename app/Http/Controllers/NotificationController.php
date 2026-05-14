@@ -31,38 +31,45 @@ class NotificationController extends Controller
                     'link' => $n->data['link'] ?? '#',
 
                     // Fields for JS rendering
-                    'is_system' => isset($n->data['type']) && in_array($n->data['type'], ['new_report', 'book_request', 'book_approved', 'admin_new_post']),
+                    'is_system' => isset($n->data['type']) && in_array($n->data['type'], ['new_report', 'recipe_approved', 'recipe_rejected', 'admin_new_post']),
 
                     'icon' => match ($n->data['type'] ?? '') {
-                        'new_report' => 'fas fa-flag',
-                        'book_request' => 'fas fa-book',
-                        'book_approved' => 'fas fa-check-circle',
-                        'admin_new_post' => 'fas fa-file-contract',
-                        'new_book_follower' => 'fas fa-book-open',
-                        default => 'fas fa-bell'
+                        'new_report'      => 'fas fa-flag',
+                        'recipe_approved' => 'fas fa-check-circle',
+                        'recipe_rejected' => 'fas fa-ban',
+                        'admin_new_post'  => 'fas fa-file-contract',
+                        'comment_like'    => 'fas fa-heart',
+                        'comment_reply'   => 'fas fa-reply',
+                        'recipe_liked'    => 'fas fa-fire',
+                        default           => 'fas fa-bell'
                     },
 
                     'color' => match ($n->data['type'] ?? '') {
-                        'book_approved' => 'text-green-600',
-                        'admin_new_post' => 'text-red-600',
-                        default => 'text-yellow-600'
+                        'recipe_approved' => 'text-green-600',
+                        'recipe_rejected' => 'text-red-600',
+                        'admin_new_post'  => 'text-red-600',
+                        'comment_like'    => 'text-pink-500',
+                        'recipe_liked'    => 'text-orange-500',
+                        default           => 'text-yellow-600'
                     },
 
                     // User info (for post/comment notifications)
-                    'user_avatar' => $n->data['avatar'] ?? 'https://ui-avatars.com/api/?name=System',
-                    'user_name' => $n->data['uploader_name'] ?? ($n->data['author_name'] ?? ($n->data['reporter_name'] ?? ($n->data['requester_name'] ?? 'System'))),
+                    'user_avatar' => $n->data['avatar'] ?? $n->data['user_avatar'] ?? 'https://ui-avatars.com/api/?name=System',
+                    'user_name'   => $n->data['user_name'] ?? ($n->data['uploader_name'] ?? ($n->data['author_name'] ?? ($n->data['reporter_name'] ?? 'System'))),
 
                     // Content
                     'message' => $n->data['message'] ?? '',
                     'title' => match ($n->data['type'] ?? '') {
-                        'new_report' => 'Báo cáo mới',
-                        'book_request' => 'Gợi ý sách mới',
-                        'book_approved' => 'Sách được duyệt',
-                        'admin_new_post' => 'Bài đăng mới (Admin)',
-                        'new_book_follower' => 'Sách mới từ người dùng',
-                        default => ''
+                        'new_report'      => 'Báo cáo mới',
+                        'recipe_approved' => 'Công thức được duyệt',
+                        'recipe_rejected' => 'Công thức bị từ chối',
+                        'admin_new_post'  => 'Bài đăng mới (Admin)',
+                        'comment_like'    => 'Bình luận được thích',
+                        'comment_reply'   => 'Có phản hồi mới',
+                        'recipe_liked'    => 'Công thức được yêu thích',
+                        default           => ''
                     },
-                    'post_title' => $n->data['post_title'] ?? ($n->data['book_title'] ?? ''),
+                    'post_title' => $n->data['post_title'] ?? ($n->data['recipe_title'] ?? ''),
                 ];
             });
 

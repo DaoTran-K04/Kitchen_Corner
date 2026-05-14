@@ -44,11 +44,16 @@
             </ul>
 
             <div class="mt-6 flex flex-wrap gap-2">
-                @if($recipe->status == 'draft')
+                @if($recipe->status !== 'published')
                 <form action="{{ route('admin.recipes.approve', $recipe) }}" method="POST" class="inline">
                     @csrf<button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"><i class="fas fa-check mr-1"></i> Duyệt</button>
                 </form>
                 @endif
+                
+                @if($recipe->status !== 'draft')
+                <button type="button" onclick="openRejectModal('{{ route('admin.recipes.reject', $recipe) }}')" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"><i class="fas fa-ban mr-1"></i> Từ chối</button>
+                @endif
+
                 <form action="{{ route('admin.recipes.feature', $recipe) }}" method="POST" class="inline">
                     @csrf<button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"><i class="fas fa-star mr-1"></i> Đổi nổi bật</button>
                 </form>
@@ -104,4 +109,6 @@
         </div>
     </div>
 </div>
+
+@include('admin.recipes.partials.reject-modal')
 @endsection

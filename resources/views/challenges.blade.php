@@ -204,8 +204,8 @@
                                 </div>
                                 <div class="flex justify-between text-xs font-bold mb-6">
                                     <span class="text-brand-green flex items-center gap-1">
-                                        <i class="fas fa-pen-fancy"></i>
-                                        {{ $userChallenge->pivot->current_count }} / {{ $challenge->target_count }} bài
+                                        <i class="fas {{ $challenge->action_type == 'post_comment' ? 'fa-comments' : 'fa-pen-fancy' }}"></i>
+                                        {{ $userChallenge->pivot->current_count }} / {{ $challenge->target_count }} {{ $challenge->action_type == 'post_comment' ? 'bình luận' : 'bài' }}
                                     </span>
                                     @if($percent < 15)
                                         <span class="text-gray-400">{{ round($percent) }}%</span>
@@ -213,9 +213,9 @@
                                 </div>
                                 
                                 {{-- CTA Button --}}
-                                <a href="#" onclick="alert('Tính năng đăng công thức đang được phát triển!')" class="inline-flex items-center gap-2 bg-brand-green text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg hover:bg-[#1e3a2f] transition transform hover:-translate-y-0.5 hover:shadow-xl">
+                                <a href="{{ route('recipes.create') }}" class="inline-flex items-center gap-2 bg-brand-green text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg hover:bg-[#1e3a2f] transition transform hover:-translate-y-0.5 hover:shadow-xl">
                                     <i class="fas fa-feather-alt"></i>
-                                    Đăng Công Thức (Sắp RM)
+                                    Đăng Công Thức Ngay
                                 </a>
                             </div>
                             
@@ -346,8 +346,8 @@
                                 {{-- Mục tiêu với visual --}}
                                 <div class="flex items-center gap-4 mb-6">
                                     <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
-                                        <i class="fas fa-bullseye text-brand-accent"></i>
-                                        <span class="text-sm font-semibold">{{ $challenge->target_count }} bài review</span>
+                                        <i class="fas {{ $challenge->action_type == 'post_comment' ? 'fa-comments' : 'fa-bullseye' }} text-brand-accent"></i>
+                                        <span class="text-sm font-semibold">{{ $challenge->target_count }} {{ $challenge->action_type == 'post_comment' ? 'bình luận' : 'bài đăng' }}</span>
                                     </div>
                                     @if($isUpcoming)
                                         <div class="text-xs text-white/50">

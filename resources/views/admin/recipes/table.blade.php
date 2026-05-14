@@ -74,6 +74,12 @@
                     </form>
                     @endif
 
+                    @if($recipe->status !== 'draft')
+                    <button type="button" onclick="openRejectModal('{{ route('admin.recipes.reject', $recipe) }}')" class="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-400 flex items-center justify-center hover:bg-gray-600 hover:text-white transition" title="Từ chối">
+                        <i class="fas fa-ban text-xs"></i>
+                    </button>
+                    @endif
+
                     <form action="{{ route('admin.recipes.feature', $recipe) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-slate-700 text-yellow-600 dark:text-yellow-400 flex items-center justify-center hover:bg-yellow-600 hover:text-white transition" title="Đặt nổi bật">

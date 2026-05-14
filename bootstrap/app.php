@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Track visitors cho web
         $middleware->appendToGroup('web', \App\Http\Middleware\TrackVisitors::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\CheckBanned::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

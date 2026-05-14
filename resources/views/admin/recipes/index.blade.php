@@ -104,4 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
     attachPagination();
 });
 </script>
+
+@include('admin.recipes.partials.reject-modal')
 @endsection

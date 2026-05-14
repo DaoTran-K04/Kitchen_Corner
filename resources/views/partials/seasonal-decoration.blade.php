@@ -29,7 +29,8 @@
     ];
 @endphp
 
-{{-- 🎛️ UNIVERSAL THEME FAB COMPONENT --}}
+{{-- 🎛️ UNIVERSAL THEME FAB COMPONENT - Chỉ hiển thị cho Admin --}}
+@if(Auth::check() && Auth::user()->role === 'admin')
 <div id="theme-module" class="fixed bottom-6 left-6 z-[9999] font-sans">
     
     <!-- OPTIONS PANEL (Opens upward) -->
@@ -81,6 +82,7 @@
         <i class="fas fa-palette text-xl"></i>
     </button>
 </div>
+@endif
 
 <script>
     function toggleThemePanel() {

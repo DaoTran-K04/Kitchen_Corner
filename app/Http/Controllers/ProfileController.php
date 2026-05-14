@@ -103,7 +103,7 @@ class ProfileController extends Controller
 
         // 3. Lấy danh sách bài Review (CÓ PHÂN QUYỀN) - PHÂN TRANG 10 BÀI
         $reviewsQuery = $user->recipes()
-            ->with('user') // Lấy kèm thông tin user (thay vì book)
+            ->with(['user', 'category', 'likes', 'comments']) // Lấy kèm thông tin cần thiết
             ->withCount(['likes', 'comments'])
             ->orderBy('created_at', 'desc');
 
@@ -119,24 +119,24 @@ class ProfileController extends Controller
 
 
 
-        // 5. Lấy danh sách sách đề xuất (do user tạo) - PHÂN TRANG 12 SÁCH
+        // 5. Lấy danh sách công thức đã đăng (do user tạo) - PHÂN TRANG 12 CÔNG THỨC
         // [CẬP NHẬT] Hiển thị cho TẤT CẢ người xem, không chỉ chủ profile
         $isOwnProfile = Auth::id() == $user->id;
 
         if ($isOwnProfile) {
-            // Chủ profile: thấy TẤT CẢ sách (kể cả chờ duyệt)
-            $totalSuggestedBooks = Recipe::where('user_id', $user->id)->count();
-            $suggestedBooks = Recipe::where('user_id', $user->id)
+            // Chủ profile: thấy TẤT CẢ công thức (kể cả chờ duyệt)
+            $totalSuggestedRecipes = Recipe::where('user_id', $user->id)->count();
+            $suggestedRecipes = Recipe::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->paginate(12, ['*'], 'book_page')->withQueryString();
+                ->paginate(12, ['*'], 'recipe_page')->withQueryString();
         } else {
-            // Khách: chỉ thấy sách ĐÃ DUYỆT
-            $totalSuggestedBooks = Recipe::where('user_id', $user->id)
+            // Khách: chỉ thấy công thức ĐÃ DUYỆT
+            $totalSuggestedRecipes = Recipe::where('user_id', $user->id)
                 ->where('status', 'published')->count();
-            $suggestedBooks = Recipe::where('user_id', $user->id)
+            $suggestedRecipes = Recipe::where('user_id', $user->id)
                 ->where('status', 'published')
                 ->orderBy('created_at', 'desc')
-                ->paginate(12, ['*'], 'book_page')->withQueryString();
+                ->paginate(12, ['*'], 'recipe_page')->withQueryString();
         }
 
         // 6. Lấy danh sách bài viết đã lưu (chỉ cho chủ profile)
@@ -146,11 +146,14 @@ class ProfileController extends Controller
             // Lấy công thức đã lưu qua Collection model
             $defaultCollection = \App\Models\Collection::where('user_id', $user->id)
                 ->where('is_default', true)
-                ->with(['recipes.category', 'recipes.user'])
                 ->first();
 
             if ($defaultCollection) {
-                $savedPosts = $defaultCollection->recipes()->latest()->get();
+                $savedPosts = $defaultCollection->recipes()
+                    ->with(['category', 'user', 'likes', 'comments.user'])
+                    ->withCount(['likes', 'comments'])
+                    ->latest()
+                    ->get();
             }
 
             // 7. Lấy danh sách bài review đã xóa (thùng rác)
@@ -167,12 +170,12 @@ class ProfileController extends Controller
             'user' => $user,
             'reviews' => $reviews,
             // 'myBooks' => $myBooks, // Removed
-            'suggestedBooks' => $suggestedBooks,
+            'suggestedRecipes' => $suggestedRecipes,
             'savedPosts' => $savedPosts,
             'trashedPosts' => $trashedPosts,
             // 'totalBooks' => $totalBooks, // Removed
             'totalReviews' => $totalReviews,
-            'totalSuggestedBooks' => $totalSuggestedBooks,
+            'totalSuggestedRecipes' => $totalSuggestedRecipes,
             'totalFollowing' => $totalFollowing,
             'totalFollowers' => $totalFollowers,
             'isOwnProfile' => $isOwnProfile,
@@ -207,9 +210,9 @@ class ProfileController extends Controller
     }
 
     /**
-     * Trang xem tất cả sách đề xuất của user
+     * Trang xem tất cả công thức đã đăng của user
      */
-    public function allSuggestedBooks($id)
+    public function allSuggestedRecipes($id)
     {
         $user = User::with('activeBadges')->findOrFail($id);
 
@@ -218,13 +221,13 @@ class ProfileController extends Controller
             return redirect()->route('profile', $id)->with('error', 'Bạn không có quyền xem trang này.');
         }
 
-        $suggestedBooks = Recipe::where('user_id', $user->id)
+        $suggestedRecipes = Recipe::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
-        return view('profile-suggested-books', [
+        return view('profile-suggested-recipes', [
             'user' => $user,
-            'suggestedBooks' => $suggestedBooks,
+            'suggestedRecipes' => $suggestedRecipes,
             'isOwnProfile' => true,
         ]);
     }

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Notifications\CommentLikedNotification;
 use App\Notifications\CommentRepliedNotification;
 // use App\Models\Post;           // TODO: đã chuyển sang Recipe
-// use App\Models\Book;           // TODO: đã chuyển sang Recipe
+// use App\Models\Book;           // Đã chuyển sang Recipe
 // use App\Models\Quote;          // TODO: sẽ thay bằng mẹo nấu ăn / câu nói ẩm thực
 // use App\Models\Author;         // TODO: sẽ thay bằng Chef / đầu bếp nổi bật
 // use App\Notifications\PostLikedNotification;     // TODO: đổi sang RecipeLikedNotification
@@ -56,34 +56,6 @@ class HomeController extends Controller
 
         // --- 2. BANNER SLIDE ---
         $heroSlides = Banner::where('is_active', true)->orderBy('order', 'asc')->latest()->get();
-        if ($heroSlides->isEmpty()) {
-            $heroSlides = collect([
-                (object) [
-                    'id'          => null,
-                    'title'       => 'Tinh Hoa Phở Việt',
-                    'tag'         => 'Món Nước Bổ Dưỡng',
-                    'description' => '"Nước dùng thanh ngọt hầm từ xương, bánh phở mềm dai chuẩn vị truyền thống..."',
-                    'image'       => 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=1200',
-                    'link'        => '#'
-                ],
-                (object) [
-                    'id'          => null,
-                    'title'       => 'Bún Bò Huế Đặc Sản',
-                    'tag'         => 'Hương Vị Cố Đô',
-                    'description' => '"Đậm đà mắm ruốc, cay nồng sa tế hòa quyện trong từng tô bún nghi ngút khói..."',
-                    'image'       => 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=1200',
-                    'link'        => '#'
-                ],
-                (object) [
-                    'id'          => null,
-                    'title'       => 'Bữa Sáng Tràn Năng Lượng',
-                    'tag'         => 'Dinh Dưỡng Dễ Làm',
-                    'description' => '"Khởi đầu ngày mới hoàn hảo với lát bánh mì giòn rụm, bơ sáp béo ngậy và trứng chần mọng nước."',
-                    'image'       => 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=1200',
-                    'link'        => '#'
-                ]
-            ]);
-        }
 
         // --- 3. CÔNG THỨC THEO CHỦ ĐỀ MỚI NHẤT ---
         $siteTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
@@ -147,63 +119,19 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-        // --- 4. BÀI VIẾT TẠP CHÍ (Ưu tiên từ Database, fallback RSS) ---
+        // --- 4. BÀI VIẾT TẠP CHÍ (Ưu tiên từ Database) ---
         $dbArticles = Article::where('is_active', true)->latest()->take(3)->get();
         
-        if ($dbArticles->count() >= 3) {
-            $formattedArticles = $dbArticles->map(function($article) {
-                return (object)[
-                    'title' => $article->title,
-                    'link' => route('articles.show', $article->slug),
-                    'description' => $article->excerpt,
-                    'image' => asset('storage/' . $article->thumbnail),
-                    'date' => $article->created_at->format('d/m/Y'),
-                    'author_name' => $article->user->name ?? 'Admin'
-                ];
-            });
-        } else {
-            // Fallback sang RSS nếu không đủ bài trong DB
-            $rssArticles = \Illuminate\Support\Facades\Cache::remember('news_food', 120, function() {
-                try {
-                    $rss = @simplexml_load_file('https://thanhnien.vn/rss/am-thuc.rss');
-                    if (!$rss) {
-                        $rss = @simplexml_load_file('https://tuoitre.vn/rss/am-thuc.rss');
-                    }
-                    $list = collect();
-                    if ($rss && isset($rss->channel->item)) {
-                        foreach ($rss->channel->item as $item) {
-                            $desc = (string) $item->description;
-                            preg_match('/src="([^"]+)"/', $desc, $matches);
-                            $image = $matches[1] ?? 'https://placehold.co/600x400/9b2226/white?text=News';
-                            $list->push((object)[
-                                'title' => (string) $item->title,
-                                'link' => (string) $item->link,
-                                'description' => strip_tags($desc),
-                                'image' => $image,
-                                'date' => date('d/m/Y', strtotime((string)$item->pubDate)) ?? now()->format('d/m/Y'),
-                                'author_name' => 'News API'
-                            ]);
-                            if($list->count() >= 3) break;
-                        }
-                    }
-                    return $list;
-                } catch (\Exception $e) {   
-                    return collect([]);
-                }
-            });
-
-            // Gộp bài từ DB và RSS
-            $formattedArticles = $dbArticles->map(function($article) {
-                return (object)[
-                    'title' => $article->title,
-                    'link' => route('articles.show', $article->slug),
-                    'description' => $article->excerpt,
-                    'image' => asset('storage/' . $article->thumbnail),
-                    'date' => $article->created_at->format('d/m/Y'),
-                    'author_name' => $article->user->name ?? 'Admin'
-                ];
-            })->concat($rssArticles)->take(3);
-        }
+        $formattedArticles = $dbArticles->map(function($article) {
+            return (object)[
+                'title' => $article->title,
+                'link' => route('articles.show', $article->slug),
+                'description' => $article->excerpt,
+                'image' => asset('storage/' . $article->thumbnail),
+                'date' => $article->created_at->format('d/m/Y'),
+                'author_name' => $article->user->name ?? 'Admin'
+            ];
+        });
 
         $featuredArticle = $formattedArticles->first();
         $sidebarArticles = $formattedArticles->slice(1, 2);
@@ -226,12 +154,7 @@ class HomeController extends Controller
                 'comment_likes' => CommentLike::count(),
                 'online_users'  => \App\Models\SiteVisit::getOnlineCount(),
                 'total_visits'  => \App\Models\SiteStatistic::getTotalPageViews(),
-                'books'        => 0,
-                'reviews'      => 0,
-                'post_views'   => 0,
-                'authors'      => 0,
-                'post_likes'   => Like::count(),
-                'book_views'   => 0,
+                'post_likes'    => Like::count(),
             ];
         });
 
@@ -359,6 +282,9 @@ class HomeController extends Controller
         $reply->content     = $request->input('content');
         $reply->recipe_id   = $parentComment->recipe_id; // ← dùng recipe_id thay post_id
         $reply->save();
+
+        // Cập nhật tiến độ thử thách loại 'bình luận'
+        $user->updateChallengeProgress();
 
         $parentComment = Comment::with('user')->find($id);
 
@@ -488,10 +414,11 @@ class HomeController extends Controller
                 'App\Notifications\NewBookRequestNotification',
                 'App\Notifications\BookApprovedNotification',
                 'App\Notifications\RecipeApprovedNotification',
+                'App\Notifications\RecipeRejectedNotification',
                 'App\Notifications\AdminNewPostNotification',
                 'App\Notifications\ReportResolvedNotification'
             ];
-            $systemTypes = ['new_report', 'book_request', 'book_approved', 'recipe_approved', 'admin_new_post', 'report_resolved'];
+            $systemTypes = ['new_report', 'book_request', 'book_approved', 'recipe_approved', 'recipe_rejected', 'admin_new_post', 'report_resolved'];
 
             $isSystemNotification = in_array($dbType, $systemClasses) || in_array($dataType, $systemTypes) || isset($notification->data['icon']);
 
@@ -499,7 +426,8 @@ class HomeController extends Controller
                 'App\Notifications\NewReportNotification'    => 'new_report',
                 'App\Notifications\NewBookRequestNotification' => 'book_request',
                 'App\Notifications\BookApprovedNotification' => 'book_approved',
-                'App\Notifications\RecipeApprovedNotification' => 'book_approved',
+                'App\Notifications\RecipeApprovedNotification' => 'recipe_approved',
+                'App\Notifications\RecipeRejectedNotification' => 'recipe_rejected',
                 'App\Notifications\RecipeLikedNotification'  => 'recipe_liked',
                 'App\Notifications\AdminNewPostNotification' => 'admin_new_post',
                 'App\Notifications\ReportResolvedNotification' => 'report_resolved',
@@ -515,6 +443,11 @@ class HomeController extends Controller
                     case 'new_report':    $icon = 'fas fa-flag';          $title = 'Báo cáo mới';           $color = 'text-yellow-600'; break;
                     case 'book_request':  $icon = 'fas fa-utensils';      $title = 'Công thức mới';         $color = 'text-yellow-600'; break;
                     case 'book_approved': $icon = 'fas fa-check-circle';  $title = 'Công thức được duyệt';  $color = 'text-green-600';  break;
+                    case 'recipe_rejected': 
+                        $icon = 'fas fa-ban'; 
+                        $title = ($notification->data['is_violation'] ?? false) ? 'Cảnh báo vi phạm!' : 'Công thức bị từ chối'; 
+                        $color = 'text-red-600'; 
+                        break;
                     case 'admin_new_post':$icon = 'fas fa-file-contract'; $title = 'Bài đăng mới';          $color = 'text-red-600';    break;
                     case 'report_resolved':
                         $status = $notification->data['status'] ?? 'resolved';
@@ -533,7 +466,7 @@ class HomeController extends Controller
                 'user_avatar' => $notification->data['user_avatar'] ?? 'https://ui-avatars.com/api/?name=User',
                 'user_name'   => $notification->data['user_name']   ?? '',
                 'message'     => $notification->data['message']     ?? 'đã tương tác với bạn',
-                'post_title'  => \Str::limit($notification->data['post_title'] ?? ($notification->data['book_title'] ?? ''), 50),
+                'post_title'  => \Str::limit($notification->data['post_title'] ?? ($notification->data['recipe_title'] ?? ''), 50),
                 'time'        => $notification->created_at->diffForHumans(),
                 'read_at'     => $notification->read_at,
                 'link'        => route('notification.read', $notification->id)

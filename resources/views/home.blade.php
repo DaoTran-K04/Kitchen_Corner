@@ -230,7 +230,7 @@
                     </section>
                 @endif
 
-                {{-- 2. SÁCH MỚI CẬP NHẬT --}}
+                {{-- 2. CÔNG THỨC MỚI CẬP NHẬT --}}
                 <section id="new-books"
                     class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-soft reveal">
                     {{-- Header --}}
@@ -970,9 +970,9 @@
                                 <div
                                     class="bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center border border-white hover:border-red-200 hover:shadow-md transition-all group">
                                     <div class="text-xl font-bold text-gray-800 group-hover:text-brand-green transition">
-                                        {{ number_format($communityStats['reviews']) }}
+                                        {{ number_format($communityStats['post_likes'] ?? 0) }}
                                     </div>
-                                    <div class="text-[10px] text-gray-500 uppercase font-medium">Đánh giá</div>
+                                    <div class="text-[10px] text-gray-500 uppercase font-medium">Lượt thích</div>
                                 </div>
                                 <div
                                     class="bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center border border-white hover:border-orange-200 hover:shadow-md transition-all group">
@@ -1578,7 +1578,7 @@
             }
         }
 
-        // --- 4. HÀM ĐIỀU KHIỂN BÀI REVIEW SÁCH ---
+        // --- 4. HÀM ĐIỀU KHIỂN BÀI REVIEW CÔNG THỨC ---
         function switchReviewTab(tabType) {
             const latestContainer = document.getElementById('reviews-latest-container');
             const hotContainer = document.getElementById('reviews-hot-container');

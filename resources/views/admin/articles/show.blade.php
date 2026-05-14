@@ -113,7 +113,7 @@
                 <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                     <h3 class="font-serif font-bold text-lg text-gray-800 mb-4">Về Tạp Chí</h3>
                     <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh văn hóa đọc, phỏng vấn tác giả và những tips hay ho cho mọt sách.
+                        Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh văn hóa ẩm thực, phỏng vấn đầu bếp và những mẹo hay ho cho người yêu bếp.
                     </p>
                     <a href="{{ route('home') }}" class="text-brand-green text-sm font-bold hover:underline">Xem thêm bài viết &rarr;</a>
                 </div>

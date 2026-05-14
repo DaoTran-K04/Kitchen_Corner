@@ -48,16 +48,23 @@ class UserController extends Controller
     /**
      * Toggle active status (vô hiệu hóa/kích hoạt tài khoản)
      */
-    public function toggleActive(User $user)
+    public function toggleActive(Request $request, User $user)
     {
         if ($user->role === 'admin') {
             return back()->with('error', 'Không thể vô hiệu hóa Admin');
         }
 
         $user->is_active = !$user->is_active;
+        if (!$user->is_active) {
+            $request->validate(['ban_reason' => 'required|string|max:500']);
+            $user->ban_reason = $request->ban_reason;
+        } else {
+            $user->ban_reason = null; // Clear reason when unbanned
+        }
+
         $user->save();
 
-        $action = $user->is_active ? 'Kích hoạt' : 'Vô hiệu hóa';
+        $action = $user->is_active ? 'Kích hoạt' : 'Khóa';
 
         // Ghi log
         AdminActivityLog::log(
@@ -147,6 +154,32 @@ class UserController extends Controller
 
         $msg = $user->role === 'admin' ? "Đã cấp quyền Admin cho \"{$user->name}\"!" : "Đã hạ quyền \"{$user->name}\" về Thành viên!";
         return back()->with('success', $msg);
+    }
+
+    /**
+     * Xóa vĩnh viễn thành viên
+     */
+    public function destroy(User $user)
+    {
+        // Không tự xóa chính mình
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Không thể tự xóa tài khoản của chính mình!');
+        }
+
+        $name = $user->name;
+        
+        AdminActivityLog::log(
+            'delete',
+            "Xóa thành viên: {$name} ({$user->email})",
+            User::class,
+            $user->id,
+            $user->toArray(),
+            []
+        );
+
+        $user->forceDelete(); // Hoặc delete() nếu dùng SoftDeletes
+
+        return back()->with('success', "Đã xóa vĩnh viễn tài khoản \"{$name}\"!");
     }
 }
 

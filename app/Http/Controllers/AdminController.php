@@ -17,7 +17,6 @@ class AdminController extends Controller
         // THÔNG SỐ & BIỂU ĐỒ
         $totalReviews  = Recipe::where('status', 'published')->count();
         $postViews     = Recipe::where('status', 'published')->sum('view_count');
-        $bookViews     = 0; // không còn dùng
         $totalViews    = $postViews;
         $pendingReviews = Recipe::where('status', 'pending')->count();
         $totalUsers    = User::where('role', 'user')->count();
@@ -73,7 +72,6 @@ class AdminController extends Controller
             'totalReviews',
             'totalViews',
             'postViews',
-            'bookViews',
             'pendingReviews',
             'totalUsers',
             'labels',

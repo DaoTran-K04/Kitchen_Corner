@@ -102,7 +102,7 @@
 
                     <div class="grid grid-cols-2 gap-3 mb-6 border-t border-b border-gray-100 py-4">
                         <div class="text-center">
-                            <span class="block font-bold text-xl text-brand-green">{{ $totalSuggestedBooks ?? 0 }}</span>
+                            <span class="block font-bold text-xl text-brand-green">{{ $totalSuggestedRecipes ?? 0 }}</span>
                             <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Công thức</span>
                         </div>
                         <div class="text-center border-l border-gray-100">
@@ -421,7 +421,7 @@
                                 class="hidden flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-brand-accent hover:bg-gray-50">
                                 <i class="fas fa-book-medical mr-2"></i>Công Thức Phụ
                                 <span
-                                    class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalSuggestedBooks }}</span>
+                                    class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalSuggestedRecipes ?? 0 }}</span>
                             </button>
 
                             {{-- Tab 4: Bài Đã Lưu --}}
@@ -468,7 +468,8 @@
                         @if(count($reviews) > 0)
                             <div class="space-y-4">
                                 @foreach($reviews->take(3) as $post)
-                                    <div class="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group">
+                                    <div class="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group relative">
+                                        <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="absolute inset-0 z-0"></a>
                                         @php
                                             $cover = $post->image ?? null;
                                             $coverUrl = $cover ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover)) : 'https://placehold.co/50';
@@ -480,19 +481,19 @@
                                                 {{ $post->title }}
                                             </h4>
                                             <p class="text-xs text-gray-500 mt-0.5">{{ $post->category->name ?? 'Món ăn' }}</p>
-                                            <div class="flex items-center gap-2 mt-1">
-                                                <div class="flex text-yellow-400 text-[10px]">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        <i
-                                                            class="fas fa-star {{ $i <= ($post->rating ?? 0) ? '' : 'text-gray-300' }}"></i>
-                                                    @endfor
-                                                </div>
-                                                <span class="text-[10px] text-gray-400">•
-                                                    {{ $post->created_at->diffForHumans() }}</span>
+                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                                <span class="flex items-center gap-1 text-[10px] text-blue-500 font-bold bg-blue-50 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-eye"></i> {{ number_format($post->view_count ?? 0) }}
+                                                </span>
+                                                <span class="flex items-center gap-1 text-[10px] text-gray-500 font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-comment"></i> {{ $post->comments_count ?? $post->comments->count() }}
+                                                </span>
+                                                <span class="flex items-center gap-1 text-[10px] text-red-500 font-bold bg-red-50 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-heart"></i> {{ $post->likes_count ?? $post->likes->count() }}
+                                                </span>
+                                                <span class="text-[10px] text-gray-400">• {{ $post->created_at->diffForHumans() }}</span>
                                                 @if($post->status == 'pending')
-                                                    <span
-                                                        class="text-[10px] text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded font-bold">Chờ
-                                                        duyệt</span>
+                                                    <span class="text-[10px] text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded font-bold">Chờ duyệt</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -500,20 +501,20 @@
                                             {{-- Nút Sửa (chỉ cho chủ bài viết, ẩn khi pending_delete) --}}
                                             @if($post->status != 'pending_delete')
                                                 <a href="{{ route('recipes.edit', $post->id) }}"
-                                                    class="text-blue-500 hover:text-blue-700 self-center opacity-0 group-hover:opacity-100 transition"
+                                                    class="relative z-10 text-blue-500 hover:text-blue-700 self-center opacity-0 group-hover:opacity-100 transition"
                                                     title="Chỉnh sửa">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 {{-- Nút Xóa (chờ admin duyệt) --}}
                                                 <button onclick="requestDeleteReview({{ $post->id }})"
-                                                    class="text-red-400 hover:text-red-600 self-center opacity-0 group-hover:opacity-100 transition"
+                                                    class="relative z-10 text-red-400 hover:text-red-600 self-center opacity-0 group-hover:opacity-100 transition"
                                                     title="Yêu cầu xóa">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             @else
                                                 {{-- Trạng thái chờ duyệt xóa --}}
                                                 <button onclick="cancelDeleteReview({{ $post->id }})"
-                                                    class="text-[10px] text-orange-600 bg-orange-50 hover:bg-orange-100 px-1.5 py-0.5 rounded font-bold self-center transition cursor-pointer"
+                                                    class="relative z-10 text-[10px] text-orange-600 bg-orange-50 hover:bg-orange-100 px-1.5 py-0.5 rounded font-bold self-center transition cursor-pointer"
                                                     title="Click để hủy yêu cầu xóa">
                                                     <i class="fas fa-undo mr-1"></i>Hủy xóa
                                                 </button>
@@ -522,7 +523,7 @@
                                             {{-- Nút Xem (cho người khác, ẩn khi pending_delete) --}}
                                             @if($post->status != 'pending_delete')
                                                 <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}"
-                                                    class="text-brand-green hover:text-brand-green/80 self-center opacity-0 group-hover:opacity-100 transition"
+                                                    class="relative z-10 text-brand-green hover:text-brand-green/80 self-center opacity-0 group-hover:opacity-100 transition"
                                                     title="Xem công thức">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
@@ -544,59 +545,7 @@
                         @endif
                     </div>
 
-                    {{-- Công Thức Của Tôi Gần Đây (3 sách) --}}
-                    <div class="bg-white rounded-xl shadow-soft border border-gray-100 p-6">
-                        <div class="hidden flex items-center justify-between mb-4">
-                            <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <i class="fas fa-book-medical text-brand-accent"></i> Công Thức Của Tôi Gần Đây
-                            </h3>
-                            @if($totalSuggestedBooks > 0)
-                                <button onclick="showProfileTab('books')"
-                                    class="text-sm text-brand-accent font-bold hover:underline">
-                                    Xem tất cả <i class="fas fa-arrow-right"></i>
-                                </button>
-                            @endif
-                        </div>
 
-                        @if(count($suggestedBooks) > 0)
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                @foreach($suggestedBooks->take(3) as $book)
-                                    <div class="flex gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group">
-                                        @php
-                                            $cover = $book->cover_image ?? null;
-                                            $coverUrl = $cover ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover)) : 'https://placehold.co/50x75';
-                                        @endphp
-                                        <img src="{{ $coverUrl }}" class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0">
-                                        <div class="flex-1 min-w-0">
-                                            <h4
-                                                class="font-bold text-gray-800 text-sm line-clamp-2 group-hover:text-brand-accent transition">
-                                                {{ $book->title }}
-                                            </h4>
-                                            <p class="text-xs text-gray-500 mt-0.5 truncate">{{ $book->user->name ?? 'Tác giả' }}
-                                            </p>
-                                            @if($book->status == 'published')
-                                                <span class="text-[10px] text-green-600 font-bold"><i class="fas fa-check-circle"></i>
-                                                    Đã duyệt</span>
-                                            @else
-                                                <span class="text-[10px] text-yellow-600 font-bold"><i class="fas fa-clock"></i> Chờ
-                                                    duyệt</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="text-center py-6 text-gray-400">
-                                <i class="fas fa-book-medical text-2xl mb-2"></i>
-                                <p class="text-sm">Chưa chia sẻ công thức nào</p>
-                                @if(isset($isOwnProfile) && $isOwnProfile)
-                                    <a href="{{ route('recipes.create') }}"
-                                        class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Chia sẻ công thức
-                                        mới</a>
-                                @endif
-                            </div>
-                        @endif
-                    </div>
                 </div>
 
                 {{-- ================================================================= --}}
@@ -626,6 +575,7 @@
                         @forelse($reviews as $post)
                             <div
                                 class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition group relative">
+                                <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="absolute inset-0 z-0"></a>
 
                                 {{-- [MỚI] BADGE TRẠNG THÁI (Góc trên cùng bên phải) --}}
                                 <div class="absolute top-4 right-4 z-10">
@@ -651,11 +601,11 @@
                                     @endif
                                 </div>
 
-                                {{-- THÔNG TIN SÁCH (Giữ nguyên) --}}
+                                {{-- THÔNG TIN CÔNG THỨC --}}
                                 <div class="flex justify-between items-start mb-4 pr-20"> {{-- Thêm pr-20 để tránh đè lên badge
                                     --}}
                                     <div class="flex items-center gap-4">
-                                        <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="block shrink-0">
+                                        <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="block shrink-0 relative z-10">
                                             {{-- Sửa lại đường dẫn ảnh cho chuẩn --}}
                                             @php
                                                 $cover = $post->image ?? null;
@@ -670,19 +620,21 @@
                                         <div>
                                             <h4 class="font-bold text-gray-800 text-base mb-1">
                                                 <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}"
-                                                    class="hover:text-brand-green transition">
+                                                    class="hover:text-brand-green transition relative z-10">
                                                     {{ $post->title }}
                                                 </a>
                                             </h4>
-                                            <div class="flex text-yellow-400 text-xs items-center gap-2">
-                                                <div class="flex">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        <i
-                                                            class="fas fa-star {{ $i <= ($post->rating ?? 0) ? '' : 'text-gray-300' }}"></i>
-                                                    @endfor
-                                                </div>
-                                                <span class="text-gray-400 text-[11px]">•
-                                                    {{ $post->created_at->format('d/m/Y H:i') }}</span>
+                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                                <span class="flex items-center gap-1 text-[10px] text-blue-500 font-bold bg-blue-50 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-eye"></i> {{ number_format($post->view_count ?? 0) }}
+                                                </span>
+                                                <span class="flex items-center gap-1 text-[10px] text-gray-500 font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-comment"></i> {{ $post->comments_count ?? $post->comments->count() }}
+                                                </span>
+                                                <span class="flex items-center gap-1 text-[10px] text-red-500 font-bold bg-red-50 px-1.5 py-0.5 rounded-full">
+                                                    <i class="fas fa-heart"></i> {{ $post->likes_count ?? $post->likes->count() }}
+                                                </span>
+                                                <span class="text-gray-400 text-[11px]">• {{ $post->created_at->format('d/m/Y H:i') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -706,29 +658,22 @@
                                     </span>
 
                                     <div class="flex items-center gap-3">
-                                        {{-- Nút Sửa (ẩn khi đang chờ xóa) --}}
-                                        @if(Auth::check() && Auth::id() == $post->user_id && $post->status != 'pending_delete')
-                                            <a href="{{ route('recipes.edit', $post->id) }}"
-                                                class="text-blue-500 hover:text-blue-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
-                                                <i class="fas fa-edit"></i> Sửa
-                                            </a>
-                                        @endif
-                                        {{-- Nút Xóa (chờ admin duyệt) --}}
+                                        {{-- Nút Sửa và Xóa (chỉ chủ bài viết) --}}
                                         @if(Auth::check() && Auth::id() == $post->user_id)
                                             @if($post->status != 'pending_delete')
                                                 <a href="{{ route('recipes.edit', $post->id) }}"
-                                                    class="text-blue-500 hover:text-blue-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
+                                                    class="relative z-10 text-blue-500 hover:text-blue-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
                                                     <i class="fas fa-edit"></i> Sửa
                                                 </a>
                                                 {{-- Nút Xóa (chờ admin duyệt) --}}
                                                 <button onclick="requestDeleteReview({{ $post->id }})"
-                                                    class="text-red-500 hover:text-red-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
+                                                    class="relative z-10 text-red-500 hover:text-red-700 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition">
                                                     <i class="fas fa-trash-alt"></i> Xóa
                                                 </button>
                                             @else
                                                 {{-- Trạng thái chờ duyệt xóa --}}
                                                 <button onclick="cancelDeleteReview({{ $post->id }})"
-                                                    class="text-orange-600 hover:text-orange-800 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition cursor-pointer">
+                                                    class="relative z-10 text-orange-600 hover:text-orange-800 font-bold hover:underline text-xs uppercase tracking-wide flex items-center gap-1 transition cursor-pointer">
                                                     <i class="fas fa-undo"></i> Hủy xóa
                                                 </button>
                                             @endif
@@ -778,17 +723,17 @@
                 </div>{{-- End tab-content-reviews --}}
 
                 {{-- ================================================================= --}}
-                {{-- TAB 3: SÁCH ĐỀ XUẤT (ĐẦY ĐỦ) --}}
+                {{-- TAB 3: CÔNG THỨC ĐỀ XUẤT (ĐẦY ĐỦ) --}}
                 {{-- ================================================================= --}}
                 <div id="tab-content-books" class="tab-content hidden">
                     <div
                         class="flex items-center justify-between mb-6 bg-white rounded-xl shadow-soft border border-gray-100 p-4">
                         <div class="flex items-center gap-3">
                             <h3 class="text-xl font-bold text-gray-800 font-serif border-l-4 border-brand-accent pl-3">
-                                {{ $totalSuggestedBooks > 0 ? 'Công Thức Của Tôi' : 'Chưa có công thức chia sẻ' }}
+                                {{ $totalSuggestedRecipes > 0 ? 'Công Thức Của Tôi' : 'Chưa có công thức chia sẻ' }}
                             </h3>
                             <span
-                                class="bg-brand-accent/10 text-brand-accent text-sm px-3 py-1 rounded-full font-bold">{{ $totalSuggestedBooks }}</span>
+                                class="bg-brand-accent/10 text-brand-accent text-sm px-3 py-1 rounded-full font-bold">{{ $totalSuggestedRecipes ?? 0 }}</span>
                         </div>
 
                         <a href="{{ route('recipes.create') }}"
@@ -798,9 +743,12 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @forelse($suggestedBooks as $book)
+                        @forelse($suggestedRecipes as $book)
                             <div
                                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-row h-44 relative group">
+                                @if($book->status == 'published')
+                                    <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}" class="absolute inset-0 z-0"></a>
+                                @endif
 
                                 <div class="w-28 relative flex-shrink-0 bg-gray-200">
                                     @if($book->status == 'published')
@@ -823,7 +771,7 @@
                                         <h4 class="font-bold font-serif text-gray-800 text-sm mb-1 leading-tight line-clamp-2">
                                             @if($book->status == 'published')
                                                 <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}"
-                                                    class="hover:text-brand-green transition">
+                                                    class="hover:text-brand-green transition relative z-10">
                                                     {{ $book->title }}
                                                 </a>
                                             @else
@@ -843,7 +791,7 @@
                                     <div class="mt-auto pt-2">
                                         @if($book->status == 'published')
                                             <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}"
-                                                class="inline-flex items-center gap-1 text-brand-green border border-brand-green/30 bg-brand-green/5 px-2.5 py-1 rounded text-[10px] font-bold hover:bg-brand-green hover:text-white transition">
+                                                class="relative z-10 inline-flex items-center gap-1 text-brand-green border border-brand-green/30 bg-brand-green/5 px-2.5 py-1 rounded text-[10px] font-bold hover:bg-brand-green hover:text-white transition">
                                                 <i class="fas fa-check-circle"></i> ĐÃ DUYỆT
                                             </a>
                                         @else
@@ -873,9 +821,9 @@
                     </div>
 
                     {{-- Phân trang Công thức --}}
-                    @if($suggestedBooks instanceof \Illuminate\Pagination\LengthAwarePaginator && $suggestedBooks->hasPages())
+                    @if($suggestedRecipes instanceof \Illuminate\Pagination\LengthAwarePaginator && $suggestedRecipes->hasPages())
                         <div class="mt-6">
-                            {{ $suggestedBooks->links() }}
+                            {{ $suggestedRecipes->links() }}
                         </div>
                     @endif
 
@@ -891,6 +839,7 @@
                                 @foreach($savedPosts as $savedPost)
                                     <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition group relative"
                                         id="saved-post-{{ $savedPost->id }}">
+                                        <a href="{{ route('recipes.show', $savedPost->slug ?? $savedPost->id) }}" class="absolute inset-0 z-0"></a>
 
                                         {{-- Nút Bỏ lưu --}}
                                         <button onclick="handleUnsavePost({{ $savedPost->id }}, this)"
@@ -900,22 +849,20 @@
                                         </button>
 
                                         <div class="flex gap-5">
-                                            @if($savedPost->recipe)
-                                                <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}" class="flex-shrink-0">
-                                                    <img src="{{ $savedPost->recipe->image ? (Str::startsWith($savedPost->recipe->image, 'http') ? $savedPost->recipe->image : asset('storage/' . $savedPost->recipe->image)) : 'https://placehold.co/80x120' }}"
-                                                        class="w-20 h-28 object-cover rounded-lg shadow-sm group-hover:shadow-md transition">
-                                                </a>
-                                            @endif
+                                            <a href="{{ route('recipes.show', $savedPost->slug ?? $savedPost->id) }}" class="flex-shrink-0">
+                                                <img src="{{ $savedPost->image ? (Str::startsWith($savedPost->image, 'http') ? $savedPost->image : asset('storage/' . $savedPost->image)) : 'https://placehold.co/80x120' }}"
+                                                    class="w-20 h-28 object-cover rounded-lg shadow-sm group-hover:shadow-md transition">
+                                            </a>
 
                                             <div class="flex-1 min-w-0">
                                                 {{-- Tác giả bài viết --}}
                                                 <div class="flex items-center gap-2 mb-2">
-                                                    <a href="{{ route('public.profile', $savedPost->user->id) }}">
+                                                    <a href="{{ route('public.profile', $savedPost->user->id) }}" class="relative z-10">
                                                         <img src="{{ $savedPost->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($savedPost->user->name) }}"
                                                             class="w-7 h-7 rounded-full border border-gray-200">
                                                     </a>
                                                     <a href="{{ route('public.profile', $savedPost->user->id) }}"
-                                                        class="text-sm text-gray-700 hover:text-brand-green font-medium">
+                                                        class="relative z-10 text-sm text-gray-700 hover:text-brand-green font-medium">
                                                         {{ $savedPost->user->name }}
                                                     </a>
                                                     <span class="text-gray-300">•</span>
@@ -923,19 +870,17 @@
                                                         class="text-xs text-gray-400">{{ $savedPost->created_at->diffForHumans() }}</span>
                                                 </div>
 
-                                                @if($savedPost->recipe)
-                                                    <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}"
-                                                        class="text-xs text-brand-green font-bold uppercase tracking-wider hover:underline mb-1 block">
-                                                        {{ $savedPost->recipe->title }}
-                                                    </a>
+                                                @if($savedPost->category)
+                                                    <span class="text-xs text-brand-green font-bold uppercase tracking-wider mb-1 block">
+                                                        {{ $savedPost->category->name }}
+                                                    </span>
                                                 @endif
 
-                                                @if($savedPost->title)
-                                                    <h4
-                                                        class="font-bold text-gray-800 text-lg mb-2 group-hover:text-brand-green transition line-clamp-2">
+                                                <h4 class="font-bold text-gray-800 text-lg mb-2 group-hover:text-brand-green transition line-clamp-2">
+                                                    <a href="{{ route('recipes.show', $savedPost->slug ?? $savedPost->id) }}">
                                                         "{{ $savedPost->title }}"
-                                                    </h4>
-                                                @endif
+                                                    </a>
+                                                </h4>
 
                                                 <div class="text-gray-500 text-sm line-clamp-3 mb-3">
                                                     {!! Str::limit(strip_tags($savedPost->content), 200) !!}
@@ -948,7 +893,7 @@
                                                     @endphp
                                                     <button onclick="handleLike({{ $savedPost->id }}, 'post')"
                                                         id="like-btn-post-{{ $savedPost->id }}"
-                                                        class="flex items-center gap-2 text-sm font-bold transition {{ $isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500' }}">
+                                                        class="relative z-10 flex items-center gap-2 text-sm font-bold transition {{ $isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500' }}">
                                                         <i id="like-icon-post-{{ $savedPost->id }}"
                                                             class="{{ $isLiked ? 'fas' : 'far' }} fa-heart"></i>
                                                         <span
@@ -956,18 +901,16 @@
                                                     </button>
 
                                                     <button onclick="toggleSavedComment({{ $savedPost->id }})"
-                                                        class="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-500 transition">
+                                                        class="relative z-10 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-500 transition">
                                                         <i class="far fa-comment-dots"></i>
                                                         <span
                                                             id="comment-count-{{ $savedPost->id }}">{{ $savedPost->comments_count ?? 0 }}</span>
                                                     </button>
 
-                                                    @if($savedPost->recipe)
-                                                        <a href="{{ route('recipes.show', $savedPost->recipe->slug ?? $savedPost->recipe->id) }}"
-                                                            class="text-brand-green font-bold hover:underline text-sm ml-auto flex items-center gap-1">
-                                                            Xem chi tiết <i class="fas fa-arrow-right"></i>
-                                                        </a>
-                                                    @endif
+                                                    <a href="{{ route('recipes.show', $savedPost->slug ?? $savedPost->id) }}"
+                                                        class="relative z-10 text-brand-green font-bold hover:underline text-sm ml-auto flex items-center gap-1">
+                                                        Xem chi tiết <i class="fas fa-arrow-right"></i>
+                                                    </a>
                                                 </div>
 
                                                 {{-- Comment Box --}}

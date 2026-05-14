@@ -51,7 +51,7 @@
         {{-- Grid Danh Sách Tác Giả --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
             @forelse($authors as $author)
-                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col items-center text-center group cursor-pointer"
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col items-center text-center group cursor-pointer relative"
                      onclick="window.location='{{ route('public.profile', $author->id) }}'">
                     
                     {{-- Avatar & Khung --}}

@@ -110,7 +110,7 @@
                                     switch($type) {
                                         case 'new_report': $icon = 'fas fa-flag'; $iconColor = 'text-red-600'; $title = 'Báo cáo mới'; $bgColor = 'bg-red-100'; break;
                                         case 'book_request': $icon = 'fas fa-book'; $iconColor = 'text-amber-600'; $title = 'Gợi ý công thức mới'; $bgColor = 'bg-amber-100'; break;
-                                        case 'book_approved': $icon = 'fas fa-check-circle'; $iconColor = 'text-green-600'; $title = 'Sách được duyệt'; $bgColor = 'bg-green-100'; break;
+                                        case 'recipe_approved': $icon = 'fas fa-check-circle'; $iconColor = 'text-green-600'; $title = 'Công thức được duyệt'; $bgColor = 'bg-green-100'; break;
                                         case 'admin_new_post': $icon = 'fas fa-file-contract'; $iconColor = 'text-brand-green'; $title = 'Bài đăng mới'; $bgColor = 'bg-brand-green/10'; break;
                                     }
                                 @endphp
@@ -511,7 +511,7 @@
             <div class="px-6 py-6 text-sm text-gray-700 space-y-5">
                 <div class="flex items-start gap-4">
                     <div class="bg-amber-100 p-3 rounded-2xl text-amber-600"><i class="fas fa-utensils"></i></div>
-                    <div><h4 class="font-bold text-gray-900">Chia sẻ công thức thế nào?</h4><p class="text-gray-600 mt-1">Góc Bếp hiện đang trong quá trình thử nghiệm. Tính năng "Đăng công thức" sẽ ra mắt trong bản cập nhật sắp tới.</p></div>
+                    <div><h4 class="font-bold text-gray-900">Chia sẻ công thức thế nào?</h4><p class="text-gray-600 mt-1">Bạn có thể nhấp vào nút "Đăng Công Thức" tại trang Thử Thách hoặc trong Hồ Sơ cá nhân để chia sẻ những món ăn tuyệt vời của mình.</p></div>
                 </div>
                 <div class="flex items-start gap-4">
                     <div class="bg-amber-100 p-3 rounded-2xl text-amber-600"><i class="fas fa-envelope"></i></div>

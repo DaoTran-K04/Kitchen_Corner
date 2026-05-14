@@ -221,14 +221,76 @@
                                 <span class="text-gray-400 text-xs ml-2">{{ $comment->created_at->diffForHumans() }}</span>
                                 <p class="text-gray-700 text-sm mt-1">{{ $comment->content }}</p>
                             </div>
+                            
+                            {{-- Add Like, Reply, Report buttons here --}}
+                            <div class="flex items-center gap-4 mt-2 ml-2 mb-4">
+                                @php
+                                    $isLikedComment = Auth::check() && $comment->likes()->where('user_id', Auth::id())->exists();
+                                @endphp
+                                <button onclick="handleLike({{ $comment->id }}, 'comment')" id="like-btn-comment-{{ $comment->id }}" class="text-[11px] font-bold flex items-center gap-1 {{ $isLikedComment ? 'text-red-500' : 'text-gray-500 hover:text-red-500' }} transition">
+                                    <i id="like-icon-comment-{{ $comment->id }}" class="{{ $isLikedComment ? 'fas' : 'far' }} fa-heart text-xs"></i>
+                                    <span id="like-count-comment-{{ $comment->id }}">{{ $comment->likes()->count() ?? 0 }}</span>
+                                </button>
+                                
+                                <button onclick="toggleReplySection({{ $comment->id }})" class="text-[11px] font-bold text-gray-500 hover:text-green-600 transition flex items-center gap-1">
+                                    <i class="fas fa-reply text-[10px]"></i> Trả lời ({{ $comment->replies->count() ?? 0 }})
+                                </button>
+
+                                @auth
+                                @if(Auth::id() !== $comment->user_id)
+                                <button onclick="reportComment({{ $comment->id }})" class="text-[11px] font-bold text-gray-400 hover:text-orange-500 transition ml-auto flex items-center gap-1" title="Báo cáo vi phạm">
+                                    <i class="fas fa-flag text-[10px]"></i> Báo cáo
+                                </button>
+                                @endif
+                                @endauth
+                            </div>
+
+                            {{-- Khu vực Reply Input --}}
+                            <div id="reply-section-{{ $comment->id }}" class="hidden mt-3 mb-4 border-l-2 border-gray-100 pl-3">
+                                @auth
+                                <form action="{{ route('recipes.comment', $recipe->id) }}" method="POST" class="flex gap-2 relative">
+                                    @csrf
+                                    <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+                                    <textarea name="content" rows="1" class="w-full text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-green-400 resize-none" placeholder="Nhập câu trả lời..."></textarea>
+                                    <button type="submit" class="text-white px-4 py-1.5 bg-green-600 rounded-lg text-xs font-bold hover:bg-green-700 transition shadow">Gửi</button>
+                                </form>
+                                @else
+                                <div class="text-[11px] text-gray-500 italic p-2 bg-gray-50 rounded">Vui lòng <a href="{{ route('login') }}" class="text-green-600 font-bold">đăng nhập</a> để trả lời.</div>
+                                @endauth
+                            </div>
+
                             {{-- Replies --}}
                             @foreach($comment->replies as $reply)
                             <div class="flex gap-3 mt-2 ml-4">
                                 <img src="{{ $reply->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($reply->user->name) }}"
                                     class="w-7 h-7 rounded-full object-cover flex-shrink-0" alt="">
-                                <div class="flex-1 bg-white border border-gray-100 rounded-xl px-3 py-2">
-                                    <span class="font-bold text-gray-700 text-xs">{{ $reply->user->name }}</span>
-                                    <p class="text-gray-600 text-xs mt-0.5">{{ $reply->content }}</p>
+                                <div class="flex-1">
+                                    <div class="bg-white border border-gray-100 rounded-xl px-3 py-2">
+                                        <span class="font-bold text-gray-700 text-xs">{{ $reply->user->name }}</span>
+                                        <p class="text-gray-600 text-xs mt-0.5">{{ $reply->content }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-1 ml-2 mb-2">
+                                        @php
+                                            $isLikedReply = Auth::check() && $reply->likes()->where('user_id', Auth::id())->exists();
+                                        @endphp
+                                        <button onclick="handleLike({{ $reply->id }}, 'comment')" id="like-btn-comment-{{ $reply->id }}" class="text-[10px] font-bold flex items-center gap-1 {{ $isLikedReply ? 'text-red-500' : 'text-gray-400 hover:text-red-500' }} transition">
+                                            <i id="like-icon-comment-{{ $reply->id }}" class="{{ $isLikedReply ? 'fas' : 'far' }} fa-heart text-[10px]"></i>
+                                            <span id="like-count-comment-{{ $reply->id }}">{{ $reply->likes()->count() ?? 0 }}</span>
+                                        </button>
+                                        
+                                        {{-- Nút Trả lời cho Reply --}}
+                                        <button onclick="replyToUser({{ $comment->id }}, '{{ addslashes($reply->user->name) }}')" class="text-[10px] font-bold text-gray-500 hover:text-green-600 transition flex items-center gap-1">
+                                            <i class="fas fa-reply text-[9px]"></i> Trả lời
+                                        </button>
+                                        
+                                        @auth
+                                        @if(Auth::id() !== $reply->user_id)
+                                        <button onclick="reportComment({{ $reply->id }})" class="text-[10px] font-bold text-gray-400 hover:text-orange-500 transition ml-auto flex items-center gap-1" title="Báo cáo vi phạm">
+                                            <i class="fas fa-flag text-[9px]"></i> Báo cáo
+                                        </button>
+                                        @endif
+                                        @endauth
+                                    </div>
                                 </div>
                             </div>
                             @endforeach
@@ -396,6 +458,75 @@ async function toggleBookmark(recipeId) {
             btn.classList.add('border-gray-300','text-gray-600');
         }
     }
+}
+
+function handleLike(id, type) {
+    if (!{{ Auth::check() ? 'true' : 'false' }}) { alert("Vui lòng đăng nhập để thích."); return; }
+    const btn = document.getElementById(`like-btn-${type}-${id}`);
+    const icon = document.getElementById(`like-icon-${type}-${id}`);
+    const countSpan = document.getElementById(`like-count-${type}-${id}`);
+    if (!icon || !countSpan) return;
+
+    fetch('{{ route("handle.like") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        body: JSON.stringify({ id: id, type: type })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            icon.classList.toggle('fas', data.liked);
+            icon.classList.toggle('far', !data.liked);
+            if (btn) {
+                btn.classList.toggle('text-red-500', data.liked);
+                btn.classList.toggle('text-gray-500', !data.liked);
+                btn.classList.toggle('text-gray-400', !data.liked);
+            }
+            countSpan.innerText = data.count;
+        }
+    });
+}
+
+function toggleReplySection(commentId) {
+    const section = document.getElementById(`reply-section-${commentId}`);
+    if (section) {
+        section.classList.toggle('hidden');
+    }
+}
+
+function replyToUser(parentCommentId, username) {
+    const section = document.getElementById(`reply-section-${parentCommentId}`);
+    if (section) {
+        section.classList.remove('hidden');
+        const textarea = section.querySelector('textarea[name="content"]');
+        if (textarea) {
+            const replyText = `@${username} `;
+            if (!textarea.value.startsWith(replyText)) {
+                textarea.value = replyText + textarea.value;
+            }
+            textarea.focus();
+        }
+    }
+}
+
+async function reportComment(commentId) {
+    if (!{{ Auth::check() ? 'true' : 'false' }}) { alert("Vui lòng đăng nhập để báo cáo."); return; }
+    
+    let reason = prompt("Vui lòng nhập lý do báo cáo (spam, offensive, harassment, inappropriate, other):", "inappropriate");
+    if (!reason) return;
+    
+    const validReasons = ['spam','offensive','harassment','inappropriate','other'];
+    if (!validReasons.includes(reason)) {
+        reason = 'other';
+    }
+
+    const res = await fetch(`/report/comment/${commentId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+        body: JSON.stringify({ reason: reason })
+    });
+    const data = await res.json();
+    alert(data.message || "Đã gửi báo cáo!");
 }
 </script>
 @endpush

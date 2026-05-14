@@ -32,6 +32,9 @@ use App\Http\Controllers\AuthorController;
 // 1. NHÓM PUBLIC (Ai cũng xem được)
 // ====================================================
 
+// ── ROUTES CÔNG THỨC (Ưu tiên hàng đầu để tránh lỗi 404) ───────────────────────
+// Removed {slug} routes from here to place them after specific routes
+
 // Route serve file storage (bypass symlink issue on Windows)
 Route::get('/storage/{path}', function ($path) {
     $fullPath = storage_path('app/public/' . $path);
@@ -39,6 +42,11 @@ Route::get('/storage/{path}', function ($path) {
     $mimeType = mime_content_type($fullPath);
     return response()->file($fullPath, ['Content-Type' => $mimeType]);
 })->where('path', '.*');
+
+// Trang bị khóa
+Route::get('/banned', function () {
+    return view('errors.banned');
+})->name('banned');
 
 // Trang chủ
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -89,10 +97,13 @@ Route::get('/tap-chi/{slug}', [ArticleController::class, 'show'])->name('article
 // ── ROUTES CÔNG THỨC (ĐÃ MỞ KHÓA) ──────────────────────────────────────────
 Route::get('/cong-thuc', [RecipeController::class, 'index'])->name('recipes.list');
 Route::get('/cong-thuc/dang-bai', [RecipeController::class, 'create'])->middleware(['auth', 'email.verified'])->name('recipes.create');
-Route::get('/cong-thuc/{slug}', [RecipeController::class, 'show'])->name('recipes.show');
 Route::get('/tim-kiem', [RecipeController::class, 'search'])->name('recipes.search');
 Route::get('/danh-sach', [RecipeController::class, 'index'])->name('books.list'); // alias
 
+// ── ROUTES CÔNG THỨC CHI TIẾT (Phải đặt sau dang-bai để tránh nuốt route) ──
+Route::get('/cong-thuc/{slug}', [RecipeController::class, 'show'])->name('recipes.show');
+Route::get('/cong thuc/{slug}', [RecipeController::class, 'show']); 
+Route::get('/cong%20thuc/{slug}', [RecipeController::class, 'show']);
 // ── ROUTES TÁC GIẢ / THÀNH VIÊN ───────────────────────────────────────
 Route::get('/tac-gia', [AuthorController::class, 'index'])->name('authors.index');
 
@@ -297,6 +308,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::post('users/{user}/toggle-active', [\App\Http\Controllers\Admin\UserController::class, 'toggleActive'])->name('users.toggle-active');
     Route::post('users/{user}/toggle-role', [\App\Http\Controllers\Admin\UserController::class, 'toggleRole'])->name('users.toggle-role');
+    Route::delete('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
     // Activity Logs
     Route::get('/activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');

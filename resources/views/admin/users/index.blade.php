@@ -186,4 +186,5 @@
             paginationContainer.addEventListener('click', handlePaginationClick);
         });
     </script>
+    @include('admin.users.partials.modals')
 @endsection

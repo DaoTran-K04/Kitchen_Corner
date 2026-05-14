@@ -66,12 +66,12 @@ class NotificationSeeder extends Seeder
             ],
             [
                 'id' => Str::uuid()->toString(),
-                'type' => 'App\Notifications\BookApprovedNotification',
+                'type' => 'App\Notifications\RecipeApprovedNotification',
                 'notifiable_type' => 'App\Models\User',
                 'notifiable_id' => $user->id,
                 'data' => json_encode([
-                    'type' => 'book_approved',
-                    'message' => 'Yêu cầu gợi ý cuốn sách "Hương vị Miền Tây" của bạn đã được quản trị viên phê duyệt. Chúc bạn có những phút giây nấu nướng vui vẻ!',
+                    'type' => 'recipe_approved',
+                    'message' => 'Công thức "Phở Bò Gia Truyền Hà Nội" của bạn đã được quản trị viên phê duyệt và đăng lên cộng đồng Góc Bếp. Cảm ơn bạn đã đóng góp!',
                 ]),
                 'read_at' => Carbon::now()->subDays(1),
                 'created_at' => Carbon::now()->subDays(1),

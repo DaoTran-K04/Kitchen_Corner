@@ -66,9 +66,9 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     {{-- Mục tiêu --}}
                     <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg text-center">
-                        <i class="fas fa-pen text-amber-500 text-xl mb-2"></i>
+                        <i class="fas {{ $challenge->action_type == 'post_comment' ? 'fa-comments' : 'fa-pen' }} text-amber-500 text-xl mb-2"></i>
                         <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ $challenge->target_count }}</p>
-                        <p class="text-xs text-gray-500 dark:text-slate-400">Reviews cần viết</p>
+                        <p class="text-xs text-gray-500 dark:text-slate-400">{{ $challenge->action_type == 'post_comment' ? 'Bình luận cần viết' : 'Công thức cần đăng' }}</p>
                     </div>
                     {{-- Thời gian --}}
                     <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg text-center">
@@ -293,10 +293,20 @@
                                     </select>
                                 </div>
 
+                                {{-- Loại hành động --}}
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Loại hành động <span class="text-red-500">*</span></label>
+                                    <select name="action_type" id="edit-action" class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white cursor-pointer" required>
+                                        <option value="post_recipe" {{ $challenge->action_type == 'post_recipe' ? 'selected' : '' }}>Đăng bài công thức</option>
+                                        <option value="post_comment" {{ $challenge->action_type == 'post_comment' ? 'selected' : '' }}>Viết bình luận</option>
+                                    </select>
+                                    <p class="text-red-500 text-xs mt-1 hidden" id="error-action_type"></p>
+                                </div>
+
                                 {{-- Số bài review --}}
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
-                                        Số bài review cần viết <span class="text-red-500">*</span>
+                                        Số lượng yêu cầu <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="target_count" id="edit-target" min="1" max="100" value="{{ $challenge->target_count }}"
                                         class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white" required>

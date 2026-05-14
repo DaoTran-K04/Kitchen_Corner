@@ -138,7 +138,8 @@
                                     </span>
                                 @endif
                                 <span class="text-gray-600 dark:text-slate-300 flex items-center gap-1">
-                                    <i class="fas fa-pen text-blue-500"></i>{{ $challenge->target_count }} reviews
+                                    <i class="fas {{ $challenge->action_type == 'post_comment' ? 'fa-comments' : 'fa-pen' }} text-blue-500"></i>
+                                    {{ $challenge->target_count }} {{ $challenge->action_type == 'post_comment' ? 'bình luận' : 'công thức' }}
                                 </span>
                                 <span class="text-gray-600 dark:text-slate-300 flex items-center gap-1">
                                     <i class="fas fa-calendar text-blue-500"></i>

@@ -21,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'bio',
         'role',
         'is_active',
+        'violation_count',
+        'ban_reason',
     ];
 
     protected $hidden = [
@@ -156,18 +158,28 @@ class User extends Authenticatable implements MustVerifyEmail
             // Kết thúc lúc 23:59:59 của ngày end
             $endDate = Carbon::parse($challenge->end_date)->endOfDay();
 
-            // Đếm bài viết hợp lệ (Đã duyệt + Nằm trong khoảng thời gian)
-            $validPostsCount = $this->recipes()
-                ->where('status', 'published')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count();
+            // Đếm số lượng hành động hợp lệ dựa trên action_type
+            $validActionCount = 0;
+
+            if ($challenge->action_type === 'post_comment') {
+                // Tính số comment của user
+                $validActionCount = $this->comments()
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->count();
+            } else {
+                // Tính số bài viết đã duyệt
+                $validActionCount = $this->recipes()
+                    ->where('status', 'published')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->count();
+            }
 
             // Kiểm tra điều kiện hoàn thành
-            $isCompleted = $validPostsCount >= $challenge->target_count;
+            $isCompleted = $validActionCount >= $challenge->target_count;
 
             // Chuẩn bị dữ liệu cập nhật
             $pivotData = [
-                'current_count' => $validPostsCount,
+                'current_count' => $validActionCount,
                 'is_completed' => $isCompleted
             ];
 

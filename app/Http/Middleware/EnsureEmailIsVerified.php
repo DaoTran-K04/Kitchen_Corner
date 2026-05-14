@@ -17,7 +17,7 @@ class EnsureEmailIsVerified
     {
         $user = Auth::user();
         
-        if (!$user || !$user->email_verified_at || !$user->is_active) {
+        if (!$user || !$user->email_verified_at) {
             // Nếu là AJAX request, trả về JSON
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([

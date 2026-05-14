@@ -164,7 +164,7 @@
                         
                         {{-- Content --}}
                         <p class="text-sm text-gray-600 leading-relaxed mb-5 relative">
-                            Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh <span class="text-emerald-600 font-semibold">văn hóa đọc</span>, phỏng vấn tác giả và những tips hay ho cho mọt sách.
+                            Góc Bếp Magazine là nơi chia sẻ những câu chuyện thú vị xoay quanh <span class="text-emerald-600 font-semibold">văn hóa ẩm thực</span>, phỏng vấn đầu bếp và những mẹo hay ho cho người yêu bếp.
                         </p>
                         
                         {{-- Stats --}}

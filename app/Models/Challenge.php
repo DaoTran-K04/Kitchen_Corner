@@ -14,6 +14,7 @@ class Challenge extends Model
         'badge_id',
         'avatar_frame_id',
         'name',
+        'action_type',
         'slug',
         'description',
         'target_count',

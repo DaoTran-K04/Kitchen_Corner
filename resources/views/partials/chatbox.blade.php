@@ -21,12 +21,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                @auth
-                    <button onclick="clearChatHistory()" title="Xóa lịch sử"
-                        class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition">
-                        <i class="fas fa-trash-alt text-sm"></i>
-                    </button>
-                @endauth
+                <button onclick="clearChatHistory()" title="Xóa lịch sử"
+                    class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition">
+                    <i class="fas fa-trash-alt text-sm"></i>
+                </button>
                 <button onclick="toggleChatbox()"
                     class="w-10 h-10 sm:w-8 sm:h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition">
                     <i class="fas fa-times text-lg sm:text-base"></i>
@@ -121,15 +119,15 @@
         <div id="mobile-float-buttons"
             class="flex flex-col gap-2 sm:gap-3 md:flex md:opacity-100 hidden opacity-0 transition-all duration-300">
             {{-- Facebook Messenger Button --}}
-            <a href="https://www.facebook.com/messages/t/1765763684084822" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.facebook.com/groups/2047512272494576?locale=vi_VN" target="_blank" rel="noopener noreferrer"
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-[#00b2ff] to-[#006aff] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group"
                 style="animation-delay: 0s; --glow-color: rgba(0, 132, 255, 0.5);"
                 title="Di chuyển tới Cộng đồng Góc Bếp trên Facebook">
-                <i class="fab fa-facebook-messenger text-lg sm:text-xl relative z-10"></i>
+                <i class="fab fa-facebook text-lg sm:text-xl relative z-10"></i>
             </a>
 
             {{-- Zalo Button --}}
-            <a href="https://zalo.me/g/fhbbxj936" target="_blank" rel="noopener noreferrer"
+            <a href="https://zalo.me/g/zqgnmi3ek9vzcgwedwnn" target="_blank" rel="noopener noreferrer"
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group overflow-hidden"
                 style="animation-delay: 0.3s; --glow-color: rgba(0, 104, 255, 0.5);"
                 title="Di chuyển tới Cộng đồng Góc Bếp trên Zalo">
@@ -252,39 +250,40 @@
         if (!result.isConfirmed) return;
 
         try {
-            const response = await fetch('{{ route("chatbot.clear") }}', {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                // Reset UI
-                chatHistory = [];
-                historyLoaded = false;
-                const container = document.getElementById('chatbox-messages');
-                container.innerHTML = `
-                    <div class="flex gap-3">
-                        <div class="w-8 h-8 bg-brand-green rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-robot text-white text-xs"></i>
-                        </div>
-                        <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[85%] sm:max-w-[80%]">
-                            <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Bếp. Tôi có thể giúp bạn tìm món ngon, gợi ý công thức theo nguyên liệu hoặc tư vấn dinh dưỡng. Bạn cần gì nào?</p>
-                        </div>
-                    </div>
-                    <div id="quick-replies" class="flex flex-wrap gap-2 mt-2">
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Gợi ý món ngon">Gợi ý món ngon</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Thống kê Góc Bếp">Thống kê</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Cách đăng công thức">Cách đăng công thức</button>
-                        <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Tủ Lạnh Web là gì">Tủ Lạnh Web</button>
-                    </div>
-                `;
-                // Re-attach quick reply listeners
-                attachQuickReplyListeners();
+            if (isLoggedIn) {
+                const response = await fetch('{{ route("chatbot.clear") }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+                const data = await response.json();
+                if (!data.success) throw new Error('Failed to clear server history');
             }
+
+            // Reset UI for everyone
+            chatHistory = [];
+            historyLoaded = false;
+            const container = document.getElementById('chatbox-messages');
+            container.innerHTML = `
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 bg-brand-green rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-xs"></i>
+                    </div>
+                    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[85%] sm:max-w-[80%]">
+                        <p class="text-sm text-gray-700">Xin chào! Tôi là trợ lý AI của Góc Bếp. Tôi có thể giúp bạn tìm món ngon, gợi ý công thức theo nguyên liệu hoặc tư vấn dinh dưỡng. Bạn cần gì nào?</p>
+                    </div>
+                </div>
+                <div id="quick-replies" class="flex flex-wrap gap-2 mt-2">
+                    <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Gợi ý món ngon">Gợi ý món ngon</button>
+                    <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Thống kê Góc Bếp">Thống kê</button>
+                    <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Cách đăng công thức">Cách đăng công thức</button>
+                    <button class="quick-reply-btn px-3 py-1.5 bg-white border border-brand-green text-brand-green rounded-full text-xs hover:bg-brand-green hover:text-white transition-all duration-200" data-message="Tủ Lạnh Web là gì">Tủ Lạnh Web</button>
+                </div>
+            `;
+            // Re-attach quick reply listeners
+            attachQuickReplyListeners();
         } catch (error) {
             console.error('Error clearing chat history:', error);
         }

@@ -76,10 +76,20 @@
                                 </select>
                             </div>
 
+                            {{-- Loại hành động --}}
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Loại hành động <span class="text-red-500">*</span></label>
+                                <select name="action_type" class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white cursor-pointer" required>
+                                    <option value="post_recipe" {{ old('action_type', $challenge->action_type) == 'post_recipe' ? 'selected' : '' }}>Đăng bài công thức</option>
+                                    <option value="post_comment" {{ old('action_type', $challenge->action_type) == 'post_comment' ? 'selected' : '' }}>Viết bình luận</option>
+                                </select>
+                                @error('action_type') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
+
                             {{-- Số bài review --}}
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
-                                    Số bài review cần viết <span class="text-red-500">*</span>
+                                    Số lượng yêu cầu <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="target_count" min="1" max="100"
                                     value="{{ old('target_count', $challenge->target_count) }}"

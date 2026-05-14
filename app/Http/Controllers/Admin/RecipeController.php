@@ -21,6 +21,10 @@ class RecipeController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
         $recipes    = $query->latest()->paginate(20)->withQueryString();
         $categories = Category::orderBy('name')->get();
 
@@ -65,10 +69,29 @@ class RecipeController extends Controller
         return back()->with('success', $msg);
     }
 
-    public function reject(Recipe $recipe)
+    public function reject(Request $request, Recipe $recipe)
     {
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+
         $recipe->update(['status' => 'draft']);
-        return back()->with('success', 'Đã từ chối/ẩn công thức "' . $recipe->title . '".');
+
+        $isViolation = $request->has('is_violation');
+        
+        if ($recipe->user) {
+            if ($isViolation) {
+                $recipe->user->increment('violation_count');
+            }
+
+            try {
+                $recipe->user->notify(new \App\Notifications\RecipeRejectedNotification($recipe, $request->reason, $isViolation));
+            } catch (\Exception $e) {
+                \Log::error("Lỗi gửi thông báo từ chối: " . $e->getMessage());
+            }
+        }
+
+        return back()->with('success', 'Đã từ chối công thức "' . $recipe->title . '".');
     }
 
     public function destroy(Recipe $recipe)

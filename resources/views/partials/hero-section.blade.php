@@ -8,10 +8,11 @@
         @php
             $imagePath  = is_object($slide) ? $slide->image       : $slide['image'];
             $imgSrc     = Str::startsWith($imagePath, 'http') ? $imagePath : asset('storage/' . $imagePath);
-            $bannerLink = is_object($slide) ? ($slide->link        ?? '#')              : '#';
             $slideTag   = is_object($slide) ? ($slide->tag         ?? 'Nổi Bật')        : ($slide['tag'] ?? 'Nổi Bật');
             $slideTitle = is_object($slide) ? $slide->title                              : $slide['title'];
             $slideDesc  = is_object($slide) ? ($slide->description ?? $slide->desc ?? '') : ($slide['desc'] ?? '');
+            $rawLink    = is_object($slide) ? ($slide->link ?? '') : ($slide['link'] ?? '');
+            $bannerLink = !empty($rawLink) && $rawLink !== '#' ? $rawLink : route('recipes.list');
         @endphp
         <div class="w-full h-full flex-shrink-0 relative group/slide">
 
@@ -25,13 +26,7 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
 
-            {{-- Admin Tool --}}
-            @if(Auth::check() && Auth::user()->isAdmin() && isset($slide->id))
-            <a href="{{ route('admin.banners.edit', $slide->id) }}"
-                class="absolute top-24 right-8 z-50 bg-white/90 text-blue-600 px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition font-bold flex items-center gap-2 opacity-0 group-hover/slide:opacity-100 backdrop-blur-sm">
-                <i class="fas fa-cog"></i> Sửa Banner
-            </a>
-            @endif
+            {{-- [Xóa] Admin Tool đã chuyển vào trang Quản trị --}}
 
             {{-- [MỨC 2–4] Nội dung văn bản - canh giữa chiều dọc --}}
             <div class="absolute inset-0 flex items-center">
@@ -70,7 +65,7 @@
 
                             {{-- Nút phụ - Glassmorphism --}}
                             @auth
-                            <a href="#"
+                            <a href="{{ route('recipes.create') }}"
                                 class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md text-white font-semibold px-8 py-4 rounded-full border border-white/25 hover:bg-white/20 hover:border-white/40 transition-all duration-300 text-sm">
                                 <i class="fas fa-plus text-xs"></i>
                                 <span>Chia sẻ công thức</span>

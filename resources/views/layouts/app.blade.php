@@ -271,7 +271,8 @@
 
     @stack('scripts')
 
-    {{-- Seasonal Decorations removed, moved to Admin Theme settings page --}}
+    {{-- Seasonal Decorations --}}
+    @include('partials.seasonal-decoration')
 
     {{-- AI Chatbox --}}
     @include('partials.chatbox')

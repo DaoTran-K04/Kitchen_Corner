@@ -62,6 +62,9 @@ class RecipeController extends Controller
     // =========================================================
     public function show(string $slug)
     {
+        // Làm sạch slug: thay thế khoảng trắng bằng dấu gạch ngang
+        $cleanSlug = str_replace([' ', '%20'], '-', $slug);
+        
         $recipe = Recipe::with([
             'user',
             'category',
@@ -71,7 +74,11 @@ class RecipeController extends Controller
                 ->with(['user', 'likes', 'replies.user', 'replies.likes'])
                 ->latest(),
         ])
-            ->where('slug', $slug)
+            ->where(function($q) use ($slug, $cleanSlug) {
+                $q->where('slug', $slug)
+                  ->orWhere('slug', $cleanSlug)
+                  ->orWhere('id', $slug);
+            })
             ->where('status', 'published')
             ->firstOrFail();
 
@@ -178,7 +185,7 @@ class RecipeController extends Controller
                     RecipeStep::create([
                         'recipe_id'   => $recipe->id,
                         'step_number' => $index + 1,
-                        'instruction' => $step['instruction'],
+                        'description' => $step['instruction'],
                         'image'       => $stepImagePath,
                     ]);
                 }
@@ -190,8 +197,8 @@ class RecipeController extends Controller
             DB::commit();
 
             $msg = $recipe->status === 'pending' 
-                ? 'Công thức đã được gửi và đang chờ phê duyệt!' 
-                : 'Công thức "' . $recipe->title . '" đã được đăng thành công!';
+                ? 'Công thức đã được gửi và đang chờ phê duyệt! Đừng quên kiểm tra tiến độ thử thách của bạn nhé.' 
+                : 'Công thức "' . $recipe->title . '" đã được đăng thành công! Hãy xem tiến độ thử thách của bạn có thay đổi không nhé.';
 
             return redirect()->route('recipes.show', $recipe->slug)
                 ->with('success', $msg);
@@ -417,16 +424,22 @@ class RecipeController extends Controller
     // =========================================================
     public function storeComment(Request $request, int $recipeId)
     {
-        $request->validate(['content' => 'required|string|max:1000']);
+        $request->validate([
+            'content' => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:comments,id'
+        ]);
 
         $recipe = Recipe::where('status', 'published')->findOrFail($recipeId);
 
         Comment::create([
             'user_id'   => Auth::id(),
             'recipe_id' => $recipe->id,
-            'parent_id' => null,
+            'parent_id' => $request->parent_id,
             'content'   => $request->content,
         ]);
+
+        // Cập nhật tiến độ thử thách loại 'bình luận'
+        Auth::user()->updateChallengeProgress();
 
         return back()->with('success', 'Đã thêm bình luận!');
     }
