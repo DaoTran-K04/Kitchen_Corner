@@ -19,7 +19,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_html/ # Chỉnh lại đường dẫn này nếu code của bạn nằm ở thư mục khác
+          # Sửa lại đường dẫn chính xác cho 123host DirectAdmin
+          server-dir: domains/tranhoangdao.id.vn/public_html/
           exclude: |
             **/.git*
             **/.git*/**
@@ -29,3 +30,4 @@ jobs:
             .env
             vendor.zip
             *.docx
+            public/storage
