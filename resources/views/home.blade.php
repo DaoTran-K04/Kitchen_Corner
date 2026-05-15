@@ -533,13 +533,10 @@
                                     {{-- Recipe Image --}}
                                     <div
                                         class="w-28 h-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 transform group-hover/recipe:scale-105 transition-transform duration-300 border-2 border-white">
-                                        @php
-                                            $recipeImg = !empty($randomRecipe->image)
-                                                ? (str_starts_with($randomRecipe->image, 'http') ? $randomRecipe->image : asset('storage/' . $randomRecipe->image))
-                                                : 'https://placehold.co/120x120?text=Recipe';
-                                        @endphp
-                                        <img src="{{ $recipeImg }}" alt="{{ $randomRecipe->title }}"
-                                            class="w-full h-full object-cover">
+                                        <img src="{{ $randomRecipe->thumbnail }}" alt="{{ $randomRecipe->title }}"
+                                            class="w-full h-full object-cover"
+                                            onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=400&auto=format&fit=crop'">
+
                                     </div>
 
                                     {{-- Recipe Info --}}
@@ -661,8 +658,10 @@
                                     @if(isset($randomRecipe) && $randomRecipe)
                                     <div class="space-y-6 relative z-10">
                                         <div class="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
-                                            <img src="{{ Str::startsWith($randomRecipe->image, 'http') ? $randomRecipe->image : asset('storage/' . $randomRecipe->image) }}"
-                                                class="w-full h-full object-cover transform group-hover/suggest:scale-110 transition-transform duration-700">
+                                            <img src="{{ $randomRecipe->thumbnail }}"
+                                                class="w-full h-full object-cover transform group-hover/suggest:scale-110 transition-transform duration-700"
+                                                onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop'">
+
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                             <div class="absolute bottom-4 left-4">
                                                 <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold rounded-full border border-white/30">
@@ -768,7 +767,10 @@
                                         {{-- Book Cover --}}
                                         <div
                                             class="w-14 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 shadow-md border-2 border-white transform group-hover/item:scale-105 transition-transform duration-300">
-                                            <img src="{{ $imageUrl }}" alt="{{ $recipe->title }}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x200?text=No+Recipe'">
+                                            <img src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" 
+                                                class="w-full h-full object-cover" 
+                                                onerror="this.src='https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=400&auto=format&fit=crop'">
+
                                         </div>
 
                                         {{-- Book Info --}}

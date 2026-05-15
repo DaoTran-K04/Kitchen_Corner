@@ -79,6 +79,20 @@ class Recipe extends Model
         return $query->where('status', 'published');
     }
 
+    public function getThumbnailAttribute()
+    {
+        $value = $this->image;
+        if (!$value) {
+            return 'https://images.unsplash.com/photo-1495195129352-aec325a55b65?q=80&w=1000&auto=format&fit=crop';
+        }
+
+        if (str_starts_with($value, 'http')) {
+            return $value;
+        }
+
+        return asset('storage/' . $value);
+    }
+
     public function getDescriptionAttribute($value)
     {
         if (!$value) {

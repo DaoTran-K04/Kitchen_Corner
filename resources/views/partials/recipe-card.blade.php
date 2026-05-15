@@ -24,10 +24,11 @@
 
     {{-- [PHÂN CẤP 1] Ảnh chiếm ≥ 60% - quan trọng nhất --}}
     <div class="relative overflow-hidden" style="aspect-ratio:4/5;">
-        <img src="{{ $imageUrl }}" alt="{{ $recipe->title }}"
+        <img src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}"
             loading="lazy"
             class="w-full h-full object-cover transform group-hover/card:scale-108 transition-transform duration-700 ease-out"
-            onerror="this.src='https://placehold.co/400x500/9b2226/white?text=Góc+Bếp'">
+            onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop'">
+
 
         {{-- Gradient overlay từ dưới lên (đọc thông tin) --}}
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent opacity-80 group-hover/card:opacity-90 transition-opacity duration-500"></div>

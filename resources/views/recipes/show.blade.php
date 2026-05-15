@@ -25,8 +25,10 @@
 
             {{-- Ảnh bìa --}}
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-video">
-                <img src="{{ $recipe->image ? (Str::startsWith($recipe->image,'http') ? $recipe->image : asset('storage/'.$recipe->image)) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900' }}"
-                    alt="{{ $recipe->title }}" class="w-full h-full object-cover">
+                <img src="{{ $recipe->thumbnail }}"
+                    alt="{{ $recipe->title }}" class="w-full h-full object-cover"
+                    onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop'">
+
             </div>
 
             {{-- Tiêu đề & Meta --}}
@@ -362,8 +364,10 @@
                 <div class="space-y-3">
                     @foreach($relatedRecipes as $rel)
                     <a href="{{ route('recipes.show', $rel->slug) }}" class="flex gap-3 group">
-                        <img src="{{ $rel->image ? (Str::startsWith($rel->image,'http') ? $rel->image : asset('storage/'.$rel->image)) : 'https://placehold.co/80x80' }}"
-                            alt="{{ $rel->title }}" class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
+                        <img src="{{ $rel->thumbnail }}"
+                            alt="{{ $rel->title }}" class="w-16 h-16 object-cover rounded-xl flex-shrink-0"
+                            onerror="this.src='https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=200&auto=format&fit=crop'">
+
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-800 group-hover:text-green-600 transition line-clamp-2 leading-snug">{{ $rel->title }}</p>
                             <p class="text-xs text-gray-400 mt-0.5"><i class="fas fa-eye"></i> {{ number_format($rel->view_count) }}</p>

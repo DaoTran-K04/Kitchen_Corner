@@ -43,7 +43,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Sườn Xào Chua Ngọt Đậm Đà',
                 'description' => 'Món sườn xào chua ngọt truyền thống với lớp sốt bóng bẩy, thịt sườn mềm thơm quyện cùng vị chua dôn dốt của cà chua và chút cay nồng của tiêu đỏ. Tuyệt hảo khi dùng kèm cơm trắng nóng hổi.',
-                'image' => 'https://images.unsplash.com/photo-1544025162-811cffd92ef7?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1544025162-811cffd92ef7?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 8, // Món chính
                 'cooking_time' => 45,
                 'difficulty' => 'medium',
@@ -71,7 +72,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Phở Bò Gia Truyền Hà Nội',
                 'description' => 'Tinh hoa ẩm thực Việt Nam gói gọn trong bát phở bò nóng hổi. Nước dùng thanh ngọt hầm từ xương bò nguyên chất trong 24 giờ, kết hợp cùng sợi phở dai mềm và những thớ thịt bò tái tươi rói.',
-                'image' => 'https://images.unsplash.com/photo-1582878826629-29b7ad1cb431?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1582878826629-29b7ad1cb431?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 6, // Mì - Bún - Phở
                 'cooking_time' => 120,
                 'difficulty' => 'hard',
@@ -99,7 +101,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Salad Ức Gà Áp Chảo Healthy',
                 'description' => 'Món salad tràn ngập màu sắc và dinh dưỡng. Thích hợp cho chế độ ăn kiêng Eat Clean, giữ trọn hương vị tươi mát của rau củ kết hợp với ức gà áp chảo mọng nước, đậm đà.',
-                'image' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 9, // Tráng miệng (Reused as Healthy/Salad usually but we put 9 or 8)
                 'cooking_time' => 20,
                 'difficulty' => 'easy',
@@ -128,7 +131,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Spaghetti Bolognese (Sốt Bò Bằm)',
                 'description' => 'Tuyệt tác của nền ẩm thực Ý mang đến hương vị quyến rũ không thể cưỡng lại. Sốt thịt bò bằm với cà chua tươi hòa quyện cùng mì Ý sợi dai dai, phủ một lớp phô mai Parmesan bào sợi thơm lừng.',
-                'image' => 'https://images.unsplash.com/photo-1551183053-d14d2e5b7fb5?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1598866594230-a7c12756260f?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 6, // Mì pasta
                 'cooking_time' => 30,
                 'difficulty' => 'easy',
@@ -157,7 +161,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Bánh Pancake Dâu Tây Mềm Xốp',
                 'description' => 'Món tráng miệng hoặc bữa sáng kiểu Tây cực kỳ dễ làm. Những lớp bánh pancake mềm mịn tơi xốp, thơm mùi bơ sữa và trứng gà, rưới thêm siro phong và kết hợp với dâu tây tươi chua ngọt.',
-                'image' => 'https://images.unsplash.com/photo-1528207776546-3221fa013322?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1567620905732-2d1ec7bb7445?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 9, // Tráng miệng
                 'cooking_time' => 20,
                 'difficulty' => 'easy',
@@ -187,7 +192,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Cá Hồi Nướng Măng Tây Sốt Chanh Bơ',
                 'description' => 'Món ăn Âu mang đậm phong cách nhà hàng 5 sao nay có thể thực hiện tại nhà siêu nhanh. Cá hồi Na Uy chứa nhiều Omega-3 áp chảo giữ được độ ẩm mềm béo, ăn kèm măng tây giòn ngọt và sốt chanh bơ tan chảy đầu lưỡi.',
-                'image' => 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 8, // Món chính
                 'cooking_time' => 25,
                 'difficulty' => 'medium',
@@ -217,7 +223,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Bò Bít Tết (Beefsteak) Sốt Tiêu Xanh',
                 'description' => 'Món bò bít tết hảo hạng với miếng thịt bò Striploin áp chảo đạt độ chín Medium Rare hoàn hảo, thơm nức mùi bơ tỏi và cỏ xạ hương (thyme). Linh hồn vương giả của món ăn nằm ở nước sốt tiêu xanh cay nồng và béo ngậy vị kem.',
-                'image' => 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1546241072-48010ad28c2c?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 8, // Món chính
                 'cooking_time' => 20,
                 'difficulty' => 'hard',
@@ -247,7 +254,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Chè Trôi Nước Ngũ Sắc',
                 'description' => 'Món chè truyền thống được nâng tầm thành một tác phẩm nghệ thuật với 5 màu sắc hoàn toàn từ thiên nhiên: gấc, lá cẩm, lá dứa, nghệ và khoai môn. Lớp vỏ dẻo quánh bọc nhân đậu xanh bùi bùi, tắm trong nồi nước cốt dừa nồng nàn vị gừng tươi.',
-                'image' => 'https://images.unsplash.com/photo-1520698064654-e0ebabe2fac3?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 9, // Tráng miệng
                 'cooking_time' => 90,
                 'difficulty' => 'medium',
@@ -277,7 +285,8 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Cà Ri Gà Kiểu Thái (Thai Green Curry)',
                 'description' => 'Đánh thức mọi giác quan với món cà ri xanh kiểu Thái chuẩn vị siêu bắt cơm. Nước dùng là sự pha trộn diệu kỳ của cốt dừa béo ngậy bùng nổ cùng cốt lá chanh kaffir, sả, riềng và vị cay xé lưỡi từ ớt xanh.',
-                'image' => 'https://images.unsplash.com/photo-1540331547168-8b6310f84ae8?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1455619411412-d5e810614868?q=80&w=1000&auto=format&fit=crop',
+
                 'category_id' => 8, // Món chính
                 'cooking_time' => 40,
                 'difficulty' => 'medium',
