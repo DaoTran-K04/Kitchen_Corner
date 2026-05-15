@@ -19,8 +19,9 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Thử dùng đường dẫn gốc của tài khoản FTP
-          server-dir: ./
+          # Đẩy thẳng vào thư mục web chính thức
+          server-dir: domains/tranhoangdao.id.vn/public_html/
+
           exclude: |
             **/.git*
             **/.git*/**
