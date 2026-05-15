@@ -20,8 +20,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           # Đẩy thẳng vào thư mục web chính thức
-          # Thử dùng đường dẫn tuyệt đối có dấu gạch chéo ở đầu
-          server-dir: /domains/tranhoangdao.id.vn/public_html/
+          # Đi thẳng vào thư mục public_html (thường là chuẩn nhất cho 123host)
+          server-dir: public_html/
+
 
 
           exclude: |
