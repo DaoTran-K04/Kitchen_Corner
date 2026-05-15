@@ -22,6 +22,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Tự động nhận diện URL và Force HTTPS trên Hosting
+        if (!app()->runningInConsole()) {
+            if (str_contains(request()->getHost(), 'tranhoangdao.id.vn')) {
+                \Illuminate\Support\Facades\URL::forceRootUrl(request()->getSchemeAndHttpHost());
+                \Illuminate\Support\Facades\URL::forceScheme('https');
+            }
+        }
+
         View::composer('*', function ($view) {
             $view->with('menuCategories', Category::orderBy('name')->get(['id', 'name']));
         });
