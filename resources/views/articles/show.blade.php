@@ -180,7 +180,8 @@
                         </div>
                         
                         {{-- CTA Button --}}
-                        <a href="{{ route('home') }}" class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group/btn">
+                        <a href="{{ route('articles.index') }}" class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group/btn">
+
                             <span>Khám phá thêm</span>
                             <i class="fas fa-arrow-right text-xs group-hover/btn:translate-x-1 transition-transform"></i>
                         </a>
