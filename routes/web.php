@@ -38,6 +38,7 @@ use App\Http\Controllers\AuthorController;
 // Route setup hosting (fix storage symlink and cache)
 Route::get('/setup-hosting', function () {
     try {
+        // 1. Xử lý Symlink
         $storagePath = public_path('storage');
         if (file_exists($storagePath) || is_link($storagePath)) {
             if (PHP_OS_FAMILY === 'Windows') {
@@ -48,9 +49,17 @@ Route::get('/setup-hosting', function () {
             }
         }
         \Illuminate\Support\Facades\Artisan::call('storage:link');
+
+        // 2. Clear Cache
         \Illuminate\Support\Facades\Artisan::call('view:clear');
         \Illuminate\Support\Facades\Artisan::call('cache:clear');
-        return 'Storage link created and cache cleared successfully. Go back to <a href="'.url('/').'">Home</a>';
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+
+        // 3. Đổ dữ liệu thật (KitchenCornerRecipeSeeder)
+        // Lưu ý: Lệnh này sẽ xóa các công thức cũ và thay bằng bộ dữ liệu chuẩn
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'KitchenCornerRecipeSeeder']);
+
+        return 'Hosting setup successfully! <br> - Storage link recreated <br> - Cache cleared <br> - <b>Real Recipes Imported Successfully!</b> <br><br> Go back to <a href="'.url('/').'">Home</a>';
     } catch (\Exception $e) {
         return 'Failed to setup hosting: ' . $e->getMessage();
     }
