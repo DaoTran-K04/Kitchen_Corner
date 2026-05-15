@@ -34,7 +34,7 @@ class KitchenCornerRecipeSeeder extends Seeder
 
         // Wipe old recipes
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Recipe::truncate();
+        // Recipe::truncate(); // Đã tắt để không làm mất hàng trăm công thức cũ của bạn
         DB::table('recipe_ingredients')->truncate();
         DB::table('recipe_steps')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

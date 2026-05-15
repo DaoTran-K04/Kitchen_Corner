@@ -273,11 +273,13 @@ class ImportMealDbRecipes extends Command
             $filename = "mealdb_{$id}.{$ext}";
             $destPath = 'assets/recipes/' . $filename;
             $storagePath = public_path($destPath);
-            $absoluteHttpUrl = 'http://127.0.0.1/Kitchen_Laravel/public/' . $destPath;
+            // Sử dụng asset() để lấy URL linh hoạt thay vì fix cứng IP
+            $absoluteHttpUrl = asset($destPath);
 
             if (file_exists($storagePath)) {
                 return $absoluteHttpUrl;
             }
+
 
             $response = Http::withOptions(['curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, CURLOPT_RESOLVE => ['www.themealdb.com:443:104.21.57.122']]])->timeout(20)->withoutVerifying()->get($url);
             if ($response->successful()) {

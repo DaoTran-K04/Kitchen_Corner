@@ -82,16 +82,25 @@ class Recipe extends Model
     public function getThumbnailAttribute()
     {
         $value = $this->image;
+        
+        // Nếu không có ảnh, lấy ảnh ngẫu nhiên từ Unsplash theo ID (đảm bảo không trùng lặp)
         if (!$value) {
-            return 'https://images.unsplash.com/photo-1495195129352-aec325a55b65?q=80&w=1000&auto=format&fit=crop';
+            $keywords = ['food', 'recipe', 'cooking', 'delicious', 'meal'];
+            $randomKeyword = $keywords[$this->id % count($keywords)];
+            return "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop&sig={$this->id}";
         }
 
         if (str_starts_with($value, 'http')) {
+            // Thêm sig để tránh cache trùng ảnh nếu link giống nhau
+            if (str_contains($value, 'unsplash.com')) {
+                return $value . (str_contains($value, '?') ? '&' : '?') . "sig={$this->id}";
+            }
             return $value;
         }
 
         return asset('storage/' . $value);
     }
+
 
     public function getDescriptionAttribute($value)
     {
