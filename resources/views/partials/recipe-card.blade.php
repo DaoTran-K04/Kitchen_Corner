@@ -14,7 +14,6 @@
     } else {
         $imageUrl = 'https://placehold.co/600x750/9b2226/white?text=Góc+Bếp';
     }
-@endphp
 
     $difficultyMap = [
         'easy'   => ['label' => 'Dễ',        'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'],
