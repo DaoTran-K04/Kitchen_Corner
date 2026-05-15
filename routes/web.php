@@ -53,6 +53,10 @@ Route::get('/setup-hosting', function () {
         // 2. Clear Cache Sâu
         \Illuminate\Support\Facades\Artisan::call('optimize:clear');
         \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
+        
         if (function_exists('opcache_reset')) {
             opcache_reset();
         }
@@ -61,6 +65,7 @@ Route::get('/setup-hosting', function () {
         // 3. Đổ dữ liệu thật (KitchenCornerRecipeSeeder)
         // Lưu ý: Lệnh này sẽ xóa các công thức cũ và thay bằng bộ dữ liệu chuẩn
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'KitchenCornerRecipeSeeder']);
+
 
         return 'Hosting setup successfully! <br> - Storage link recreated <br> - Cache cleared <br> - <b>Real Recipes Imported Successfully!</b> <br><br> Go back to <a href="'.url('/').'">Home</a>';
     } catch (\Exception $e) {

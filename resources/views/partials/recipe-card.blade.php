@@ -17,7 +17,7 @@
         'medium' => ['label' => 'Trung bình', 'color' => 'text-amber-600',  'bg' => 'bg-amber-50'],
         'hard'   => ['label' => 'Khó',        'color' => 'text-rose-600',   'bg' => 'bg-rose-50'],
     ];
-    $diff = $difficultyMap[$recipe->difficulty] ?? ['label' => 'N/A', 'color' => 'text-gray-500', 'bg' => 'bg-gray-50'];
+    $recipeDifficulty = $difficultyMap[$recipe->difficulty] ?? ['label' => 'Dễ', 'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'];
 @endphp
 
 <div class="group/card relative bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-all duration-400 transform hover:-translate-y-2 border border-gray-100/80">
@@ -69,15 +69,10 @@
                 <span class="w-1 h-1 bg-white/40 rounded-full"></span>
                 <span class="flex items-center gap-1">
                     <i class="fas fa-signal text-[#f4a261]"></i>
-                    @php
-                        $diffLabels = [
-                            'easy' => 'Dễ',
-                            'medium' => 'T.Bình',
-                            'hard' => 'Khó'
-                        ];
-                        echo $diffLabels[$recipe->difficulty] ?? 'Dễ';
-                    @endphp
+                    {{ $recipeDifficulty['label'] ?? 'Dễ' }}
                 </span>
+
+
 
             </div>
 
