@@ -20,7 +20,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           # Đẩy thẳng vào thư mục web chính thức
-          server-dir: domains/tranhoangdao.id.vn/public_html/
+          # Thử dùng đường dẫn tuyệt đối có dấu gạch chéo ở đầu
+          server-dir: /domains/tranhoangdao.id.vn/public_html/
+
 
           exclude: |
             **/.git*
