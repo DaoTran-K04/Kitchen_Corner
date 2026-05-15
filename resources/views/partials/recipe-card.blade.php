@@ -1,9 +1,6 @@
 {{--
-    Recipe Card Component - Theo tiêu chí cơ sở lý thuyết:
+    Recipe Card Component - Update: 2026-05-15 20:46
     - Ảnh chiếm ≥ 60% diện tích card (aspect-[4/5])
-    - Phân cấp: Ảnh → Tên công thức (lớn) → Metadata → Tác giả
-    - Màu sắc: Xanh lá #2D4539, Cam đất #f4a261
-    - Hover: scale + shadow nâng cao (micro-animation)
 --}}
 @php
     $imageUrl = $recipe->image;
