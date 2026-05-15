@@ -6,9 +6,15 @@
     - Hover: scale + shadow nâng cao (micro-animation)
 --}}
 @php
-    $imageUrl = !empty($recipe->image)
-        ? (str_starts_with($recipe->image, 'http') ? $recipe->image : asset('storage/' . $recipe->image))
-        : 'https://placehold.co/600x750/9b2226/white?text=Góc+Bếp';
+    $imageUrl = $recipe->image;
+    if (!empty($imageUrl)) {
+        if (!str_starts_with($imageUrl, 'http')) {
+            $imageUrl = asset('storage/' . $imageUrl);
+        }
+    } else {
+        $imageUrl = 'https://placehold.co/600x750/9b2226/white?text=Góc+Bếp';
+    }
+@endphp
 
     $difficultyMap = [
         'easy'   => ['label' => 'Dễ',        'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'],
