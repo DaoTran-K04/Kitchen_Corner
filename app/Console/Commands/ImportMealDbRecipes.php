@@ -105,13 +105,14 @@ class ImportMealDbRecipes extends Command
             $this->info('✅ Đã xóa xong');
         }
 
-        // Lấy user admin để gán làm tác giả
-        $adminUser = User::where('role', 'admin')->first() ?? User::first();
-        if (!$adminUser) {
+        // Lấy tất cả user IDs để phân bổ món ăn
+        $userIds = User::pluck('id')->toArray();
+        if (empty($userIds)) {
             $this->error('❌ Không tìm thấy user nào trong database!');
             return 1;
         }
-        $this->info("👤 Sẽ gán tất cả công thức cho user: {$adminUser->name}");
+        $this->info("👤 Sẽ phân bổ món ăn ngẫu nhiên cho " . count($userIds) . " tác giả.");
+
 
         // Đảm bảo thư mục lưu ảnh tồn tại
         $storageDir = public_path('assets/recipes');
@@ -202,8 +203,9 @@ class ImportMealDbRecipes extends Command
                 $slug     = $baseSlug . '-' . Str::upper(Str::random(4));
 
                 $recipe = Recipe::create([
-                    'user_id'        => $adminUser->id,
+                    'user_id'        => $userIds[array_rand($userIds)],
                     'category_id'    => $categoryId,
+
                     'title'          => $viName,
                     'slug'           => $slug,
                     'description'    => $description,

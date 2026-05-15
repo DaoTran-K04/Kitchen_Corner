@@ -69,8 +69,16 @@
                 <span class="w-1 h-1 bg-white/40 rounded-full"></span>
                 <span class="flex items-center gap-1">
                     <i class="fas fa-signal text-[#f4a261]"></i>
-                    {{ $diff['label'] }}
+                    @php
+                        $diffLabels = [
+                            'easy' => 'Dễ',
+                            'medium' => 'T.Bình',
+                            'hard' => 'Khó'
+                        ];
+                        echo $diffLabels[$recipe->difficulty] ?? 'Dễ';
+                    @endphp
                 </span>
+
             </div>
 
             {{-- Tên công thức --}}
