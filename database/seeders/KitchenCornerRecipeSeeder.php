@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use App\Models\Recipe;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Article;
+
 
 class KitchenCornerRecipeSeeder extends Seeder
 {
@@ -480,6 +482,49 @@ class KitchenCornerRecipeSeeder extends Seeder
             $imported++;
         }
 
-        $this->command->info("Seeded {$imported} authentic recipes successfully with high quality imagery.");
+        // --- SEED ARTICLES (TẠP CHÍ) ---
+        Article::truncate();
+        $articles = [
+            [
+                'title' => 'Bí quyết nấu món Phở Bò truyền thống đậm đà',
+                'slug' => Str::slug('Bí quyết nấu món Phở Bò truyền thống đậm đà'),
+                'excerpt' => 'Khám phá những bí quyết gia truyền để có nồi nước dùng phở trong veo, ngọt thanh và thơm nồng nàn.',
+                'content' => 'Nội dung chi tiết về cách nấu phở...',
+                'thumbnail' => 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800',
+                'tag' => 'Bí quyết, Truyền thống',
+                'is_active' => true,
+                'view_count' => rand(100, 500),
+                'user_id' => $adminUser->id
+            ],
+            [
+                'title' => 'Top 10 thực phẩm tốt nhất cho sức khỏe mùa hè',
+                'slug' => Str::slug('Top 10 thực phẩm tốt nhất cho sức khỏe mùa hè'),
+                'excerpt' => 'Mùa hè nắng nóng, hãy bổ sung ngay những thực phẩm này để giữ cơ thể luôn tươi trẻ và tràn đầy năng lượng.',
+                'thumbnail' => 'https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=800',
+                'content' => 'Nội dung chi tiết về thực phẩm mùa hè...',
+                'tag' => 'Sức khỏe, Mùa hè',
+                'is_active' => true,
+                'view_count' => rand(100, 500),
+                'user_id' => $adminUser->id
+            ],
+            [
+                'title' => 'Xu hướng ẩm thực xanh và bền vững năm 2026',
+                'slug' => Str::slug('Xu hướng ẩm thực xanh và bền vững năm 2026'),
+                'excerpt' => 'Ẩm thực không chỉ là ăn ngon mà còn là trách nhiệm với môi trường. Cùng điểm qua những xu hướng mới nhất.',
+                'thumbnail' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
+                'content' => 'Nội dung chi tiết về ẩm thực xanh...',
+                'tag' => 'Xu hướng, Sống xanh',
+                'is_active' => true,
+                'view_count' => rand(100, 500),
+                'user_id' => $adminUser->id
+            ]
+        ];
+
+        foreach ($articles as $art) {
+            Article::create($art);
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $this->command->info("Seeded {$imported} authentic recipes and 3 articles successfully.");
     }
 }

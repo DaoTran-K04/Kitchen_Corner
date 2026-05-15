@@ -123,15 +123,19 @@ class HomeController extends Controller
         $dbArticles = Article::where('is_active', true)->latest()->take(3)->get();
         
         $formattedArticles = $dbArticles->map(function($article) {
+            $thumb = $article->thumbnail;
+            $imageUrl = $thumb ? (str_starts_with($thumb, 'http') ? $thumb : asset('storage/' . $thumb)) : 'https://images.unsplash.com/photo-1495546992359-f3f5af44a0c0?w=600';
+            
             return (object)[
                 'title' => $article->title,
                 'link' => route('articles.show', $article->slug),
                 'description' => $article->excerpt,
-                'image' => asset('storage/' . $article->thumbnail),
+                'image' => $imageUrl,
                 'date' => $article->created_at->format('d/m/Y'),
                 'author_name' => $article->user->name ?? 'Admin'
             ];
         });
+
 
         $featuredArticle = $formattedArticles->first();
         $sidebarArticles = $formattedArticles->slice(1, 2);
