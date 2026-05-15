@@ -19,8 +19,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Sửa lại đường dẫn chính xác cho 123host DirectAdmin
-          server-dir: domains/tranhoangdao.id.vn/public_html/
+          # Thử dùng đường dẫn gốc của tài khoản FTP
+          server-dir: ./
           exclude: |
             **/.git*
             **/.git*/**
