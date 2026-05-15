@@ -83,7 +83,8 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                         @if(isset($featuredArticle))
-                            <article class="md:col-span-3 group cursor-pointer relative" onclick="window.open('{{ $featuredArticle->link }}', '_blank')">
+                            <article class="md:col-span-3 group cursor-pointer relative" onclick="window.location.href='{{ $featuredArticle->link }}'">
+
                                 <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-4 shadow-md">
                                     <img src="{{ $featuredArticle->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
@@ -100,7 +101,8 @@
                         <div class="md:col-span-2 flex flex-col gap-6">
                             @if(isset($sidebarArticles))
                                 @foreach($sidebarArticles as $article)
-                                    <article class="flex flex-col group cursor-pointer relative" onclick="window.open('{{ $article->link }}', '_blank')">
+                                    <article class="flex flex-col group cursor-pointer relative" onclick="window.location.href='{{ $article->link }}'">
+
                                         <div class="h-32 rounded-xl overflow-hidden mb-3 relative">
                                             <img src="{{ $article->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
                                         </div>
