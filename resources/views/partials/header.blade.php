@@ -11,6 +11,9 @@
 
     {{-- Main Container --}}
     <div id="header-container" class="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-5 transition-all duration-300 gap-4 xl:gap-8 max-w-[1600px] mx-auto">
+
+
+
         
         {{-- 1. Logo (Left) --}}
         <div class="flex items-center justify-start shrink-0">
@@ -158,23 +161,23 @@
                 {{-- User Avatar Dropdown --}}
                 <div class="relative z-50" id="user-dropdown-container">
                     <button type="button" id="user-dropdown-trigger" class="flex items-center focus:outline-none cursor-pointer relative z-20 rounded-full transition-transform hover:scale-105 shadow-lg border border-white/20 bg-white/10 backdrop-blur-md hover:border-white">
-                        @include('partials.user-avatar-with-frame', [
+                    @include('partials.user-avatar-with-frame', [
                             'user' => Auth::user(),
-                            'size' => 'w-9 h-9 sm:w-10 sm:h-10',
-                            'avatarSize' => 'w-7 h-7 sm:w-8 sm:h-8'
+                            'size' => 'w-9 sm:w-10 h-9 sm:h-10',
+                            'showNameplate' => false
                         ])
                     </button>
                     {{-- Dropdown User Menu --}}
                     <div id="user-dropdown-menu"
                         class="hidden absolute right-0 top-full mt-6 w-64 bg-white rounded-3xl shadow-2xl border border-gray-100 py-2 animate-fade-in origin-top-right z-10">
-                        <div class="px-5 py-4 border-b border-gray-50 bg-gray-50/50 rounded-t-3xl mb-2 flex flex-col items-center">
+                        <div class="px-5 py-4 border-b border-gray-50 bg-gray-50/50 rounded-t-3xl mb-2 flex flex-col items-center gap-2">
                             @include('partials.user-avatar-with-frame', [
                                 'user' => Auth::user(),
-                                'size' => 'w-16 h-16',
-                                'avatarSize' => 'w-12 h-12'
+                                'size' => 'w-14 h-14',
+                                'namePosition' => 'bottom',
+                                'nameClass' => 'text-sm font-bold text-brand-green'
                             ])
-                            <p class="text-sm font-bold text-brand-green mt-3">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-gray-400 mt-1 font-medium">{{ Auth::user()->email }}</p>
+                            <p class="text-[10px] text-gray-400 font-medium">{{ Auth::user()->name }}</p>
                         </div>
                         @if(Auth::user()->role == 'admin')
                             <a href="{{ route('admin.dashboard') }}" class="flex items-center px-5 py-3 text-brand-green bg-red-50/50 hover:bg-red-50 transition font-bold mx-2 rounded-xl mb-1">
@@ -308,10 +311,10 @@
         <div class="p-5 border-t border-gray-100 bg-gray-50/50">
             @auth
                 <div class="flex items-center gap-4 mb-4">
-                    @include('partials.user-avatar-with-frame', ['user' => Auth::user(), 'size' => 'w-12 h-12', 'avatarSize' => 'w-10 h-10'])
+                    @include('partials.user-avatar-with-frame', ['user' => Auth::user(), 'size' => 'w-10 h-10', 'showNameplate' => false])
                     <div>
-                        <p class="font-bold text-gray-800 text-sm">{{ Auth::user()->name }}</p>
-                        <p class="text-[11px] text-gray-500 font-medium">{{ Auth::user()->email }}</p>
+                        <p class="text-gray-500 text-sm mb-3 font-medium text-brand-green">@<span>{{ Str::slug(Auth::user()->name, '') }}</span></p>
+                        <p class="text-[11px] text-gray-500 font-medium">{{ Auth::user()->name }}</p>
                     </div>
                 </div>
                 <div class="flex gap-3">
@@ -559,7 +562,7 @@
                     let html = '<div class="grid grid-cols-1 gap-2 pt-2">';
                     recipes.forEach(recipe => {
                         let imgUrl = recipe.image ? (recipe.image.startsWith('http') ? recipe.image : '/storage/' + recipe.image) : 'https://placehold.co/50x50?text=Food';
-                        let detailUrl = `/recipe/${recipe.slug || recipe.id}`;
+                        let detailUrl = `/cong-thuc/${recipe.slug || recipe.id}`;
                         let highlightedTitle = recipe.title.replace(new RegExp(`(${keyword})`, 'gi'), '<span class="bg-amber-100 text-brand-accent font-black">$1</span>');
 
                         html += `

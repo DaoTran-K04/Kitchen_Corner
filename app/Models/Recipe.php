@@ -83,19 +83,32 @@ class Recipe extends Model
     {
         $value = $this->image;
         
-        // Nếu không có ảnh, lấy ảnh ngẫu nhiên từ Unsplash theo ID (đảm bảo không trùng lặp)
+        // Nếu không có ảnh, lấy ảnh ngẫu nhiên từ danh sách (đảm bảo không trùng lặp toàn bộ)
         if (!$value) {
-            $keywords = ['food', 'recipe', 'cooking', 'delicious', 'meal'];
-            $randomKeyword = $keywords[$this->id % count($keywords)];
-            return "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop&sig={$this->id}";
+            $photoIds = [
+                '1490645935967-10de6ba17061', // salad
+                '1473093295043-cdd812d0e601', // pasta
+                '1495521821757-a1efb6729352', // fruits
+                '1504630083234-14187a9df0f5', // steak
+                '1476224203421-9ce22365c465', // bread
+                '1484723091782-4def3715a3ba', // dessert
+                '1455619452474-d2be8b1e70cd'  // curry/soup
+            ];
+            $photoId = $photoIds[$this->id % count($photoIds)];
+            return "https://images.unsplash.com/{$photoId}?q=80&w=1000&auto=format&fit=crop";
         }
 
-        if (str_starts_with($value, 'http')) {
+        if (str_starts_with($value, 'http') || str_starts_with($value, 'data:')) {
             // Thêm sig để tránh cache trùng ảnh nếu link giống nhau
             if (str_contains($value, 'unsplash.com')) {
                 return $value . (str_contains($value, '?') ? '&' : '?') . "sig={$this->id}";
             }
             return $value;
+        }
+
+        // Nếu là ảnh trong assets/ (ví dụ từ MealDB import)
+        if (str_starts_with($value, 'assets/')) {
+            return asset($value);
         }
 
         return asset('storage/' . $value);
@@ -108,6 +121,13 @@ class Recipe extends Model
             return $value;
         }
         
-        return preg_replace('/\[TheMealDB\]\s*\[MealID:\d+\]\s*/i', '', $value);
+        $value = preg_replace('/\[TheMealDB\]\s*\[MealID:\d+\]\s*/i', '', $value);
+        $value = str_ireplace([
+            'mang hương vị đặc trưng TheMealDB.', 
+            'mang hương vị đặc trưng TheMealDB', 
+            'TheMealDB'
+        ], '', $value);
+
+        return trim($value);
     }
 }

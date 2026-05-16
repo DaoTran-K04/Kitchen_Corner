@@ -155,9 +155,10 @@
                     class="group bg-white rounded-2xl shadow hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col">
                     {{-- Ảnh --}}
                     <div class="relative overflow-hidden aspect-[4/3]">
-                        <img src="{{ $recipe->image ? (Str::startsWith($recipe->image,'http') ? $recipe->image : asset('storage/'.$recipe->image)) : 'https://images.unsplash.com/photo-1560180474-e8563fd75bab?w=600' }}"
+                        <img src="{{ $recipe->thumbnail }}"
                             alt="{{ $recipe->title }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onerror="this.src='https://images.unsplash.com/photo-1560180474-e8563fd75bab?w=600'">
                         {{-- Badges --}}
                         <div class="absolute top-2 left-2 flex gap-1 flex-wrap">
                             @if($recipe->is_featured)

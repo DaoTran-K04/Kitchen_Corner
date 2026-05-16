@@ -27,16 +27,23 @@ class SiteVisit extends Model
      */
     public static function trackVisit(string $ip): void
     {
-        // Lấy session ID từ request (hoặc tạo unique string nếu không có)
-        $sessionId = session()->getId() ?? uniqid('visit_', true);
+        // Lấy session ID từ request
+        $sessionId = session()->getId();
+        
+        if (!$sessionId) return;
 
-        self::updateOrCreate(
-            ['ip_address' => $ip],
-            [
-                'session_id'    => $sessionId,
-                'last_activity' => now(),
-            ]
-        );
+        try {
+            self::updateOrCreate(
+                ['session_id' => $sessionId],
+                [
+                    'ip_address'    => $ip,
+                    'last_activity' => now(),
+                ]
+            );
+        } catch (\Exception $e) {
+            // Tránh gây chết trang nếu có lỗi database bất ngờ
+            \Log::warning("SiteVisit track error: " . $e->getMessage());
+        }
     }
 
     /**

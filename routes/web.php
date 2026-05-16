@@ -9,8 +9,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\FollowController;
-// use App\Http\Controllers\CommentController; // Controller chưa được tạo
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\Admin\ArticleController;
@@ -19,14 +17,7 @@ use App\Http\Controllers\Admin\ActivityTitleController;
 use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\RecipeController;
 
-// ── CONTROLLERS CHƯA DÙNG (Mở khóa khi cần) ──────────────────────────────────
-// use App\Models\Book;
-// use App\Http\Controllers\BookController;
-// use App\Http\Controllers\PostController;
-// use App\Http\Controllers\RankingController;
-// use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\AuthorController;
-// use App\Http\Controllers\BookSuggestionController;
 
 // ====================================================
 // 1. NHÓM PUBLIC (Ai cũng xem được)
@@ -144,15 +135,6 @@ Route::get('/cong thuc/{slug}', [RecipeController::class, 'show']);
 Route::get('/cong%20thuc/{slug}', [RecipeController::class, 'show']);
 // ── ROUTES TÁC GIẢ / THÀNH VIÊN ───────────────────────────────────────
 Route::get('/tac-gia', [AuthorController::class, 'index'])->name('authors.index');
-
-// ── ROUTES CŨ ĐÃ KHOÁ ─────────────────────────────────────────────────────────
-// Route::get('/danh-sach', [BookController::class, 'list'])->name('books.list');
-// Route::get('/review-search', [BookController::class, 'search'])->name('books.search');
-// Route::get('/tac-gia/{slug}', [AuthorController::class, 'show'])->name('authors.show');
-// Route::get('/chi-tiet/{slug}', [BookController::class, 'show'])->name('detail');
-// Route::get('/chi-tiet/{slug}/danh-gia', [BookController::class, 'showReviews'])->name('book.reviews');
-// Route::get('/book/{slug}', [BookController::class, 'show'])->name('book.show');
-// Route::get('/ranking/top-liked', [RankingController::class, 'topLikedPosts']);
 
 // API Public: Follow
 Route::get('/api/user/{id}/followers', [FollowController::class, 'getFollowers']);
@@ -277,20 +259,7 @@ Route::middleware(['auth', 'email.verified'])->group(function () {
     Route::post('/bo-suu-tap/toggle', [RecipeController::class, 'toggleBookmark'])->name('recipes.bookmark');
     Route::get('/tim-kiem-nguyen-lieu', [RecipeController::class, 'smartSearch'])->name('recipes.smart-search'); // 🔒 Chỉ thành viên đã xác thực
 
-    // ── ROUTES CŨ ĐÃ KHOÁ ──────────────────────────────────────────────────
-    // Route::get('/sach/de-xuat', [BookSuggestionController::class, 'create'])->name('books.suggest');
-    // Route::post('/sach/de-xuat', [BookSuggestionController::class, 'store'])->name('books.suggest.store');
-    // Route::post('/post/save', [HomeController::class, 'toggleSavePost'])->name('post.save');
-    // Route::post('/posts/{id}/comment', [PostController::class, 'postComment'])->name('posts.comment');
-    // Route::post('/post/{post_id}/comment', [CommentController::class, 'store'])->name('post.comment');
-
-    // Route::get('/reviews/viet-bai', ...)->name('reviews.create');
-    // Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
-    // Route::get('/reviews/{id}/chinh-sua', [PostController::class, 'edit'])->name('reviews.edit');
-    // Route::put('/reviews/{id}/update', [PostController::class, 'update'])->name('reviews.update');
-    // Route::post('/reviews/{id}/request-delete', [PostController::class, 'requestDelete'])->name('reviews.request-delete');
-    // Route::get('/profile/{id}/reviews', [ProfileController::class, 'allReviews'])->name('profile.reviews');
-    // Route::get('/profile/{id}/suggested-books', [ProfileController::class, 'allSuggestedBooks'])->name('profile.suggested-books');
+    // ── ROUTES ADMIN CŨ ──────────────────────────────────────────────────
 });
 
 
@@ -345,8 +314,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::put('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::post('users/{user}/toggle-active', [\App\Http\Controllers\Admin\UserController::class, 'toggleActive'])->name('users.toggle-active');
-    Route::post('users/{user}/toggle-role', [\App\Http\Controllers\Admin\UserController::class, 'toggleRole'])->name('users.toggle-role');
-    Route::delete('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/toggle-role', [\App\Http\Controllers\Admin\UserController::class, 'toggleRole'])->name('users.toggle-role');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::delete('/users/{user}/badges/{badge}', [\App\Http\Controllers\Admin\UserController::class, 'revokeBadge'])->name('users.revoke-badge');
+    Route::delete('/users/{user}/challenges/{challenge}', [\App\Http\Controllers\Admin\UserController::class, 'resetChallenge'])->name('users.reset-challenge');
 
     // Activity Logs
     Route::get('/activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');

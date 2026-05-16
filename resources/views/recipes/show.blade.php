@@ -23,6 +23,29 @@
         {{-- ===== CỘT TRÁI – NỘI DUNG CHÍNH ===== --}}
         <div class="lg:col-span-2 space-y-6">
 
+            {{-- Alert: Pending/Draft --}}
+            @if($recipe->status !== 'published')
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl shadow-sm mb-4 animate-pulse">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock text-amber-500 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-amber-800 font-bold">
+                            ⚠️ Công thức này chưa được công khai
+                        </p>
+                        <p class="text-xs text-amber-700">
+                            @if($recipe->status === 'pending')
+                                Bài viết của bạn đã được gửi thành công và đang <strong>chờ Quản trị viên phê duyệt</strong>. Chỉ bạn mới có thể xem bản xem trước này.
+                            @else
+                                Bài viết đang ở trạng thái <strong>Nháp</strong>. Hãy chỉnh sửa và gửi yêu cầu phê duyệt để mọi người cùng thấy nhé!
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Ảnh bìa --}}
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-video">
                 <img src="{{ $recipe->thumbnail }}"

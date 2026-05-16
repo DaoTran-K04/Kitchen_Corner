@@ -10,17 +10,16 @@
                 {{-- 1. HEADER --}}
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('public.profile', $comment->user->id) }}" class="flex-shrink-0">
+                        <a href="{{ route('public.profile', $comment->user->id) }}" class="flex-shrink-0 hover:opacity-90 transition">
                             @include('partials.user-avatar-with-frame', [
                                 'user' => $comment->user,
-                                'size' => 'w-12 h-12',
-                                'avatarSize' => 'w-10 h-10'
+                                'size' => 'w-10 h-10',
+                                'showNameplate' => false
                             ])
                         </a>
-                        <div>
+                        <div class="flex flex-col">
                             <div class="flex items-center gap-1">
-                                <a href="{{ route('public.profile', $comment->user->id) }}"
-                                    class="hover:text-brand-green transition">
+                                <a href="{{ route('public.profile', $comment->user->id) }}" class="hover:text-brand-green transition">
                                     <h4 class="font-bold text-gray-800 text-sm">{{ $comment->user->name }}</h4>
                                 </a>
                                 @include('partials.user-badges', ['user' => $comment->user, 'size' => 'xs'])
@@ -28,9 +27,9 @@
                             <div class="text-xs text-gray-500 flex items-center gap-1">
                                 <span>Bình luận tại:</span>
                                 @if($recipe)
-                                    <span class="font-bold text-brand-green">
+                                    <a href="{{ route('recipes.show', $recipe->slug) }}#comment-{{ $comment->id }}" class="font-bold text-brand-green hover:underline">
                                         {{ $recipe->title ?? 'Món ăn ẩn' }}
-                                    </span>
+                                    </a>
                                 @else
                                     <span class="text-gray-400">Món ăn không xác định</span>
                                 @endif
@@ -131,19 +130,18 @@
                     <div class="space-y-4 mb-4">
                         @forelse($comment->replies as $reply)
                             <div id="comment-{{ $reply->id }}" class="flex gap-2 scroll-mt-24 transition-all duration-500">
-                                <a href="{{ route('public.profile', $reply->user->id) }}" class="flex-shrink-0">
+                                <a href="{{ route('public.profile', $reply->user->id) }}" class="flex-shrink-0 hover:opacity-90 transition">
                                     @include('partials.user-avatar-with-frame', [
                                         'user' => $reply->user,
-                                        'size' => 'w-9 h-9',
-                                        'avatarSize' => 'w-7 h-7'
+                                        'size' => 'w-8 h-8',
+                                        'showNameplate' => false
                                     ])
                                 </a>
                                 <div class="flex-1">
                                     <div class="bg-white p-2 rounded-xl rounded-tl-none border border-gray-100 shadow-sm">
                                         <div class="flex justify-between items-center mb-1">
                                             <div class="flex items-center gap-1">
-                                                <a href="{{ route('public.profile', $reply->user->id) }}"
-                                                    class="hover:text-brand-green transition">
+                                                <a href="{{ route('public.profile', $reply->user->id) }}" class="hover:text-brand-green transition">
                                                     <h6 class="font-bold text-[10px] text-gray-700">{{ $reply->user->name }}</h6>
                                                 </a>
                                                 @include('partials.user-badges', ['user' => $reply->user, 'size' => 'xs'])

@@ -52,7 +52,9 @@ class RecipeController extends Controller
         };
 
         $recipes    = $query->paginate(12)->withQueryString();
-        $categories = Category::withCount('recipes')->orderBy('name')->get();
+        $categories = \Illuminate\Support\Facades\Cache::remember('all_categories_list', 300, function () {
+            return Category::withCount('recipes')->orderBy('name')->get();
+        });
 
         return view('recipes.index', compact('recipes', 'categories'));
     }
@@ -79,13 +81,18 @@ class RecipeController extends Controller
                   ->orWhere('slug', $cleanSlug)
                   ->orWhere('id', $slug);
             })
-            ->where('status', 'published')
+            ->where(function($q) {
+                $q->where('status', 'published')
+                  ->orWhere('user_id', Auth::id())
+                  ->orWhere(function($sq) {
+                      if (Auth::check() && Auth::user()->isAdmin()) {
+                          $sq->whereIn('status', ['pending', 'draft', 'published']);
+                      } else {
+                          $sq->where('id', 0); // No match
+                      }
+                  });
+            })
             ->firstOrFail();
-
-        // 🔒 PAYWALL: Yêu cầu đăng ký hoặc đăng nhập để xem nội dung
-        if ($recipe->is_premium && !Auth::check()) {
-            return redirect()->route('login')->with('error', 'Vui lòng Đăng ký hoặc Đăng nhập để sử dụng toàn bộ chức năng và xem kho công thức này!');
-        }
 
         // Tăng view count
         $recipe->increment('view_count');
@@ -109,8 +116,8 @@ class RecipeController extends Controller
             ->take(4)
             ->get();
 
-        $likeCount    = Like::where('recipe_id', $recipe->id)->count();
-        $commentCount = Comment::where('recipe_id', $recipe->id)->count();
+        $likeCount    = \Illuminate\Support\Facades\Cache::remember("recipe_likes_{$recipe->id}", 60, fn() => Like::where('recipe_id', $recipe->id)->count());
+        $commentCount = Comment::where('recipe_id', $recipe->id)->whereNull('parent_id')->count();
 
         return view('recipes.show', compact(
             'recipe',
@@ -160,6 +167,17 @@ class RecipeController extends Controller
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('recipes', 'public');
+            }
+
+            // Chống trùng lặp (tránh nhấn 2 lần hoặc back lại trang rồi đăng tiếp)
+            $existing = Recipe::where('user_id', Auth::id())
+                ->where('title', $validated['title'])
+                ->where('created_at', '>', now()->subMinutes(10))
+                ->first();
+
+            if ($existing) {
+                return redirect()->route('recipes.show', $existing->slug)
+                    ->with('info', 'Bạn đã đăng công thức này rồi. Vui lòng kiểm tra lại!');
             }
 
             // Tạo Recipe
@@ -217,7 +235,7 @@ class RecipeController extends Controller
         $recipe = Recipe::with(['steps', 'ingredients'])->findOrFail($id);
 
         // Chỉ chủ sở hữu hoặc admin mới được sửa
-        if ($recipe->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        if ($recipe->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403, 'Bạn không có quyền chỉnh sửa công thức này.');
         }
 
@@ -231,7 +249,7 @@ class RecipeController extends Controller
     {
         $recipe = Recipe::findOrFail($id);
 
-        if ($recipe->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        if ($recipe->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403);
         }
 
@@ -311,7 +329,7 @@ class RecipeController extends Controller
     {
         $recipe = Recipe::findOrFail($id);
 
-        if ($recipe->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        if ($recipe->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403);
         }
 
@@ -350,7 +368,7 @@ class RecipeController extends Controller
         }
 
         $recipes    = $query->orderByDesc('view_count')->paginate(12)->withQueryString();
-        $categories = Category::orderBy('name')->get();
+        $categories = \Illuminate\Support\Facades\Cache::remember('all_categories_list', 300, fn() => Category::orderBy('name')->get());
         $total      = $query->count();
 
         return view('recipes.search', compact('recipes', 'categories', 'keyword', 'total'));
@@ -371,9 +389,16 @@ class RecipeController extends Controller
                 ->filter()
                 ->values();
 
-            // Lấy tất cả công thức published với nguyên liệu
+            // Lấy tất cả công thức published có chứa ít nhất 1 nguyên liệu khớp với từ khóa
             $recipes = Recipe::with(['ingredients', 'user', 'category'])
                 ->where('status', 'published')
+                ->whereHas('ingredients', function($q) use ($userIngredients) {
+                    $q->where(function($query) use ($userIngredients) {
+                        foreach ($userIngredients as $ingredient) {
+                            $query->orWhere('name', 'like', "%{$ingredient}%");
+                        }
+                    });
+                })
                 ->get();
 
             // Tính Jaccard Similarity
@@ -489,12 +514,24 @@ class RecipeController extends Controller
 
         foreach ($rawIngredients as $item) {
             $ingredientId = $item['id'] ?? null;
+            $name         = $item['name'] ?? null;
             $quantity     = (float) ($item['quantity'] ?? 0);
             $notes        = $item['notes'] ?? null;
 
-            if (!$ingredientId || $quantity <= 0) continue;
+            if ($quantity <= 0) continue;
 
-            $ingredient = Ingredient::find($ingredientId);
+            $ingredient = null;
+            if ($ingredientId) {
+                $ingredient = Ingredient::find($ingredientId);
+            } elseif ($name) {
+                // Tự động tạo nguyên liệu mới nếu chưa có
+                $ingredient = Ingredient::firstOrCreate(
+                    ['name' => $name],
+                    ['slug' => Str::slug($name) . '-' . Str::random(4), 'unit' => 'g']
+                );
+                $ingredientId = $ingredient->id;
+            }
+
             if (!$ingredient) continue;
 
             $syncData[$ingredientId] = ['quantity' => $quantity, 'notes' => $notes];

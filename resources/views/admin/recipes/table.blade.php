@@ -16,15 +16,10 @@
                 {{ ($recipes->currentPage() - 1) * $recipes->perPage() + $index + 1 }}
             </td>
             <td class="px-5 py-3">
-                @php
-                    $recipeImg = trim($recipe->image);
-                    $displayImg = $recipeImg 
-                        ? (str_starts_with($recipeImg, 'http') ? $recipeImg : asset('storage/' . $recipeImg)) 
-                        : 'https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200';
-                @endphp
-                <img src="{{ $displayImg }}" 
+                <img src="{{ $recipe->thumbnail }}" 
                      alt="{{ $recipe->title }}" 
-                     class="w-14 h-14 rounded-xl object-cover border-2 border-white dark:border-slate-600 shadow-md transform group-hover:scale-105 transition-transform duration-300">
+                     class="w-14 h-14 rounded-xl object-cover border-2 border-white dark:border-slate-600 shadow-md transform group-hover:scale-105 transition-transform duration-300"
+                     onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">
             </td>
             <td class="px-5 py-3">
                 <div class="font-semibold text-gray-800 dark:text-white">{{ $recipe->title }}</div>

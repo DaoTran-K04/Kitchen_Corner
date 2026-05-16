@@ -198,14 +198,15 @@ class ImportMealsApi extends Command
                 DB::beginTransaction();
                 try {
                     $translatedTitle = $tr->translate($meal['strMeal']);
-                    $originalDesc = "[TheMealDB] [MealID:{$mealId}] " . 
-                            ($meal['strArea'] ? "Xuất xứ: {$meal['strArea']}. " : '') .
+                    $originalDesc = ($meal['strArea'] ? "Xuất xứ: {$meal['strArea']}. " : '') .
                             "Công thức thuộc danh mục {$apiCategory}. " .
-                            "Nguyên liệu gồm: " . collect($ingredients)->pluck('name')->take(5)->implode(', ') . "...";
+                            "Nguyên liệu gồm: " . collect($ingredients)->pluck('name')->take(5)->implode(', ') . "..." .
+                            " [TheMealDB] [MealID:{$mealId}]";
                     $translatedDesc = $tr->translate($originalDesc);
                     
-                    // Restore the [TheMealDB] tag in case it got translated
-                    $translatedDesc = str_replace(['[Bữa Ăn Của MealDB]', '[TheMealDB]'], '[TheMealDB]', $translatedDesc);
+                    // Ensure the tag remains correctly formatted after translation
+                    $translatedDesc = preg_replace('/\[.*?MealDB.*?\]/i', '[TheMealDB]', $translatedDesc);
+                    $translatedDesc = preg_replace('/\[.*?Meal.*?ID.*?(\d+).*?\]/i', '[MealID:$1]', $translatedDesc);
 
                     // Create recipe
                     $recipe = Recipe::create([

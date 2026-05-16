@@ -69,7 +69,7 @@
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Ảnh bìa</label>
                 <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-green-400 transition" onclick="document.getElementById('coverImage').click()">
                     @if($recipe->image)
-                        <img id="coverPreview" src="{{ asset('storage/' . $recipe->image) }}" alt="{{ $recipe->title }}" class="mx-auto max-h-48 rounded-xl mb-3 object-cover">
+                        <img id="coverPreview" src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" class="mx-auto max-h-48 rounded-xl mb-3 object-cover">
                         <div id="coverPlaceholder" class="hidden">
                             <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
                             <p class="text-gray-400 text-sm">Nhấn để thay đổi ảnh</p>
@@ -90,8 +90,8 @@
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Trạng thái đăng</label>
                 <div class="flex gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="status" value="published" {{ old('status', $recipe->status) == 'published' ? 'checked':'' }} class="accent-green-600">
-                        <span class="text-sm font-medium text-green-700">🌍 Công khai (Cần phê duyệt)</span>
+                        <input type="radio" name="status" value="pending" {{ old('status', $recipe->status) == 'pending' ? 'checked':'' }} class="accent-green-600">
+                        <span class="text-sm font-medium text-green-700">🌍 Gửi yêu cầu phê duyệt</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="radio" name="status" value="draft" {{ old('status', $recipe->status) == 'draft' ? 'checked':'' }} class="accent-gray-500">
@@ -119,12 +119,9 @@
                         @endphp
                         <div class="ingredient-row grid grid-cols-12 gap-2 items-center">
                             <div class="col-span-5">
-                                <select name="ingredients[{{ $idx }}][id]" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
-                                    <option value="">-- Chọn nguyên liệu --</option>
-                                    @foreach($ingredients as $ai)
-                                    <option value="{{ $ai->id }}" {{ $ingId == $ai->id ? 'selected' : '' }}>{{ $ai->name }} ({{ $ai->unit }})</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="ingredients[{{ $idx }}][name]" value="{{ $ing['name'] ?? ($ing->name ?? '') }}" list="ingredientOptions" placeholder="-- Gõ để chọn hoặc điền mới --"
+                                    class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none ingredient-input">
+                                <input type="hidden" name="ingredients[{{ $idx }}][id]" value="{{ $ingId }}" class="ingredient-id">
                             </div>
                             <div class="col-span-2">
                                 <input type="number" name="ingredients[{{ $idx }}][quantity]" value="{{ $ingQty }}" placeholder="Số lượng" step="0.1" min="0"
@@ -145,12 +142,9 @@
                     {{-- Dòng mặc định --}}
                     <div class="ingredient-row grid grid-cols-12 gap-2 items-center">
                         <div class="col-span-5">
-                            <select name="ingredients[0][id]" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
-                                <option value="">-- Chọn nguyên liệu --</option>
-                                @foreach($ingredients as $ing)
-                                <option value="{{ $ing->id }}">{{ $ing->name }} ({{ $ing->unit }})</option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="ingredients[0][name]" list="ingredientOptions" placeholder="-- Gõ để chọn hoặc điền mới --"
+                                class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none ingredient-input">
+                            <input type="hidden" name="ingredients[0][id]" class="ingredient-id">
                         </div>
                         <div class="col-span-2">
                             <input type="number" name="ingredients[0][quantity]" placeholder="Số" step="0.1" min="0" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
@@ -228,6 +222,11 @@
             </button>
             <a href="{{ route('recipes.show', $recipe->slug) }}" class="text-gray-500 hover:text-gray-700 text-sm">Hủy</a>
         </div>
+        <datalist id="ingredientOptions">
+            @foreach($ingredients as $ing)
+            <option value="{{ $ing->name }}" data-id="{{ $ing->id }}">{{ $ing->name }} ({{ $ing->unit }})</option>
+            @endforeach
+        </datalist>
     </form>
 </div>
 
@@ -249,17 +248,14 @@ function previewCover(input) {
     }
 }
 
-const ingredientOptions = `{!! addslashes(implode('', $ingredients->map(fn($i) => "<option value='{$i->id}'>{$i->name} ({$i->unit})</option>")->toArray())) !!}`;
-
 function addIngredient() {
     const i = ingIndex++;
     const html = `
     <div class="ingredient-row grid grid-cols-12 gap-2 items-center">
         <div class="col-span-5">
-            <select name="ingredients[${i}][id]" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
-                <option value="">-- Chọn nguyên liệu --</option>
-                ${ingredientOptions}
-            </select>
+            <input type="text" name="ingredients[${i}][name]" list="ingredientOptions" placeholder="-- Gõ để chọn hoặc điền mới --"
+                class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none ingredient-input">
+            <input type="hidden" name="ingredients[${i}][id]" class="ingredient-id">
         </div>
         <div class="col-span-2">
             <input type="number" name="ingredients[${i}][quantity]" placeholder="Số lượng" step="0.1" min="0"
@@ -276,7 +272,26 @@ function addIngredient() {
         </div>
     </div>`;
     document.getElementById('ingredientsList').insertAdjacentHTML('beforeend', html);
+    attachIngredientListener();
 }
+
+function attachIngredientListener() {
+    document.querySelectorAll('.ingredient-input').forEach(input => {
+        input.oninput = function() {
+            const val = this.value;
+            const hidden = this.nextElementSibling;
+            const options = document.getElementById('ingredientOptions').childNodes;
+            hidden.value = ""; 
+            for(let i = 0; i < options.length; i++) {
+                if(options[i].value === val) {
+                    hidden.value = options[i].getAttribute('data-id');
+                    break;
+                }
+            }
+        };
+    });
+}
+attachIngredientListener();
 
 function removeRow(btn) {
     btn.closest('.ingredient-row').remove();

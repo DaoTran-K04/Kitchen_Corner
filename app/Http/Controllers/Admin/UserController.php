@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::withCount('recipes');
+        $query = User::withCount(['recipes', 'comments', 'likes']);
 
         // Search by name or email
         if ($request->filled('search')) {
@@ -84,6 +84,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $user->load(['challenges' => function($q) {
+            $q->orderBy('user_challenges.completed_at', 'desc');
+        }, 'badges', 'avatarFrames']);
         return view('admin.users.edit', compact('user'));
     }
 
@@ -181,5 +184,42 @@ class UserController extends Controller
 
         return back()->with('success', "Đã xóa vĩnh viễn tài khoản \"{$name}\"!");
     }
-}
 
+    /**
+     * Thu hồi danh hiệu (Badge) từ người dùng
+     */
+    public function revokeBadge(User $user, $badgeId)
+    {
+        $user->badges()->detach($badgeId);
+        
+        AdminActivityLog::log(
+            'update',
+            "Thu hồi danh hiệu từ {$user->name}: ID Badge {$badgeId}",
+            User::class,
+            $user->id,
+            ['badge_id' => $badgeId],
+            []
+        );
+
+        return back()->with('success', 'Đã thu hồi danh hiệu thành công!');
+    }
+
+    /**
+     * Khởi động lại thử thách cho người dùng
+     */
+    public function resetChallenge(User $user, $challengeId)
+    {
+        $user->challenges()->detach($challengeId);
+        
+        AdminActivityLog::log(
+            'update',
+            "Xóa tiến trình thử thách của {$user->name}: ID Challenge {$challengeId}",
+            User::class,
+            $user->id,
+            ['challenge_id' => $challengeId],
+            []
+        );
+
+        return back()->with('success', 'Đã đặt lại tiến trình thử thách thành công!');
+    }
+}

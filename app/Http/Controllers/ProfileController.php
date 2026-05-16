@@ -77,7 +77,6 @@ class ProfileController extends Controller
     {
         // 1. XÁC ĐỊNH USER VÀ LẤY KÈM HUY HIỆU (BADGES)
         if ($id) {
-            // [QUAN TRỌNG] Thêm with('activeBadges') để lấy danh hiệu còn hạn
             $user = User::with('activeBadges')->find($id);
 
             if (!$user)
@@ -100,6 +99,12 @@ class ProfileController extends Controller
         }
         $totalFollowing = $user->followings()->count();
         $totalFollowers = $user->followers()->count();
+        $totalUserComments = \App\Models\Comment::where('user_id', $user->id)->whereNull('parent_id')->count();
+
+        // Tính tổng lượt like và bình luận nhận được trên tất cả công thức của user này
+        $userRecipeIds = $user->recipes()->pluck('id');
+        $totalLikesReceived = \App\Models\Like::whereIn('recipe_id', $userRecipeIds)->count();
+        $totalCommentsReceived = \App\Models\Comment::whereIn('recipe_id', $userRecipeIds)->whereNull('parent_id')->count();
 
         // 3. Lấy danh sách bài Review (CÓ PHÂN QUYỀN) - PHÂN TRANG 10 BÀI
         $reviewsQuery = $user->recipes()
@@ -126,14 +131,16 @@ class ProfileController extends Controller
         if ($isOwnProfile) {
             // Chủ profile: thấy TẤT CẢ công thức (kể cả chờ duyệt)
             $totalSuggestedRecipes = Recipe::where('user_id', $user->id)->count();
-            $suggestedRecipes = Recipe::where('user_id', $user->id)
+            $suggestedRecipes = Recipe::with(['user', 'category'])
+                ->where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->paginate(12, ['*'], 'recipe_page')->withQueryString();
         } else {
             // Khách: chỉ thấy công thức ĐÃ DUYỆT
             $totalSuggestedRecipes = Recipe::where('user_id', $user->id)
                 ->where('status', 'published')->count();
-            $suggestedRecipes = Recipe::where('user_id', $user->id)
+            $suggestedRecipes = Recipe::with(['user', 'category'])
+                ->where('user_id', $user->id)
                 ->where('status', 'published')
                 ->orderBy('created_at', 'desc')
                 ->paginate(12, ['*'], 'recipe_page')->withQueryString();
@@ -163,6 +170,13 @@ class ProfileController extends Controller
                 ->get();
         }
 
+        // 8. Lấy danh sách bình luận của User này (cho mọi người xem)
+        $userComments = \App\Models\Comment::with('recipe')
+            ->where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->latest()
+            ->paginate(10, ['*'], 'comment_page')->withQueryString();
+
         // 8. Lấy danh hiệu hoạt động (Activity Title) dựa trên số bài viết và sách đã duyệt
         $activityTitle = $user->getActivityTitle();
 
@@ -179,7 +193,12 @@ class ProfileController extends Controller
             'totalFollowing' => $totalFollowing,
             'totalFollowers' => $totalFollowers,
             'isOwnProfile' => $isOwnProfile,
-            'activityTitle' => $activityTitle, // [MỚI] Danh hiệu hoạt động
+            'activityTitle' => $activityTitle,
+            'totalUserComments' => $totalUserComments,
+            'totalLikesReceived' => $totalLikesReceived,
+            'totalCommentsReceived' => $totalCommentsReceived,
+            'userComments' => $userComments,
+
         ]);
     }
 
@@ -221,7 +240,8 @@ class ProfileController extends Controller
             return redirect()->route('profile', $id)->with('error', 'Bạn không có quyền xem trang này.');
         }
 
-        $suggestedRecipes = Recipe::where('user_id', $user->id)
+        $suggestedRecipes = Recipe::with(['user', 'category'])
+            ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 

@@ -40,52 +40,9 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
             
-            // Kiểm tra email đã xác thực chưa
-            $user = Auth::user();
-            if (!$user->email_verified_at) {
-                // Kiểm tra xem có mã OTP còn hiệu lực không
-                $existingCode = DB::table('password_reset_codes')
-                    ->where('email', $user->email)
-                    ->where('expires_at', '>', Carbon::now())
-                    ->first();
-                
-                // Nếu không có mã hoặc mã đã hết hạn, tạo mã mới
-                if (!$existingCode) {
-                    $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-                    
-                    DB::table('password_reset_codes')->where('email', $user->email)->delete();
-                    DB::table('password_reset_codes')->insert([
-                        'email' => $user->email,
-                        'code' => $code,
-                        'expires_at' => Carbon::now()->addMinutes(10),
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ]);
-
-                    // Gửi email mã OTP
-                    Mail::send([], [], function ($message) use ($user, $code) {
-                        $message->to($user->email)
-                            ->subject('🍳 Xác thực tài khoản - Góc Bếp')
-                            ->html($this->buildOtpEmail(
-                                $user->name,
-                                $code,
-                                'Xác Thực Tài Khoản',
-                                'Tài khoản <strong>Góc Bếp</strong> của bạn chưa được xác thực. Vui lòng sử dụng mã bên dưới để hoàn tất.',
-                                null
-                            ));
-                    });
-
-                    return redirect()->route('verification.notice')
-                        ->with('status', 'Đã gửi mã xác thực mới vào email của bạn!');
-                }
-                
-                // Nếu mã còn hiệu lực, chuyển đến trang xác thực
-                return redirect()->route('verification.notice')
-                    ->with('status', 'Vui lòng xác thực email để tiếp tục sử dụng.');
-            }
-            
             return redirect()->route('home'); // Đăng nhập xong về trang chủ
         }
+
 
         return back()->withErrors([
             'email' => 'Email hoặc mật khẩu không chính xác.',
@@ -127,49 +84,40 @@ class AuthController extends Controller
             // Email đã xác thực – không cho đăng ký lại
             return back()->withErrors(['email' => 'Email này đã được sử dụng.'])->withInput();
         } else {
-            // Tạo user mới trong Database (chưa xác thực email, chưa kích hoạt)
+            // Tạo user mới - Kích hoạt ngay lập tức giống trang web bạn vừa xem
             $user = User::create([
                 'name'      => $request->name,
                 'email'     => $request->email,
                 'password'  => Hash::make($request->password),
-                'is_active' => false, // Chưa kích hoạt cho đến khi xác thực OTP
+                'is_active' => true, // Kích hoạt ngay
+                'email_verified_at' => now(), // Coi như đã xác thực để vào được web
             ]);
         }
 
-        // Tạo mã OTP 6 số ngẫu nhiên
-        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        // Gửi email chào mừng (Gửi được thì tốt, không gửi được cũng không báo lỗi)
+        try {
+            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            Mail::send([], [], function ($message) use ($request, $code, $user) {
+                $message->to($request->email)
+                    ->subject('🍳 Chào mừng bạn đến với Góc Bếp')
+                    ->html($this->buildOtpEmail(
+                        $user->name,
+                        $code,
+                        'Đăng Ký Thành Công',
+                        'Cảm ơn bạn đã gia nhập cộng đồng <strong>Góc Bếp</strong>! Tài khoản của bạn đã sẵn sàng sử dụng.',
+                        'Chúc bạn có những trải nghiệm tuyệt vời cùng chúng tôi!'
+                    ));
+            });
+        } catch (\Exception $e) {
+            \Log::error('Mail Error: ' . $e->getMessage());
+        }
 
-        // Lưu mã OTP vào database
-        DB::table('password_reset_codes')->where('email', $request->email)->delete();
-        DB::table('password_reset_codes')->insert([
-            'email' => $request->email,
-            'code' => $code,
-            'expires_at' => Carbon::now()->addMinutes(10),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-
-        // Gửi email chứa mã OTP
-        Mail::send([], [], function ($message) use ($request, $code, $user) {
-            $message->to($request->email)
-                ->subject('🍳 Xác thực tài khoản - Góc Bếp')
-                ->html($this->buildOtpEmail(
-                    $user->name,
-                    $code,
-                    'Xác Thực Tài Khoản',
-                    'Cảm ơn bạn đã gia nhập cộng đồng <strong>Góc Bếp</strong>! Vui lòng sử dụng mã bên dưới để xác thực tài khoản của bạn.',
-                    'Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này.'
-                ));
-        });
-
-        // Đăng nhập tạm cho người dùng
+        // Đăng nhập và vào thẳng trang chủ
         Auth::login($user);
 
-        // Chuyển hướng đến trang nhập mã OTP
-        return redirect()->route('verification.notice')
-            ->with('verify_email', $request->email)
-            ->with('status', 'Đã gửi mã xác thực vào email của bạn!');
+        return redirect()->route('home')->with('success', 'Đăng ký tài khoản thành công!');
     }
+
 
     // --- 4. ĐĂNG XUẤT ---
     public function logout(Request $request)
@@ -296,17 +244,21 @@ class AuthController extends Controller
         ]);
 
         // Gửi email chứa mã OTP
-        Mail::send([], [], function ($message) use ($email, $code, $user) {
-            $message->to($email)
-                ->subject('🔑 Đặt lại mật khẩu - Góc Bếp')
-                ->html($this->buildOtpEmail(
-                    $user->name,
-                    $code,
-                    'Đặt Lại Mật Khẩu',
-                    'Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản <strong>Góc Bếp</strong> của mình. Vui lòng sử dụng mã bên dưới.',
-                    'Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.'
-                ));
-        });
+        try {
+            Mail::send([], [], function ($message) use ($email, $code, $user) {
+                $message->to($email)
+                    ->subject('🔑 Đặt lại mật khẩu - Góc Bếp')
+                    ->html($this->buildOtpEmail(
+                        $user->name,
+                        $code,
+                        'Đặt Lại Mật Khẩu',
+                        'Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản <strong>Góc Bếp</strong> của mình. Vui lòng sử dụng mã bên dưới.',
+                        'Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.'
+                    ));
+            });
+        } catch (\Exception $e) {
+            \Log::error('Mail Error (Forgot Password): ' . $e->getMessage());
+        }
 
         // Lưu email vào session và chuyển đến trang nhập mã
         return redirect()->route('password.verify.form')
@@ -464,17 +416,21 @@ class AuthController extends Controller
         ]);
 
         // Gửi email
-        Mail::send([], [], function ($message) use ($user, $code) {
-            $message->to($user->email)
-                ->subject('🍳 Gửi lại mã xác thực - Góc Bếp')
-                ->html($this->buildOtpEmail(
-                    $user->name,
-                    $code,
-                    'Mã Xác Thực Mới',
-                    'Bạn đã yêu cầu gửi lại mã xác thực cho tài khoản <strong>Góc Bếp</strong> của mình.',
-                    null
-                ));
-        });
+        try {
+            Mail::send([], [], function ($message) use ($user, $code) {
+                $message->to($user->email)
+                    ->subject('🍳 Gửi lại mã xác thực - Góc Bếp')
+                    ->html($this->buildOtpEmail(
+                        $user->name,
+                        $code,
+                        'Mã Xác Thực Mới',
+                        'Bạn đã yêu cầu gửi lại mã xác thực cho tài khoản <strong>Góc Bếp</strong> của mình.',
+                        null
+                    ));
+            });
+        } catch (\Exception $e) {
+            \Log::error('Mail Error (Resend Code): ' . $e->getMessage());
+        }
 
         return back()
             ->with('verify_email', $user->email)

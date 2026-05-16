@@ -4,7 +4,12 @@
 
 @section('content')
 {{-- HERO HEADER --}}
-<div class="relative overflow-hidden bg-gradient-to-br from-brand-green via-[#2a4a35] to-[#1e3828] text-white py-16 sm:py-24">
+<div class="relative overflow-hidden bg-gradient-to-br from-brand-green via-[#2a4a35] to-[#1e3828] text-white pt-24 pb-16 sm:pt-32 sm:pb-24">
+
+
+
+
+
     <div class="absolute inset-0 opacity-20">
         <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="">
     </div>
@@ -51,9 +56,10 @@
             <a href="{{ route('articles.show', $article->slug) }}"
                 class="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
                 <div class="relative overflow-hidden h-56">
-                    <img src="{{ $article->thumbnail ? (Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/'.$article->thumbnail)) : 'https://images.unsplash.com/photo-1495546992359-f3f5af44a0c0?w=600' }}"
+                    <img src="{{ $article->thumbnail }}"
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         alt="{{ $article->title }}">
+
                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     @if($article->tag)
                     <span class="absolute top-3 left-3 bg-brand-accent/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md">

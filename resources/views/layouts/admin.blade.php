@@ -566,7 +566,7 @@
                 <div class="space-y-1">
                     <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nội Dung</p>
 
-                    {{-- [MỚI] Quản lý Banner --}}
+
                     <a href="{{ route('admin.banners.index') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.banners.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
@@ -574,7 +574,7 @@
                         <span class="font-medium text-sm">Quản Lý Banner</span>
                     </a>
 
-                    {{-- [MỚI] Quản lý Tạp chí (Article) - Thêm luôn để tiện --}}
+
                     <a href="{{ route('admin.articles.index') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         <i
@@ -597,6 +597,15 @@
                         <i
                             class="fas fa-utensils w-5 text-center {{ request()->routeIs('admin.recipes.*') ? 'text-white' : 'text-slate-400 group-hover:text-green-400' }}"></i>
                         <span class="font-medium text-sm">Quản Lý Công Thức</span>
+                        @php
+                            $pendingRecipesCount = \App\Models\Recipe::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingRecipesCount > 0)
+                            <span id="badge-pending-recipes"
+                                class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-orange-400 to-red-500 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-orange-500/30 badge-blink">
+                                {{ $pendingRecipesCount }}
+                            </span>
+                        @endif
                     </a>
 
                     <a href="{{ route('admin.categories.index') }}"
@@ -636,6 +645,18 @@
                         <i
                             class="fas fa-users w-5 text-center {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-400' }}"></i>
                         <span class="font-medium text-sm">Thành Viên</span>
+                        @php
+                            // Đếm số thành viên mới trong 24h qua hoặc đang chờ kích hoạt
+                            $newUsersCount = \App\Models\User::where('created_at', '>', now()->subDay())
+                                ->orWhere('is_active', false)
+                                ->count();
+                        @endphp
+                        @if($newUsersCount > 0)
+                            <span id="badge-new-users"
+                                class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-blue-400 to-indigo-600 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-blue-500/30">
+                                {{ $newUsersCount }}
+                            </span>
+                        @endif
                     </a>
 
                     <a href="{{ route('admin.activity-logs.index') }}"
@@ -789,11 +810,16 @@
                                 <i class="fas fa-quote-left w-5 text-center"></i>
                                 <span class="font-medium text-sm">Quản Lý Châm Ngôn</span>
                             </a>
-                            <a href="{{ route('admin.recipes.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.recipes.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-utensils w-5 text-center"></i>
-                                <span class="font-medium text-sm">Quản Lý Công Thức</span>
-                            </a>
+                             <a href="{{ route('admin.recipes.index') }}"
+                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.recipes.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                 <i class="fas fa-utensils w-5 text-center"></i>
+                                 <span class="font-medium text-sm">Quản Lý Công Thức</span>
+                                 @if($pendingRecipesCount > 0)
+                                    <span class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-orange-500 text-white text-[10px] font-bold px-1.5 rounded-full badge-blink">
+                                        {{ $pendingRecipesCount }}
+                                    </span>
+                                 @endif
+                             </a>
                             <a href="{{ route('admin.categories.index') }}"
                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.categories.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-tags w-5 text-center"></i>
@@ -805,11 +831,16 @@
                         {{-- Hệ Thống --}}
                         <div class="space-y-1">
                             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hệ Thống</p>
-                            <a href="{{ route('admin.users.index') }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.users.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
-                                <i class="fas fa-users w-5 text-center"></i>
-                                <span class="font-medium text-sm">Thành Viên</span>
-                            </a>
+                             <a href="{{ route('admin.users.index') }}"
+                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.users.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                 <i class="fas fa-users w-5 text-center"></i>
+                                 <span class="font-medium text-sm">Thành Viên</span>
+                                 @if($newUsersCount > 0)
+                                    <span class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-indigo-500 text-white text-[10px] font-bold px-1.5 rounded-full">
+                                        {{ $newUsersCount }}
+                                    </span>
+                                 @endif
+                             </a>
                             <a href="{{ route('admin.activity-logs.index') }}"
                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.activity-logs.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-clipboard-list w-5 text-center"></i>

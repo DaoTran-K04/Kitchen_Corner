@@ -111,9 +111,10 @@
             </div>
 
             <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0 shadow-inner">
-                <img src="{{ $recipe->image ? (Str::startsWith($recipe->image,'http') ? $recipe->image : asset('storage/'.$recipe->image)) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=300' }}"
+                <img src="{{ $recipe->thumbnail }}"
                     alt="{{ $recipe->title }}"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=300'">
             </div>
 
             <div class="flex-1 min-w-0 flex flex-col justify-between">

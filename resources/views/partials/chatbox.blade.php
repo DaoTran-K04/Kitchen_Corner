@@ -127,7 +127,7 @@
             </a>
 
             {{-- Zalo Button --}}
-            <a href="https://zalo.me/g/zqgnmi3ek9vzcgwedwnn" target="_blank" rel="noopener noreferrer"
+            <a href="https://zalo.me/g/onlvhshfpg452kfyzkgc" target="_blank" rel="noopener noreferrer"
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group overflow-hidden"
                 style="animation-delay: 0.3s; --glow-color: rgba(0, 104, 255, 0.5);"
                 title="Di chuyển tới Cộng đồng Góc Bếp trên Zalo">

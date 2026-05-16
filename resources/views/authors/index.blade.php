@@ -55,31 +55,32 @@
                      onclick="window.location='{{ route('public.profile', $author->id) }}'">
                     
                     {{-- Avatar & Khung --}}
-                    <div class="relative mb-4 transform group-hover:scale-105 transition-transform duration-300">
+                    <div class="relative mb-2 transform group-hover:scale-105 transition-transform duration-300 inline-flex">
                         @include('partials.user-avatar-with-frame', [
                             'user' => $author,
-                            'size' => 'w-24 h-24',
-                            'avatarSize' => 'w-20 h-20'
+                            'size' => 'w-20 h-20'
                         ])
                         
-                        {{-- Huy hiệu Admin/Mod --}}
-                        @if($author->role == 'admin')
-                            <div class="absolute -bottom-2 -right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Admin">
-                                <i class="fas fa-crown text-xs"></i>
-                            </div>
-                        @elseif($author->role == 'moderator')
-                            <div class="absolute -bottom-2 -right-2 bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Moderator">
-                                <i class="fas fa-shield-alt text-xs"></i>
-                            </div>
-                        @else
-                            <div class="absolute -bottom-2 -right-2 bg-brand-green text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Thành viên nổi bật">
-                                <i class="fas fa-star text-xs"></i>
-                            </div>
-                        @endif
+                        {{-- Role Badge --}}
+                        <div class="absolute -bottom-1 -right-1 z-20">
+                            @if($author->role == 'admin')
+                                <div class="bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Admin">
+                                    <i class="fas fa-crown text-[10px]"></i>
+                                </div>
+                            @elseif($author->role == 'moderator')
+                                <div class="bg-blue-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Moderator">
+                                    <i class="fas fa-shield-alt text-[10px]"></i>
+                                </div>
+                            @else
+                                <div class="bg-brand-green text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="Thành viên nổi bật">
+                                    <i class="fas fa-star text-[10px]"></i>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- Thông tin --}}
-                    <a href="{{ route('public.profile', $author->id) }}" class="font-bold text-xl text-gray-800 hover:text-brand-green transition mb-1 leading-tight line-clamp-1">
+                    {{-- Tên tác giả --}}
+                    <a href="{{ route('public.profile', $author->id) }}" class="font-bold text-lg text-gray-800 hover:text-brand-green transition mb-1 leading-tight line-clamp-1">
                         {{ $author->name }}
                     </a>
                     

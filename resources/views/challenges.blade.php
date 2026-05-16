@@ -5,7 +5,8 @@
 @section('content')
     
     {{-- 1. HEADER HERO NỔI BẬT --}}
-    <div class="relative overflow-hidden bg-gradient-to-br from-[#7a1a1e] via-[#5c1316] to-[#3d0c0e] text-white py-16 sm:py-24 shadow-2xl">
+    <div class="relative overflow-hidden bg-gradient-to-br from-[#7a1a1e] via-[#5c1316] to-[#3d0c0e] text-white pt-24 pb-16 sm:pt-32 sm:pb-24 shadow-2xl">
+
         {{-- Background Image Overlay --}}
         <div class="absolute inset-0 opacity-20 mix-blend-overlay">
             <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="Background">

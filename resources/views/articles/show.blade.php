@@ -15,6 +15,9 @@
 
     {{-- [BREADCRUMB] --}}
     <div class="bg-gray-50 border-b border-gray-200 py-4">
+
+
+
         <div class="container mx-auto px-4">
             <nav class="flex text-sm font-bold text-black">
                 <a href="{{ route('home') }}" class="hover:text-brand-green transition">Trang chủ</a>
@@ -87,13 +90,12 @@
                     </header>
 
                     {{-- 2. Ảnh Cover Lớn --}}
-                    @if($article->thumbnail)
-                        <div class="mb-10 rounded-xl overflow-hidden shadow-lg">
-                            <img src="{{ Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail) }}" 
-                                 class="w-full h-auto object-cover" 
-                                 alt="{{ $article->title }}">
-                        </div>
-                    @endif
+                    <div class="mb-10 rounded-xl overflow-hidden shadow-lg">
+                        <img src="{{ $article->thumbnail }}" 
+                             class="w-full h-auto object-cover" 
+                             alt="{{ $article->title }}">
+                    </div>
+
 
                     {{-- 3. Nội Dung Chính --}}
                     <div class="article-content text-lg text-gray-700 text-justify">

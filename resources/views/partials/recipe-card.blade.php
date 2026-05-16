@@ -3,15 +3,6 @@
     - Ảnh chiếm ≥ 60% diện tích card (aspect-[4/5])
 --}}
 @php
-    $imageUrl = $recipe->image;
-    if (!empty($imageUrl)) {
-        if (!str_starts_with($imageUrl, 'http')) {
-            $imageUrl = asset('storage/' . $imageUrl);
-        }
-    } else {
-        $imageUrl = 'https://placehold.co/600x750/9b2226/white?text=Góc+Bếp';
-    }
-
     $difficultyMap = [
         'easy'   => ['label' => 'Dễ',        'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'],
         'medium' => ['label' => 'Trung bình', 'color' => 'text-amber-600',  'bg' => 'bg-amber-50'],
@@ -27,7 +18,7 @@
         <img src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}"
             loading="lazy"
             class="w-full h-full object-cover transform group-hover/card:scale-108 transition-transform duration-700 ease-out"
-            onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop'">
+            onerror="this.src='https://placehold.co/600x750/9b2226/white?text=G%C3%B3c+B%E1%BA%BFp'">
 
 
         {{-- Gradient overlay từ dưới lên (đọc thông tin) --}}

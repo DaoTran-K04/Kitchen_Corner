@@ -13,15 +13,10 @@
     <div class="md:col-span-1 space-y-6">
         <!-- Thông tin cơ bản -->
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
-            @php
-                $recipeImg = trim($recipe->image);
-                $displayImg = $recipeImg 
-                    ? (str_starts_with($recipeImg, 'http') ? $recipeImg : asset('storage/' . $recipeImg)) 
-                    : 'https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=600';
-            @endphp
-            <img src="{{ $displayImg }}" 
+            <img src="{{ $recipe->thumbnail }}" 
                  alt="{{ $recipe->title }}" 
-                 class="w-full h-48 object-cover rounded-xl shadow-md mb-4 border dark:border-slate-700">
+                 class="w-full h-48 object-cover rounded-xl shadow-md mb-4 border dark:border-slate-700"
+                 onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=600'">
             
             <h2 class="text-xl font-bold mb-2">{{ $recipe->title }}</h2>
             <div class="flex gap-2 mb-4">
@@ -86,7 +81,7 @@
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
             <h3 class="font-bold border-b pb-2 mb-4 text-blue-500"><i class="fas fa-list-ol mr-2"></i>Các bước thực hiện</h3>
             <div class="space-y-4">
-                @forelse($recipe->steps as $idx => $step)
+                @forelse($recipe->steps->sortBy('step_number') as $idx => $step)
                 <div class="flex gap-4">
                     <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
                         {{ $idx + 1 }}

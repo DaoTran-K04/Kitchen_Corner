@@ -196,7 +196,7 @@ class ImportMealDbRecipes extends Command
                 }
 
                 // Tạo mô tả tiếng Việt
-                $description = $this->translateIngredient($meal['strCategory'] ?? '') . ' thơm ngon, mang hương vị đặc trưng TheMealDB.';
+                $description = $this->buildDescription($detail, $cat, $ingredients);
 
                 // Tạo slug không trùng
                 $baseSlug = Str::slug($viName);
@@ -241,11 +241,17 @@ class ImportMealDbRecipes extends Command
                     
                     $stepNum = 1;
                     foreach ($stepsText as $stepDesc) {
-                        if (strlen($stepDesc) > 5) {
+                        $cleanStep = trim($stepDesc);
+                        // Bỏ qua các dòng chỉ chứa nhãn "Bước X" hoặc "Step X"
+                        if (preg_match('/^(bước|step)\s*\d+[:\.]*$/i', $cleanStep)) {
+                            continue;
+                        }
+
+                        if (strlen($cleanStep) > 5) {
                             \App\Models\RecipeStep::create([
                                 'recipe_id' => $recipe->id,
                                 'step_number' => $stepNum++,
-                                'description' => $stepDesc
+                                'description' => $cleanStep
                             ]);
                         }
                     }

@@ -9,14 +9,28 @@
     <meta name="keywords" content="công thức nấu ăn, món ngon mỗi ngày, nấu ăn ngon, thực đơn dinh dưỡng, ẩm thực việt nam, góc bếp">
     <meta name="author" content="Trần Hoàng Đạo">
 
-    {{-- [MỚI] THÊM FAVICON --}}
+
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 
+    {{-- Preconnect for faster CDN handshake --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+
+    {{-- Non-blocking Font Awesome: load as print then swap to all --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"></noscript>
+
+    {{-- Non-blocking Google Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&family=Nunito+Sans:wght@300;400;600;700;800&display=swap"
-        rel="stylesheet">
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"></noscript>
 
     @php
         $siteTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
@@ -187,8 +201,8 @@
         }
     </style>
 
-    {{-- SweetAlert2 for global popup overrides --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- SweetAlert2: defer to not block initial render --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
         // Override native browser alert to use SweetAlert2
         window.alert = function(message) {
@@ -260,7 +274,10 @@
 
     @include('partials.header')
 
-    <div class="flex-grow {{ (Request::is('/') || Request::is('cong-thuc*') || Request::is('tac-gia*') || Request::is('tim-kiem-nguyen-lieu*') || Request::is('mon-an*') || Request::is('login') || Request::is('register')) ? '' : 'pt-20 lg:pt-24' }}">
+    <div class="flex-grow {{ (Request::is('/') || Request::is('cong-thuc*') || Request::is('tac-gia*') || Request::is('tim-kiem-nguyen-lieu*') || Request::is('mon-an*') || Request::is('login') || Request::is('register') || Request::is('tap-chi*') || Request::is('thu-thach*')) ? '' : 'pt-20 lg:pt-24' }}">
+
+
+
         @yield('content')
     </div>
 
@@ -349,6 +366,9 @@
         // To check the scroll position on page load
         window.addEventListener("load", reveal);
     </script>
+    
+    {{-- Instant.page: Pre-fetch on hover for instant navigation --}}
+    <script src="https://instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipfGQRjygabvOoY28BmgrrU946y1DUFTD7D54D7nV1yuHDU9zoEwUJve" crossorigin="anonymous"></script>
 </body>
 
 </html>

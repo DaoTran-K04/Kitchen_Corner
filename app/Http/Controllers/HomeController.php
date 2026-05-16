@@ -15,12 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\CommentLikedNotification;
 use App\Notifications\CommentRepliedNotification;
-// use App\Models\Post;           // TODO: đã chuyển sang Recipe
-// use App\Models\Book;           // Đã chuyển sang Recipe
-// use App\Models\Quote;          // TODO: sẽ thay bằng mẹo nấu ăn / câu nói ẩm thực
-// use App\Models\Author;         // TODO: sẽ thay bằng Chef / đầu bếp nổi bật
-// use App\Notifications\PostLikedNotification;     // TODO: đổi sang RecipeLikedNotification
-// use App\Notifications\PostCommentedNotification; // TODO: đổi sang RecipeCommentedNotification
+
 
 class HomeController extends Controller
 {
@@ -40,10 +35,12 @@ class HomeController extends Controller
         ])
             ->whereNull('parent_id')
             ->whereHas('recipe')       // ← chỉ lấy comment có recipe
-            ->withCount('likes');
+            ->withCount(['likes', 'replies']);
 
         if ($sortReview == 'popular') {
-            $reviewQuery->orderByDesc('likes_count');
+            // Sắp xếp theo tổng lượt tương tác (Like + Phản hồi)
+            $reviewQuery->orderByRaw('(likes_count + replies_count) DESC')
+                        ->orderByDesc('created_at');
         } else {
             $reviewQuery->latest();
         }
@@ -54,8 +51,10 @@ class HomeController extends Controller
             return view('partials.home_comments', compact('latestReviews'))->render();
         }
 
-        // --- 2. BANNER SLIDE ---
-        $heroSlides = Banner::where('is_active', true)->orderBy('order', 'asc')->latest()->get();
+        // --- 2. BANNER SLIDE (CACHE 30 phút) ---
+        $heroSlides = \Illuminate\Support\Facades\Cache::remember('hero_slides', 1800, function() {
+            return Banner::where('is_active', true)->orderBy('order', 'asc')->latest()->get();
+        });
 
         // --- 3. CÔNG THỨC THEO CHỦ ĐỀ MỚI NHẤT ---
         $siteTheme = \Illuminate\Support\Facades\Cache::rememberForever('active_theme', function () {
@@ -71,7 +70,7 @@ class HomeController extends Controller
             elseif (($month == 10 && $day >= 25) || ($month == 11 && $day <= 2)) $siteTheme = 'halloween';
         }
 
-        $recipesQuery = Recipe::with('category')->where('status', 'published');
+        $recipesQuery = Recipe::with(['user', 'category'])->where('status', 'published');
 
         $themeKeywords = [];
         if ($siteTheme === 'valentine') {
@@ -112,29 +111,33 @@ class HomeController extends Controller
         // Secondary sorting by newest updates
         $recipesQuery->orderBy('created_at', 'desc');
 
-        $recipes = $recipesQuery->take(12)->get();
+        $recipes = \Illuminate\Support\Facades\Cache::remember('home_themed_recipes_' . $siteTheme, 600, function() use ($recipesQuery) {
+            return $recipesQuery->take(12)->get();
+        });
 
-        $trendingRecipes = Recipe::where('status', 'published')
-            ->orderBy('view_count', 'desc')
-            ->take(5)
-            ->get();
+        $trendingRecipes = \Illuminate\Support\Facades\Cache::remember('home_trending_recipes', 600, function() {
+            return Recipe::with(['user', 'category'])
+                ->where('status', 'published')
+                ->orderBy('view_count', 'desc')
+                ->take(5)
+                ->get();
+        });
 
         // --- 4. BÀI VIẾT TẠP CHÍ (Ưu tiên từ Database) ---
-        $dbArticles = Article::where('is_active', true)->latest()->take(3)->get();
-        
-        $formattedArticles = $dbArticles->map(function($article) {
-            $thumb = $article->thumbnail;
-            $imageUrl = $thumb ? (str_starts_with($thumb, 'http') ? $thumb : asset('storage/' . $thumb)) : 'https://images.unsplash.com/photo-1495546992359-f3f5af44a0c0?w=600';
-            
-            return (object)[
-                'title' => $article->title,
-                'link' => route('articles.show', $article->slug),
-                'description' => $article->excerpt,
-                'image' => $imageUrl,
-                'date' => $article->created_at->format('d/m/Y'),
-                'author_name' => $article->user->name ?? 'Admin'
-            ];
+        $formattedArticles = \Illuminate\Support\Facades\Cache::remember('home_articles', 1200, function() {
+            $dbArticles = Article::with('user')->where('is_active', true)->latest()->take(3)->get();
+            return $dbArticles->map(function($article) {
+                return (object)[
+                    'title' => $article->title,
+                    'link' => route('articles.show', $article->slug),
+                    'description' => $article->excerpt,
+                    'image' => $article->thumbnail,
+                    'date' => $article->created_at->format('d/m/Y'),
+                    'author_name' => $article->user->name ?? 'Admin'
+                ];
+            });
         });
+
 
 
         $featuredArticle = $formattedArticles->first();
@@ -144,8 +147,10 @@ class HomeController extends Controller
             return Category::withCount('recipes')->orderBy('name', 'asc')->get();
         });
 
-        // --- 5. CHÂM NGÔN ẨM THỰC NGẪU NHIÊN ---
-        $dailyQuote = \App\Models\Quote::where('is_active', true)->inRandomOrder()->first();
+        // --- 5. CHÂM NGÔN ẨM THỰC NGẪU NHIÊN (CACHE 12h) ---
+        $dailyQuote = \Illuminate\Support\Facades\Cache::remember('home_daily_quote', 43200, function() {
+            return \App\Models\Quote::where('is_active', true)->inRandomOrder()->first();
+        });
 
         // --- 6. THỐNG KÊ CỘNG ĐỒNG (CACHE 60 phút) ---
         $communityStats = \Illuminate\Support\Facades\Cache::remember('community_stats', 60, function () {
@@ -181,20 +186,26 @@ class HomeController extends Controller
         })->inRandomOrder()->first();
 
         // Lấy 8 công thức nổi bật để hiển thị ở section slider
-        $latestPosts = Recipe::where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
-        if ($latestPosts->isEmpty()) {
-            $latestPosts = Recipe::where('status', 'published')->latest()->take(8)->get();
-        }
-        $hotPosts = Recipe::where('status', 'published')->orderBy('view_count', 'desc')->take(8)->get();
+        // Lấy 8 công thức nổi bật (CACHE 30p)
+        $latestPosts = \Illuminate\Support\Facades\Cache::remember('home_featured_posts', 1800, function() {
+            $posts = Recipe::with(['user', 'category'])->where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
+            return $posts->isEmpty() ? Recipe::with(['user', 'category'])->where('status', 'published')->latest()->take(8)->get() : $posts;
+        });
+        
+        $hotPosts = \Illuminate\Support\Facades\Cache::remember('home_hot_posts', 1800, function() {
+            return Recipe::with(['user', 'category'])->where('status', 'published')->orderBy('view_count', 'desc')->take(8)->get();
+        });
 
-        // --- 9. THỬ THÁCH ---
-        $today           = now()->toDateString();
-        $activeChallenge = Challenge::with('badge')
-            ->where('is_active', true)
-            ->where('start_date', '<=', $today)
-            ->where('end_date', '>=', $today)
-            ->inRandomOrder()
-            ->first();
+        // --- 9. THỬ THÁCH (CACHE 1h) ---
+        $today = now()->toDateString();
+        $activeChallenge = \Illuminate\Support\Facades\Cache::remember('home_active_challenge', 3600, function() use ($today) {
+            return Challenge::with('badge')
+                ->where('is_active', true)
+                ->where('start_date', '<=', $today)
+                ->where('end_date', '>=', $today)
+                ->inRandomOrder()
+                ->first();
+        });
 
         return view('home', compact(
             'heroSlides',

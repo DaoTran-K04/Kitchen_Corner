@@ -146,7 +146,7 @@
                         </label>
                         <input type="text" name="link" id="link-input" value="{{ old('link', $banner->link) }}"
                             class="w-full px-4 py-2 border dark:border-slate-600 rounded-lg outline-none bg-white dark:bg-slate-700 text-gray-800 dark:text-white placeholder:italic"
-                            placeholder="https://gocsach.vn/chi-tiet/nha-gia-kim">
+                            placeholder="https://gocbep.vn/cong-thuc/mon-an-ngon">
                     </div>
 
                     <div class="pt-4">

@@ -64,9 +64,10 @@
         <a href="{{ route('recipes.show', $recipe->slug) }}"
             class="group bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition-all duration-300 flex flex-col">
             <div class="relative overflow-hidden aspect-[4/3]">
-                <img src="{{ $recipe->image ? (Str::startsWith($recipe->image,'http') ? $recipe->image : asset('storage/'.$recipe->image)) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400' }}"
+                <img src="{{ $recipe->thumbnail }}"
                     alt="{{ $recipe->title }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400'">
             </div>
             <div class="p-4 flex flex-col flex-1">
                 <h3 class="font-bold text-gray-800 group-hover:text-green-600 transition line-clamp-2 mb-1 text-sm">{{ $recipe->title }}</h3>

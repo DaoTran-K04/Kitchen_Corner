@@ -1,11 +1,4 @@
-{{--
-Component: Hiển thị danh hiệu (badges) của user
-Usage: @include('partials.user-badges', ['user' => $someUser, 'size' => 'sm'])
 
-$user: User model (required)
-$size: 'xs', 'sm', 'md' (optional, default: 'sm')
-$max: số badge tối đa hiển thị (optional, default: 5)
---}}
 
 @php
     $badges = $user->activeBadges ?? collect();

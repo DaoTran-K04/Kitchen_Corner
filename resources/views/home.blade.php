@@ -52,7 +52,7 @@
     <main class="container mx-auto px-4 py-12">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-            {{-- [CỘT TRÁI - CHIẾM 8 PHẦN] --}}
+
             <div class="lg:col-span-8 space-y-16 order-1 lg:order-2">
 
                 {{-- 1. TẠP CHÍ Ẩm Thực --}}
@@ -83,8 +83,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                         @if(isset($featuredArticle))
-                            <article class="md:col-span-3 group cursor-pointer relative" onclick="window.location.href='{{ $featuredArticle->link }}'">
-
+                            <a href="{{ $featuredArticle->link }}" class="md:col-span-3 group relative block">
                                 <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-4 shadow-md">
                                     <img src="{{ $featuredArticle->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
@@ -95,14 +94,14 @@
                                     </div>
                                 </div>
                                 <p class="text-gray-600 text-sm line-clamp-2 leading-relaxed">{{ $featuredArticle->description }}</p>
-                            </article>
+                            </a>
                         @endif
+
 
                         <div class="md:col-span-2 flex flex-col gap-6">
                             @if(isset($sidebarArticles))
                                 @foreach($sidebarArticles as $article)
-                                    <article class="flex flex-col group cursor-pointer relative" onclick="window.location.href='{{ $article->link }}'">
-
+                                    <a href="{{ $article->link }}" class="flex flex-col group relative block">
                                         <div class="h-32 rounded-xl overflow-hidden mb-3 relative">
                                             <img src="{{ $article->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
                                         </div>
@@ -110,9 +109,10 @@
                                             <span class="text-brand-green text-xs font-bold uppercase">Tin Nóng</span>
                                             <h3 class="font-serif font-bold text-base text-gray-800 leading-snug group-hover:text-brand-green transition mt-1">{{ $article->title }}</h3>
                                         </div>
-                                    </article>
+                                    </a>
                                 @endforeach
                             @endif
+
                         </div>
                     </div>
                 </section>
@@ -384,7 +384,7 @@
 
                             {{-- Nội dung AJAX SẼ ĐỔ VÀO ĐÂY --}}
                             <div id="comments-content-wrapper">
-                                {{-- [ĐÃ Sửa]: Truyền biến latestReviews --}}
+
                                 @include('partials.home_comments', ['latestReviews' => $latestReviews])
                             </div>
                         </div>
@@ -445,7 +445,7 @@
                 @endif
             </div> {{-- END CỘT 8 --}}
 
-            {{-- [CỘT PHẢI - 4 PHẦN] --}}
+
             <div class="lg:col-span-4 order-2 lg:order-1">
                 <div class="space-y-6 sm:space-y-8">
                     {{-- Widget 0: Châm Ngôn Hôm Nay --}}

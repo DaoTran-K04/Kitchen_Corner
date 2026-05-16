@@ -24,26 +24,15 @@
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-2xl shadow-soft p-6 text-center border border-gray-100">
 
-                    <div class="relative w-52 h-52 mx-auto mb-4 group">
-                        <!-- Avatar Frame Overlay (rendered first but z-index higher) -->
-                        @php
-                            $equippedFrame = $user->equippedFrame();
-                        @endphp
-
-                        @if($equippedFrame)
-                            <img src="{{ Str::startsWith($equippedFrame->frame_image, 'http') ? $equippedFrame->frame_image : asset('storage/' . $equippedFrame->frame_image) }}"
-                                alt="Frame" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10">
-                        @endif
-
-                        <!-- User Avatar (fixed size, centered, behind frame) -->
-                        <div class="absolute inset-0 flex items-center justify-center z-0">
-                            <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
-                                class="w-32 h-32 rounded-full border-2 border-brand-beige shadow-md object-cover group-hover:border-brand-green transition duration-300">
-                        </div>
-
+                    <div class="mb-4 relative group">
+                        @include('partials.user-avatar-with-frame', [
+                            'user' => $user,
+                            'size' => 'w-32 h-32'
+                        ])
+                        
                         @if(Auth::id() == $user->id)
                             <button onclick="openEditProfileModal()"
-                                class="absolute bottom-0 right-0 bg-white border border-gray-200 p-1.5 rounded-full text-gray-500 hover:text-brand-green hover:border-brand-green shadow-sm transition z-20"
+                                class="absolute top-40 right-10 bg-white border border-gray-200 p-1.5 rounded-full text-gray-500 hover:text-brand-green hover:border-brand-green shadow-sm transition z-20"
                                 title="Đổi ảnh đại diện">
                                 <i class="fas fa-camera text-xs"></i>
                             </button>
@@ -52,7 +41,6 @@
 
                     <h2 class="text-xl font-bold text-gray-800 font-serif">{{ $user->name }}</h2>
 
-                    {{-- [MỚI] ACTIVITY TITLE - Danh hiệu hoạt động --}}
                     @if(isset($activityTitle) && $activityTitle)
                         <div class="flex justify-center mt-1 mb-2">
                             <span
@@ -64,7 +52,7 @@
                         </div>
                     @endif
 
-                    <p class="text-gray-500 text-sm mb-3">{{ $user->email }}</p>
+                    <p class="text-gray-500 text-sm mb-3 font-medium text-brand-green">{{ $user->email }}</p>
 
                     <p
                         class="text-gray-600 text-sm italic mb-4 px-2 bg-gray-50 py-2 rounded-lg border border-gray-100 relative">
@@ -100,17 +88,21 @@
                         @endif
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 mb-6 border-t border-b border-gray-100 py-4">
+                    <div class="grid grid-cols-3 gap-2 mb-6 border-t border-b border-gray-100 py-4">
                         <div class="text-center">
-                            <span class="block font-bold text-xl text-brand-green">{{ $totalSuggestedRecipes ?? 0 }}</span>
-                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Công thức</span>
+                            <span class="block font-bold text-lg text-brand-green">{{ $totalSuggestedRecipes ?? 0 }}</span>
+                            <span class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Công thức</span>
                         </div>
                         <div class="text-center border-l border-gray-100">
-                            <span class="block font-bold text-xl text-brand-accent">{{ $totalReviews ?? 0 }}</span>
-                            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Bình luận</span>
+                            <span class="block font-bold text-lg text-red-500">{{ $totalLikesReceived ?? 0 }}</span>
+                            <span class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Lượt thích</span>
+                        </div>
+                        <div class="text-center border-l border-gray-100">
+                            <span class="block font-bold text-lg text-brand-accent">{{ $totalCommentsReceived ?? 0 }}</span>
+                            <span class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Bình luận</span>
                         </div>
 
-                        <div class="text-center mt-2 pt-2 border-t border-gray-50 col-span-2 grid grid-cols-2">
+                        <div class="text-center mt-2 pt-2 border-t border-gray-50 col-span-3 grid grid-cols-2">
                             <div class="cursor-pointer hover:bg-gray-50 rounded transition p-1"
                                 onclick="openFollowModal('following', {{ $user->id }})">
                                 <span class="block font-bold text-lg text-gray-800">{{ $totalFollowing ?? 0 }}</span>
@@ -126,7 +118,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- [MỚI] KHUNG HIỂN THỊ DANH HIỆU (BADGES) --}}
+
                     <div class="mb-6 border-t border-b border-gray-100 py-4">
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -256,7 +248,7 @@
                     {{-- KẾT THÚC KHUNG DANH HIỆU --}}
 
 
-                    {{-- [MỚI] KHUNG AVATAR --}}
+
                     <div class="mb-6 border-t border-b border-gray-100 py-4">
                         <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">
                             <i class="fas fa-image mr-1"></i> Khung Avatar
@@ -274,7 +266,7 @@
                                             <!-- Frame Preview -->
                                             <div
                                                 class="aspect-square bg-gray-50 rounded overflow-hidden flex items-center justify-center">
-                                                <img src="{{ Str::startsWith($frame->frame_image, 'http') ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                                                <img src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                                                     alt="{{ $frame->name }}" class="w-full h-full object-contain">
                                             </div>
 
@@ -316,7 +308,7 @@
                                             <!-- Frame Preview -->
                                             <div
                                                 class="aspect-square bg-gray-50 rounded overflow-hidden flex items-center justify-center">
-                                                <img src="{{ Str::startsWith($frame->frame_image, 'http') ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                                                <img src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                                                     alt="{{ $frame->name }}" class="w-full h-full object-contain">
                                             </div>
 
@@ -416,6 +408,14 @@
                                     class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalReviews }}</span>
                             </button>
 
+                            {{-- Tab: Bình Luận --}}
+                            <button onclick="showProfileTab('user-comments')" id="tab-btn-user-comments"
+                                class="flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-blue-600 hover:bg-gray-50">
+                                <i class="fas fa-comment-dots mr-2"></i>Bình Luận
+                                <span
+                                    class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{{ $totalUserComments }}</span>
+                            </button>
+
                             {{-- Thẻ Books bị ẩn do dùng chung với Recipes --}}
                             <button onclick="showProfileTab('books')" id="tab-btn-books"
                                 class="hidden flex-1 min-w-[120px] px-4 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-500 hover:text-brand-accent hover:bg-gray-50">
@@ -470,11 +470,10 @@
                                 @foreach($reviews->take(3) as $post)
                                     <div class="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group relative">
                                         <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="absolute inset-0 z-0"></a>
-                                        @php
-                                            $cover = $post->image ?? null;
-                                            $coverUrl = $cover ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover)) : 'https://placehold.co/50';
-                                        @endphp
-                                        <img src="{{ $coverUrl }}" class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0">
+                                        <img src="{{ $post->thumbnail }}" 
+                                             loading="lazy"
+                                             class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0"
+                                             onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">
                                         <div class="flex-1 min-w-0">
                                             <h4
                                                 class="font-bold text-gray-800 text-sm line-clamp-1 group-hover:text-brand-green transition">
@@ -535,7 +534,7 @@
                         @else
                             <div class="text-center py-6 text-gray-400">
                                 <i class="fas fa-pen-nib text-2xl mb-2"></i>
-                                <p class="text-sm">Chưa có bài review nào</p>
+                                <p class="text-sm">Chưa có công thức nào</p>
                                 @if(isset($isOwnProfile) && $isOwnProfile)
                                     <a href="{{ route('recipes.create') }}"
                                         class="text-brand-accent text-sm font-bold hover:underline mt-2 inline-block">+ Viết công thức đầu
@@ -557,7 +556,7 @@
                         class="flex items-center justify-between mb-6 bg-white rounded-xl shadow-soft border border-gray-100 p-4">
                         <div class="flex items-center gap-3">
                             <h3 class="text-xl font-bold text-gray-800 font-serif border-l-4 border-brand-green pl-3">
-                                {{ $totalReviews > 0 ? 'Bài Review Đã Đăng' : 'Chưa có bài viết nào' }}
+                                {{ $totalReviews > 0 ? 'Công thức đã đăng' : 'Chưa có bài viết nào' }}
                             </h3>
                             <span
                                 class="bg-brand-green/10 text-brand-green text-sm px-3 py-1 rounded-full font-bold">{{ $totalReviews }}</span>
@@ -566,7 +565,7 @@
                         @if(Auth::check() && Auth::id() == $user->id)
                             <a href="{{ route('recipes.create') }}"
                                 class="inline-flex items-center gap-1.5 bg-brand-accent hover:bg-[#c29263] text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm transition transform hover:-translate-y-0.5">
-                                <i class="fas fa-pen-nib"></i> Viết Review mới
+                                <i class="fas fa-plus"></i> Viết công thức mới
                             </a>
                         @endif
                     </div>
@@ -577,7 +576,7 @@
                                 class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition group relative">
                                 <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="absolute inset-0 z-0"></a>
 
-                                {{-- [MỚI] BADGE TRẠNG THÁI (Góc trên cùng bên phải) --}}
+
                                 <div class="absolute top-4 right-4 z-10">
                                     @if($post->status == 'pending')
                                         <span
@@ -607,14 +606,10 @@
                                     <div class="flex items-center gap-4">
                                         <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="block shrink-0 relative z-10">
                                             {{-- Sửa lại đường dẫn ảnh cho chuẩn --}}
-                                            @php
-                                                $cover = $post->image ?? null;
-                                                $coverUrl = $cover
-                                                    ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover))
-                                                    : 'https://placehold.co/50x70?text=Recipe';
-                                            @endphp
-                                            <img src="{{ $coverUrl }}"
-                                                class="w-12 h-16 object-cover rounded shadow-sm border border-gray-200">
+                                            <img src="{{ $post->thumbnail }}"
+                                                loading="lazy"
+                                                class="w-12 h-16 object-cover rounded shadow-sm border border-gray-200"
+                                                onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">
                                         </a>
 
                                         <div>
@@ -754,14 +749,10 @@
                                     @if($book->status == 'published')
                                         <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}">
                                     @endif
-                                        @php
-                                            $cover = $book->image ?? null;
-                                            $coverUrl = $cover
-                                                ? (Str::startsWith($cover, 'http') ? $cover : asset('storage/' . $cover))
-                                                : 'https://placehold.co/150x225?text=' . urlencode(Str::limit($book->title, 10));
-                                        @endphp
-                                        <img src="{{ $coverUrl }}"
-                                            class="w-full h-full object-cover transition group-hover:opacity-90">
+                                        <img src="{{ $book->thumbnail }}"
+                                            loading="lazy"
+                                            class="w-full h-full object-cover transition group-hover:opacity-90"
+                                            onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=400'">
                                         @if($book->status == 'published')
                                             </a>
                                         @endif
@@ -966,6 +957,67 @@
                 @endif
 
                 {{-- ================================================================= --}}
+                {{-- TAB: BÌNH LUẬN (USER COMMENTS) --}}
+                {{-- ================================================================= --}}
+                <div id="tab-content-user-comments" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-soft border border-gray-100 p-4 md:p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-800 font-serif border-l-4 border-blue-500 pl-3">
+                                {{ $totalUserComments > 0 ? 'Bình Luận Đã Gửi' : 'Chưa có bình luận nào' }}
+                            </h3>
+                            <span class="bg-blue-50 text-blue-600 text-sm px-3 py-1 rounded-full font-bold">
+                                {{ $totalUserComments }}
+                            </span>
+                        </div>
+
+                        <div class="space-y-4">
+                            @forelse($userComments as $comment)
+                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 hover:shadow-md transition-all duration-300">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-gray-400">Bình luận tại:</span>
+                                            @if($comment->recipe)
+                                                <a href="{{ route('recipes.show', $comment->recipe->slug) }}#comment-{{ $comment->id }}" class="text-xs font-bold text-brand-green hover:underline">
+                                                    {{ $comment->recipe->title }}
+                                                </a>
+                                            @else
+                                                <span class="text-xs text-gray-300 italic">Món ăn đã bị xóa</span>
+                                            @endif
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 italic">
+                                            {{ $comment->created_at->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl text-sm text-gray-700 leading-relaxed border border-gray-50 shadow-sm">
+                                        {{ $comment->content }}
+                                    </div>
+                                    @if($comment->recipe)
+                                        <div class="mt-3 flex justify-end">
+                                            <a href="{{ route('recipes.show', $comment->recipe->slug) }}#comment-{{ $comment->id }}" 
+                                               class="text-[11px] text-blue-500 font-bold hover:text-blue-700 flex items-center gap-1">
+                                                Xem chi tiết <i class="fas fa-chevron-right text-[9px]"></i>
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            @empty
+                                <div class="text-center py-10">
+                                    <i class="far fa-comment-dots text-4xl text-gray-200 mb-3"></i>
+                                    <p class="text-gray-400 italic">Chưa có hoạt động bình luận nào.</p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        {{-- Phân trang bình luận --}}
+                        @if($userComments->hasPages())
+                            <div class="mt-8 flex justify-center">
+                                {{ $userComments->appends(['comment_page' => $userComments->currentPage()])->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- ================================================================= --}}
                 {{-- TAB 5: THÙNG RÁC (TRASH) --}}
                 {{-- ================================================================= --}}
                 @if(isset($isOwnProfile) && $isOwnProfile)
@@ -1083,7 +1135,7 @@
         // --- 0. Xử lý chuyển đổi Tab Profile --        -
         function showProfileTab(tabName) {
             // Danh công thức các tab
-            const tabs = ['overview', 'reviews', 'books', 'saved', 'trash'];
+            const tabs = ['overview', 'reviews', 'books', 'saved', 'trash', 'user-comments'];
 
             // Ẩn tất cả nội dung tab
             tabs.forEach(tab => {
@@ -1099,6 +1151,7 @@
                     btn.classList.remove('border-brand-accent', 'text-brand-accent', 'bg-brand-accent/5');
                     btn.classList.remove('border-yellow-500', 'text-yellow-600', 'bg-yellow-50');
                     btn.classList.remove('border-red-500', 'text-red-500', 'bg-red-50');
+                    btn.classList.remove('border-blue-500', 'text-blue-600', 'bg-blue-50');
                     btn.classList.add('border-transparent', 'text-gray-500');
                 }
             });
@@ -1123,6 +1176,8 @@
                     activeBtn.classList.add('border-yellow-500', 'text-yellow-600', 'bg-yellow-50');
                 } else if (tabName === 'trash') {
                     activeBtn.classList.add('border-red-500', 'text-red-500', 'bg-red-50');
+                } else if (tabName === 'user-comments') {
+                    activeBtn.classList.add('border-blue-500', 'text-blue-600', 'bg-blue-50');
                 }
             }
         }
@@ -1135,6 +1190,8 @@
                 showProfileTab('reviews');
             } else if (urlParams.has('book_page')) {
                 showProfileTab('books');
+            } else if (urlParams.has('comment_page')) {
+                showProfileTab('user-comments');
             }
         });
 

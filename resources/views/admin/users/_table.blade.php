@@ -7,6 +7,8 @@
             <th class="px-4 py-3 w-56">Email</th>
             <th class="px-4 py-3 text-center w-28 whitespace-nowrap">Vai trò</th>
             <th class="px-4 py-3 text-center w-20 whitespace-nowrap">Bài viết</th>
+            <th class="px-4 py-3 text-center w-20 whitespace-nowrap">Lượt thích</th>
+            <th class="px-4 py-3 text-center w-20 whitespace-nowrap">Bình luận</th>
             <th class="px-4 py-3 text-center w-28 whitespace-nowrap">Ngày tham gia</th>
             <th class="px-4 py-3 text-center w-16"></th>
         </tr>
@@ -53,6 +55,16 @@
                     <a href="{{ route('admin.recipes.index', ['user_id' => $user->id]) }}" class="inline-flex items-center justify-center px-2 py-0.5 bg-green-100 dark:bg-green-900/40 hover:bg-green-200 dark:hover:bg-green-900/60 text-green-600 dark:text-green-300 text-xs font-bold rounded-full min-w-[40px] transition" title="Xem bài viết của tài khoản này">
                         {{ $user->recipes_count }}
                     </a>
+                </td>
+                <td class="px-5 py-4 text-center">
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 bg-red-50 dark:bg-red-900/20 text-red-500 text-xs font-bold rounded-full min-w-[40px]">
+                        {{ $user->likes_count }}
+                    </span>
+                </td>
+                <td class="px-5 py-4 text-center">
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-500 text-xs font-bold rounded-full min-w-[40px]">
+                        {{ $user->comments_count }}
+                    </span>
                 </td>
                 <td class="px-5 py-4 text-center text-sm text-gray-500 dark:text-slate-400 italic">
                     {{ $user->created_at->format('d/m/Y') }}

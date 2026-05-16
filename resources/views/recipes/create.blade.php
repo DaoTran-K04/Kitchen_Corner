@@ -84,7 +84,7 @@
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Trạng thái đăng</label>
                 <div class="flex gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="status" value="published" {{ old('status','published')=='published'?'checked':'' }} class="accent-green-600">
+                        <input type="radio" name="status" value="pending" {{ old('status','pending')=='pending'?'checked':'' }} class="accent-green-600">
                         <span class="text-sm font-medium text-green-700">🌍 Gửi yêu cầu phê duyệt</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
@@ -106,12 +106,9 @@
                 {{-- Dòng 1 mặc định --}}
                 <div class="ingredient-row grid grid-cols-12 gap-2 items-center">
                     <div class="col-span-5">
-                        <select name="ingredients[0][id]" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
-                            <option value="">-- Chọn nguyên liệu --</option>
-                            @foreach($ingredients as $ing)
-                            <option value="{{ $ing->id }}">{{ $ing->name }} ({{ $ing->unit }})</option>
-                            @endforeach
-                        </select>
+                        <input type="text" name="ingredients[0][name]" list="ingredientOptions" placeholder="-- Gõ để chọn hoặc điền mới --"
+                            class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none ingredient-input">
+                        <input type="hidden" name="ingredients[0][id]" class="ingredient-id">
                     </div>
                     <div class="col-span-2">
                         <input type="number" name="ingredients[0][quantity]" placeholder="Số lượng" step="0.1" min="0"
@@ -170,6 +167,11 @@
             </button>
             <a href="{{ route('recipes.list') }}" class="text-gray-500 hover:text-gray-700 text-sm">Hủy</a>
         </div>
+        <datalist id="ingredientOptions">
+            @foreach($ingredients as $ing)
+            <option value="{{ $ing->name }}" data-id="{{ $ing->id }}">{{ $ing->name }} ({{ $ing->unit }})</option>
+            @endforeach
+        </datalist>
     </form>
 </div>
 
@@ -193,19 +195,14 @@ function previewCover(input) {
     }
 }
 
-// Thêm dòng nguyên liệu
-const ingredientTemplate = `{{-- sẽ inject bằng JS --}}`;
-const ingredientOptions = `{!! addslashes(implode('', $ingredients->map(fn($i) => "<option value='{$i->id}'>{$i->name} ({$i->unit})</option>")->toArray())) !!}`;
-
 function addIngredient() {
     const i = ingIndex++;
     const html = `
     <div class="ingredient-row grid grid-cols-12 gap-2 items-center">
         <div class="col-span-5">
-            <select name="ingredients[${i}][id]" class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none">
-                <option value="">-- Chọn nguyên liệu --</option>
-                ${ingredientOptions}
-            </select>
+            <input type="text" name="ingredients[${i}][name]" list="ingredientOptions" placeholder="-- Gõ để chọn hoặc điền mới --"
+                class="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none ingredient-input">
+            <input type="hidden" name="ingredients[${i}][id]" class="ingredient-id">
         </div>
         <div class="col-span-2">
             <input type="number" name="ingredients[${i}][quantity]" placeholder="Số lượng" step="0.1" min="0"
@@ -222,7 +219,28 @@ function addIngredient() {
         </div>
     </div>`;
     document.getElementById('ingredientsList').insertAdjacentHTML('beforeend', html);
+    attachIngredientListener();
 }
+
+function attachIngredientListener() {
+    // Lắng nghe sự kiện input để gán ID nếu chọn từ list
+    document.querySelectorAll('.ingredient-input').forEach(input => {
+        input.oninput = function() {
+            const val = this.value;
+            const hidden = this.nextElementSibling;
+            const options = document.getElementById('ingredientOptions').childNodes;
+            hidden.value = ""; // Reset
+            for(let i = 0; i < options.length; i++) {
+                if(options[i].value === val) {
+                    hidden.value = options[i].getAttribute('data-id');
+                    break;
+                }
+            }
+        };
+    });
+}
+// Chạy lần đầu
+attachIngredientListener();
 
 function removeRow(btn) {
     btn.closest('.ingredient-row').remove();
