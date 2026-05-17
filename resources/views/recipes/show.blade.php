@@ -331,7 +331,7 @@
         {{-- ===== CỘT PHẢI – SIDEBAR ===== --}}
         <div class="lg:col-span-1 space-y-6">
             {{-- Bảng dinh dưỡng --}}
-            @if($recipe->total_calories)
+            @if($recipe->total_calories !== null)
             <div class="bg-white rounded-2xl shadow p-5">
                 <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-chart-pie text-orange-500"></i> Thông tin dinh dưỡng
