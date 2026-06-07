@@ -217,8 +217,7 @@ class ImportMealDbRecipes extends Command
                     'total_fat'      => $fat,
                     'image'          => $imagePath,
                     'view_count'     => rand(10, 500),
-                    'is_featured'    => (rand(1, 5) === 1),
-                    'is_premium'     => true,
+                    'is_featured'    => (rand(1, 10) === 1),
                     'status'         => 'published',
                 ]);
 
@@ -376,16 +375,29 @@ class ImportMealDbRecipes extends Command
 
         foreach ($ingredients as $ing) {
             try {
+                // Tìm hoặc tạo nguyên liệu trong bảng ingredients
+                $ingredientModel = \App\Models\Ingredient::firstOrCreate(
+                    ['name' => $ing['name']],
+                    [
+                        'slug' => \Illuminate\Support\Str::slug($ing['name'] . '-' . \Illuminate\Support\Str::random(4)),
+                        'unit' => 'g'
+                    ]
+                );
+
+                // Trích xuất số lượng từ chuỗi (vd: "200g", "2 cups", "1 tsp" -> 2.0)
+                preg_match('/[\d\.]+/', $ing['amount'], $qtyMatch);
+                $qty = !empty($qtyMatch) ? (float) $qtyMatch[0] : 1.0;
+
                 DB::table('recipe_ingredients')->insert([
-                    'recipe_id'  => $recipe->id,
-                    'name'       => $ing['name'],
-                    'amount'     => $ing['amount'],
-                    'unit'       => '',
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'recipe_id'     => $recipe->id,
+                    'ingredient_id' => $ingredientModel->id,
+                    'quantity'      => $qty,
+                    'notes'         => $ing['amount'],
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
                 ]);
             } catch (\Exception $e) {
-                // Bảng không có column phù hợp, bỏ qua
+                // Bỏ qua lỗi
             }
         }
     }

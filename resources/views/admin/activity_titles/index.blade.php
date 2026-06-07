@@ -31,7 +31,7 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @if(Str::startsWith($title->icon, 'http') || Str::startsWith($title->icon, '/'))
-                                    <img src="{{ Str::startsWith($title->icon, 'http') ? $title->icon : asset('storage/' . $title->icon) }}" class="w-8 h-8 object-contain mx-auto">
+                                    <img loading="lazy" src="{{ Str::startsWith($title->icon, 'http') ? $title->icon : asset('storage/' . $title->icon) }}" class="w-8 h-8 object-contain mx-auto">
                                 @else
                                     <span class="text-2xl">{{ $title->icon }}</span>
                                 @endif

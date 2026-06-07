@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View; // [1] Thêm dòng này
-use App\Models\Category; // [2] Thêm dòng này
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 use App\Models\Article;
 use App\Observers\ArticleObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Ngăn chặn N+1 Query do Lazy Loading ở môi trường Dev/Local
+        Model::preventLazyLoading(!app()->isProduction());
+
         // Tự động nhận diện URL và Force HTTPS trên Hosting
         if (!app()->runningInConsole()) {
             if (str_contains(request()->getHost(), 'tranhoangdao.id.vn')) {
@@ -31,7 +37,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::composer('*', function ($view) {
-            $view->with('menuCategories', Category::orderBy('name')->get(['id', 'name']));
+            $categories = Cache::remember('menu_categories_global', 3600, function () {
+                return Category::orderBy('name')->get(['id', 'name']);
+            });
+            $view->with('menuCategories', $categories);
         });
 
         // Đăng ký observer để invalidate cache gợi ý khi Article thay đổi

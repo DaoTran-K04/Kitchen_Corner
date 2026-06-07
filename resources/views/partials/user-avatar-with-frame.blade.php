@@ -4,7 +4,7 @@
     $showFrame = $showFrame ?? true;
     $showNameplate = $showNameplate ?? true;
     $equippedFrame = $showFrame ? $user->equippedFrame() : null;
-    $avatarUrl = $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random&size=128';
+    $avatarUrl = $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=random&size=128';
     
     $isRoyal = $equippedFrame && $equippedFrame->slug === 'khung-hoang-gia-toi-cao';
     
@@ -22,7 +22,6 @@
         {{-- User Avatar (always rendered cleanly, never obscured) --}}
         <img src="{{ $avatarUrl }}"
              alt="{{ $user->name }}"
-             loading="lazy"
              class="{{ $avatarSize }} rounded-full object-cover flex-shrink-0"
              style="display:block;">
 

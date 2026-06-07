@@ -12,7 +12,7 @@
 
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div class="p-5 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700 flex items-center gap-3">
-            <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random&size=40' }}"
+            <img loading="lazy" src="{{ $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=random&size=40' }}"
                  class="w-10 h-10 rounded-full object-cover" alt="{{ $user->name }}">
             <div>
                 <h3 class="font-bold text-gray-800 dark:text-white">{{ $user->name }}</h3>

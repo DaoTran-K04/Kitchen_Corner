@@ -45,24 +45,17 @@ class DatabaseSeeder extends Seeder
         // Danh mục
         $categories = Category::factory()->count(10)->create();
 
-        // 5 Công thức Hot
-        $hotRecipes = Recipe::factory(5)->create([
-            'view_count' => fn() => rand(5000, 20000),
-            'is_featured' => true,
+        // Seed công thức thực tế
+        $this->call([
+            KitchenCornerRecipeSeeder::class,
         ]);
 
-        // Công thức bình thường
-        $normalRecipes = Recipe::factory(20)->create();
-        $allRecipes = $hotRecipes->merge($normalRecipes);
+        // Công thức thực tế (đã được tạo bởi KitchenCornerRecipeSeeder)
+        $authenticRecipes = Recipe::all();
 
-        // Tạo tương tác (Like, Comment) cho Công thức hot
-        foreach ($hotRecipes as $recipe) {
-            $this->fakeInteraction($recipe, $users, 15, 30); // 15-30 like
-        }
-
-        // Tạo tương tác một phần cho công thức bình thường
-        foreach ($normalRecipes->random(10) as $recipe) {
-            $this->fakeInteraction($recipe, $users, 1, 10);
+        // Tạo tương tác (Like, Comment) cho Công thức thực tế
+        foreach ($authenticRecipes as $recipe) {
+            $this->fakeInteraction($recipe, $users, 5, 20); // 5-20 like cho mỗi bài
         }
 
         echo "Hoàn tất Seeding CSDL Góc Bếp!";

@@ -13,7 +13,7 @@ class ArticleController extends Controller
     // Hiển thị danh sách (Admin)
     public function index()
     {
-        $articles = Article::latest()->paginate(10);
+        $articles = Article::with('user')->latest()->paginate(10);
         return view('admin.articles.index', compact('articles'));
     }
 
@@ -22,7 +22,7 @@ class ArticleController extends Controller
     {
         $tag = $request->get('tag');
 
-        $query = Article::where('is_active', true)->latest();
+        $query = Article::with('user')->where('is_active', true)->latest();
         if ($tag) {
             $query->where('tag', 'like', "%{$tag}%");
         }
@@ -47,20 +47,20 @@ class ArticleController extends Controller
             $query->where('is_active', true);
         }
 
-        $article = $query->firstOrFail();
+        $article = $query->with('user')->firstOrFail();
 
         // Tăng lượt xem
         $article->increment('view_count');
 
         // Lấy bài viết liên quan (cùng tag hoặc mới nhất, loại trừ bài hiện tại)
-        $relatedArticles = Article::where('id', '!=', $article->id)
+        $relatedArticles = Article::with('user')->where('id', '!=', $article->id)
             ->where('is_active', true)
             ->orderByDesc('created_at')
             ->take(4)
             ->get();
 
         // Gợi ý bài viết - Lấy 4 bài mới nhất khác bài hiện tại
-        $suggestedArticles = Article::where('id', '!=', $article->id)
+        $suggestedArticles = Article::with('user')->where('id', '!=', $article->id)
             ->where('is_active', true)
             ->orderByDesc('created_at')
             ->take(4)

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('challenge_id')->constrained('challenges')->onDelete('cascade');
-            $table->integer('current_count')->default(0)->comment('Số review đã viết trong season');
+            $table->unsignedSmallInteger('current_count')->default(0)->comment('Số review đã viết trong season');
             $table->boolean('is_completed')->default(false);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();

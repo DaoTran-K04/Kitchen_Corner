@@ -1,105 +1,50 @@
-{{--
-    Recipe Card Component - Update: 2026-05-15 20:46
-    - Ảnh chiếm ≥ 60% diện tích card (aspect-[4/5])
---}}
-@php
-    $difficultyMap = [
-        'easy'   => ['label' => 'Dễ',        'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'],
-        'medium' => ['label' => 'Trung bình', 'color' => 'text-amber-600',  'bg' => 'bg-amber-50'],
-        'hard'   => ['label' => 'Khó',        'color' => 'text-rose-600',   'bg' => 'bg-rose-50'],
-    ];
-    $recipeDifficulty = $difficultyMap[$recipe->difficulty] ?? ['label' => 'Dễ', 'color' => 'text-emerald-600', 'bg' => 'bg-emerald-50'];
-@endphp
-
-<div class="group/card relative bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-all duration-400 transform hover:-translate-y-2 border border-gray-100/80">
-
-    {{-- [PHÂN CẤP 1] Ảnh chiếm ≥ 60% - quan trọng nhất --}}
-    <div class="relative overflow-hidden" style="aspect-ratio:4/5;">
-        <img src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}"
-            loading="lazy"
-            class="w-full h-full object-cover transform group-hover/card:scale-108 transition-transform duration-700 ease-out"
-            onerror="this.src='https://placehold.co/600x750/9b2226/white?text=G%C3%B3c+B%E1%BA%BFp'">
-
-
-        {{-- Gradient overlay từ dưới lên (đọc thông tin) --}}
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent opacity-80 group-hover/card:opacity-90 transition-opacity duration-500"></div>
-
-        {{-- Badge góc trên trái: Danh mục --}}
-        <div class="absolute top-3 left-3 flex gap-2 flex-wrap">
-            @if(isset($recipe->category) && $recipe->category)
-            <span class="px-2.5 py-1 bg-[#9b2226]/80 backdrop-blur-sm text-white text-[10px] font-bold rounded-full border border-white/20 leading-none">
-                {{ $recipe->category->name }}
-            </span>
+<a href="{{ route('recipes.show', $recipe->slug) }}"
+    class="group bg-white rounded-2xl shadow hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col h-full recipe-card-item">
+    {{-- Ảnh --}}
+    <div class="relative overflow-hidden aspect-[4/3]">
+        <img loading="lazy" src="{{ $recipe->thumbnail }}"
+             alt="{{ $recipe->title }}"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+             onerror="this.src='https://images.unsplash.com/photo-1560180474-e8563fd75bab?w=600'">
+        {{-- Badges --}}
+        <div class="absolute top-2 left-2 flex gap-1 flex-wrap">
+            @if($recipe->is_featured)
+            <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full">⭐ Nổi bật</span>
             @endif
-            @if($recipe->is_featured ?? false)
-            <span class="px-2.5 py-1 bg-[#f4a261] text-white text-[10px] font-black rounded-full leading-none flex items-center gap-1 animate-pulse">
-                <i class="fas fa-fire text-[8px]"></i> HOT
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full
+                {{ $recipe->difficulty=='easy' ? 'bg-green-100 text-green-700' : ($recipe->difficulty=='hard' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                {{ $recipe->difficulty=='easy' ? '🟢 Dễ' : ($recipe->difficulty=='hard' ? '🔴 Khó' : '🟡 TB') }}
             </span>
-            @endif
-            @if(isset($recipe->is_premium) && $recipe->is_premium)
-            <span class="px-2.5 py-1 bg-gradient-to-r from-gray-700 to-black/80 shadow text-white text-[10px] font-black rounded-full leading-none flex items-center gap-1">
-                <i class="fas fa-lock text-[8px]"></i> Thành viên
-            </span>
-            @endif
         </div>
-
-        {{-- Nút Yêu thích góc trên phải --}}
-        <button class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full flex items-center justify-center hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 opacity-0 group-hover/card:opacity-100"
-            title="Lưu công thức">
-            <i class="far fa-heart text-xs"></i>
-        </button>
-
-        {{-- [PHÂN CẤP 2] Tên công thức - nằm trên ảnh ở dưới --}}
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-            {{-- Metadata hàng 1: Thời gian + Độ khó --}}
-            <div class="flex items-center gap-3 text-[11px] font-semibold text-white/80 mb-2 translate-y-2 group-hover/card:translate-y-0 transition-transform duration-400">
-                <span class="flex items-center gap-1.5">
-                    <i class="far fa-clock text-[#f4a261]"></i>
-                    {{ $recipe->cooking_time ?? 30 }}'
-                </span>
-                <span class="w-1 h-1 bg-white/40 rounded-full"></span>
-                <span class="flex items-center gap-1">
-                    <i class="fas fa-signal text-[#f4a261]"></i>
-                    {{ $recipeDifficulty['label'] ?? 'Dễ' }}
-                </span>
-
-
-
-            </div>
-
-            {{-- Tên công thức --}}
-            <h3 class="text-white font-bold text-sm md:text-base leading-snug line-clamp-2 group-hover/card:text-[#f4a261] transition-colors duration-300">
-                {{ $recipe->title }}
-            </h3>
+        @if($recipe->total_calories)
+        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full backdrop-blur-sm">
+            🔥 {{ $recipe->total_calories }} kcal
         </div>
+        @endif
     </div>
-
-    {{-- [PHÂN CẤP 3] Footer: Tác giả + Thống kê --}}
-    <div class="px-4 py-3 flex items-center justify-between bg-white">
-
-        {{-- Tác giả --}}
-        <div class="flex items-center gap-2 min-w-0">
-            <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100">
-                <img src="{{ $recipe->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($recipe->user->name ?? 'GB').'&background=9b2226&color=fff&size=56' }}"
-                    class="w-full h-full object-cover"
-                    onerror="this.src='https://ui-avatars.com/api/?name=GB&background=9b2226&color=fff'">
-            </div>
-            <span class="text-xs font-semibold text-gray-600 truncate max-w-[80px]">{{ $recipe->user->name ?? 'Thành viên' }}</span>
+    {{-- Nội dung --}}
+    <div class="p-4 flex flex-col flex-1">
+        <div class="flex items-center gap-1.5 text-sm text-gray-500 mb-2 font-medium">
+            @if($recipe->category)
+            <span class="text-green-600 font-medium truncate min-w-0">{{ $recipe->category->name }}</span>
+            <span class="flex-shrink-0">•</span>
+            @endif
+            @if($recipe->cooking_time)
+            <span class="flex-shrink-0 whitespace-nowrap"><i class="fas fa-clock text-gray-400"></i> {{ $recipe->cooking_time }} phút</span>
+            @endif
         </div>
-
-        {{-- Thống kê --}}
-        <div class="flex items-center gap-3 text-gray-400 flex-shrink-0">
-            <span class="text-[11px] flex items-center gap-1">
-                <i class="far fa-eye text-[10px]"></i>
-                {{ $recipe->view_count > 999 ? round($recipe->view_count/1000, 1).'K' : $recipe->view_count }}
+        <h3 class="font-bold text-gray-900 group-hover:text-teal-600 transition line-clamp-2 mb-2 leading-snug text-lg">
+            {{ $recipe->title }}
+        </h3>
+        <div class="flex items-center justify-between text-sm text-gray-500 mt-auto pt-3 border-t border-gray-100 font-medium gap-2">
+            <span class="flex items-center gap-1.5 min-w-0 flex-1">
+                <img loading="lazy" src="{{ $recipe->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed='.urlencode($recipe->user->name).'&size=20' }}"
+                    class="w-5 h-5 rounded-full object-cover flex-shrink-0" alt="">
+                <span class="truncate">{{ $recipe->user->name }}</span>
             </span>
-            <span class="text-[11px] flex items-center gap-1">
-                <i class="far fa-comment text-[10px]"></i>
-                {{ $recipe->comments_count ?? 0 }}
+            <span class="flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+                <i class="fas fa-eye"></i> {{ number_format($recipe->view_count) }}
             </span>
         </div>
     </div>
-
-    {{-- Overlay link toàn card --}}
-    <a href="{{ route('recipes.show', $recipe->slug ?? $recipe->id) }}" class="absolute inset-0 z-10" title="{{ $recipe->title }}"></a>
-</div>
+</a>

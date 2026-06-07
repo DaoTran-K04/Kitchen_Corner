@@ -12,7 +12,7 @@
                 <div
                     class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200">
                     @if($badge->icon && Str::startsWith($badge->icon, 'http'))
-                        <img src="{{ $badge->icon }}" alt="{{ $badge->name }}" class="w-10 h-10 object-contain"
+                        <img loading="lazy" src="{{ $badge->icon }}" alt="{{ $badge->name }}" class="w-10 h-10 object-contain"
                             referrerpolicy="no-referrer">
                     @else
                         <span class="text-3xl">{{ $badge->icon ?? '🏅' }}</span>
@@ -274,7 +274,7 @@
                 if (value) {
                     preview.classList.remove('hidden');
                     if (isImageUrlEdit(value)) {
-                        previewContent.innerHTML = `<img src="${value}" alt="Preview" class="w-16 h-16 object-contain mx-auto rounded-lg" referrerpolicy="no-referrer">`;
+                        previewContent.innerHTML = `<img loading="lazy" src="${value}" alt="Preview" class="w-16 h-16 object-contain mx-auto rounded-lg" referrerpolicy="no-referrer">`;
                     } else {
                         previewContent.innerHTML = value;
                     }
@@ -301,7 +301,7 @@
 
                 if (url && isImageUrlEdit(url)) {
                     preview.classList.remove('hidden');
-                    previewContent.innerHTML = `<img src="${url}" alt="Preview" class="w-16 h-16 object-contain mx-auto rounded-lg" referrerpolicy="no-referrer">`;
+                    previewContent.innerHTML = `<img loading="lazy" src="${url}" alt="Preview" class="w-16 h-16 object-contain mx-auto rounded-lg" referrerpolicy="no-referrer">`;
                 } else if (url) {
                     preview.classList.remove('hidden');
                     previewContent.innerHTML = '<span class="text-yellow-500 text-sm"><i class="fas fa-exclamation-triangle mr-1"></i>URL không hợp lệ</span>';

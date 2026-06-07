@@ -13,10 +13,10 @@ return new class extends Migration {
         Schema::create('challenges', function (Blueprint $table) {
             $table->id();
             $table->foreignId('badge_id')->constrained('badges')->onDelete('cascade');
-            $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('name', 100);
+            $table->string('slug', 120)->unique();
             $table->text('description')->nullable();
-            $table->integer('target_count')->comment('Số bài review cần viết');
+            $table->unsignedSmallInteger('target_count')->comment('Số bài review cần viết');
             $table->date('start_date')->comment('Ngày bắt đầu season');
             $table->date('end_date')->comment('Ngày kết thúc season');
             $table->boolean('is_active')->default(true);

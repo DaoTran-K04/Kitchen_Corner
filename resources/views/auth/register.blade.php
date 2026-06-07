@@ -33,7 +33,7 @@
         <div class="md:w-1/2 bg-brand-green flex flex-col justify-center items-center text-white p-10 relative overflow-hidden group order-1 md:order-1">
             <!-- Kitchen Background Image -->
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('images/auth/kitchen_2.png') }}" alt="Cooking Preparation" class="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
+                <img loading="lazy" src="{{ asset('images/auth/kitchen_2.png') }}" alt="Cooking Preparation" class="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
                 <div class="absolute inset-0 bg-black/30 transition duration-500 group-hover:bg-black/20"></div>
                 <div class="absolute inset-0 bg-brand-green/20 mix-blend-multiply"></div>
             </div>

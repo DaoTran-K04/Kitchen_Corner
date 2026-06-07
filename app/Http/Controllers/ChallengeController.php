@@ -13,7 +13,8 @@ class ChallengeController extends Controller
     {
         // Lấy các thử thách đang mở (is_active = 1)
         // Sắp xếp mới nhất lên đầu
-        $challenges = Challenge::where('is_active', 1)
+        $challenges = Challenge::with(['badge', 'avatarFrame', 'users'])
+            ->where('is_active', 1)
             ->orderBy('created_at', 'desc')
             ->get();
 

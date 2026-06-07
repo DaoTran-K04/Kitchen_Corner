@@ -36,7 +36,7 @@
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Ảnh bìa hiện tại</label>
                     @if($article->thumbnail)
-                        <img src="{{ Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail) }}" 
+                        <img loading="lazy" src="{{ Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail) }}" 
                              class="w-full h-48 object-cover rounded-lg border border-gray-200 mb-2">
                     @endif
                     <input type="file" name="thumbnail" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">

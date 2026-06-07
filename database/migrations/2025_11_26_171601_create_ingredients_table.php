@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('ingredients', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->string('unit')->comment('e.g., gram, ml, cup, piece');
-            $table->integer('calories_per_unit')->default(0);
-            $table->integer('protein_per_unit')->default(0);
-            $table->integer('carbs_per_unit')->default(0);
-            $table->integer('fat_per_unit')->default(0);
-            $table->string('icon')->nullable();
+            $table->string('name', 50)->unique();
+            $table->string('slug', 60)->unique();
+            $table->string('unit', 20)->comment('e.g., gram, ml, cup, piece');
+            $table->unsignedSmallInteger('calories_per_unit')->default(0);
+            $table->unsignedSmallInteger('protein_per_unit')->default(0);
+            $table->unsignedSmallInteger('carbs_per_unit')->default(0);
+            $table->unsignedSmallInteger('fat_per_unit')->default(0);
+            $table->string('icon', 200)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

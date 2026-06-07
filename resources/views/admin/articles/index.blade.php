@@ -72,7 +72,7 @@
                                             ? $thumb 
                                             : asset('storage/' . $thumb);
                                     @endphp
-                                    <img src="{{ $imgUrl }}" alt="{{ $article->title }}" class="w-16 h-12 object-cover rounded-lg shadow-sm">
+                                    <img loading="lazy" src="{{ $imgUrl }}" alt="{{ $article->title }}" class="w-16 h-12 object-cover rounded-lg shadow-sm">
                                 @else
                                     <div class="w-16 h-12 bg-gray-100 dark:bg-slate-600 rounded-lg flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400"></i>

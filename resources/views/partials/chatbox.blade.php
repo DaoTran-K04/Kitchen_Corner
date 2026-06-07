@@ -131,7 +131,7 @@
                 class="floating-btn w-9 h-9 sm:w-11 sm:h-11 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group overflow-hidden"
                 style="animation-delay: 0.3s; --glow-color: rgba(0, 104, 255, 0.5);"
                 title="Di chuyển tới Cộng đồng Góc Bếp trên Zalo">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/120px-Icon_of_Zalo.svg.png" alt="Zalo"
+                <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/120px-Icon_of_Zalo.svg.png" alt="Zalo"
                     class="w-full h-full object-cover rounded-full relative z-10">
             </a>
 
@@ -223,7 +223,7 @@
             const response = await fetch('{{ route("chatbot.history") }}', {
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             });
             const data = await response.json();
@@ -255,7 +255,7 @@
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 });
                 const data = await response.json();
@@ -346,11 +346,53 @@
     function addMessage(content, isUser = false, timestamp = null) {
         const container = document.getElementById('chatbox-messages');
         const timeStr = formatTime(timestamp);
+        
+        let textContent = content;
+        let recipes = [];
+        let sourceInfo = '';
+        
+        if (typeof content === 'object' && content !== null) {
+            textContent = content.message || '';
+            recipes = content.suggested_recipes || [];
+            
+            // Debugging or showing AI label
+            if (!isUser && content.called_ai) {
+                sourceInfo = '<span class="text-[10px] bg-brand-green/10 text-brand-green px-1.5 py-0.5 rounded ml-2">AI</span>';
+            }
+        }
+
+        let recipeCardsHtml = '';
+        if (recipes.length > 0) {
+            recipeCardsHtml = '<div class="mt-3 flex flex-col gap-2">';
+            recipes.forEach(r => {
+                const timeStr = r.cooking_time ? `<span class="text-xs text-gray-500"><i class="far fa-clock mr-1"></i>${r.cooking_time}p</span>` : '';
+                const diffStr = r.difficulty === 'easy' ? 'Dễ' : (r.difficulty === 'hard' ? 'Khó' : 'TB');
+                const diffHtml = `<span class="text-xs text-brand-green"><i class="fas fa-layer-group mr-1"></i>${diffStr}</span>`;
+                const imgUrl = r.thumbnail ? r.thumbnail : '/images/default-recipe.jpg';
+                
+                recipeCardsHtml += `
+                    <div class="flex items-center gap-3 p-2 border border-gray-100 rounded-lg hover:bg-gray-50 transition cursor-pointer" onclick="window.location.href='/recipes/${r.slug}'">
+                        <img src="${imgUrl}" alt="${escapeHtml(r.title)}" class="w-12 h-12 rounded object-cover flex-shrink-0" onerror="this.src='/images/default-recipe.jpg'">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="text-sm font-semibold text-gray-800 truncate">${escapeHtml(r.title)}</h5>
+                            <div class="flex items-center gap-2 mt-1">
+                                ${timeStr} ${diffHtml}
+                            </div>
+                        </div>
+                        <div class="w-6 h-6 bg-brand-green/10 text-brand-green rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chevron-right text-xs"></i>
+                        </div>
+                    </div>
+                `;
+            });
+            recipeCardsHtml += '</div>';
+        }
+
         const messageHtml = isUser
             ? `<div class="flex gap-3 justify-end">
                     <div class="max-w-[80%]">
                         <div class="bg-brand-green text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-sm">
-                            <p class="text-sm">${escapeHtml(content)}</p>
+                            <p class="text-sm">${escapeHtml(textContent)}</p>
                         </div>
                         <p class="text-[10px] text-gray-400 text-right mt-1">${timeStr}</p>
                     </div>
@@ -360,10 +402,13 @@
                         <i class="fas fa-robot text-white text-xs"></i>
                     </div>
                     <div class="max-w-[80%]">
-                        <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm">
-                            <p class="text-sm text-gray-700">${formatMessage(content)}</p>
+                        <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-gray-100">
+                            <div class="text-sm text-gray-700 space-y-2">${formatMessage(textContent)}</div>
+                            ${recipeCardsHtml}
                         </div>
-                        <p class="text-[10px] text-gray-400 mt-1">${timeStr}</p>
+                        <div class="flex items-center justify-between mt-1">
+                            <p class="text-[10px] text-gray-400">${timeStr}${sourceInfo}</p>
+                        </div>
                     </div>
                </div>`;
 
@@ -392,12 +437,14 @@
     }
 
     function escapeHtml(text) {
+        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 
     function formatMessage(text) {
+        if (!text) return '';
         // Convert markdown-like formatting
         let formatted = escapeHtml(text)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -440,7 +487,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -527,3 +574,4 @@
         opacity: 0;
     }
 </style>
+

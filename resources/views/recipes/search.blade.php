@@ -64,7 +64,7 @@
         <a href="{{ route('recipes.show', $recipe->slug) }}"
             class="group bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition-all duration-300 flex flex-col">
             <div class="relative overflow-hidden aspect-[4/3]">
-                <img src="{{ $recipe->thumbnail }}"
+                <img loading="lazy" src="{{ $recipe->thumbnail }}"
                     alt="{{ $recipe->title }}"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400'">

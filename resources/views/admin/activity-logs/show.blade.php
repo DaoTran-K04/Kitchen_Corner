@@ -169,7 +169,7 @@
                 <div class="p-6">
                     <div class="text-center">
                         <div class="relative inline-block mb-4">
-                            <img src="{{ $activityLog->admin->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($activityLog->admin->name) . '&size=120' }}"
+                            <img loading="lazy" src="{{ $activityLog->admin->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($activityLog->admin->name) . '&size=120' }}"
                                 class="w-20 h-20 rounded-full border-4 border-blue-100 dark:border-blue-900/40 shadow-lg">
                             <span
                                 class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full flex items-center justify-center">

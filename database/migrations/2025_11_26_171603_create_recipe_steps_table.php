@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('recipe_steps', function (Blueprint $table) {
             $table->id();
             $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
-            $table->integer('step_number');
+            $table->unsignedTinyInteger('step_number');
             $table->text('description');
-            $table->string('image')->nullable();
+            $table->string('image', 200)->nullable();
             $table->timestamps();
         });
     }

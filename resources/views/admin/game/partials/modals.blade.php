@@ -272,7 +272,7 @@
                             <div id="badge-url-preview" class="mt-3 hidden">
                                 <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg text-center">
                                     <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">Xem trước:</p>
-                                    <img id="badge-url-preview-img" class="h-16 mx-auto object-contain"
+                                    <img loading="lazy" id="badge-url-preview-img" class="h-16 mx-auto object-contain"
                                         referrerpolicy="no-referrer">
                                 </div>
                             </div>
@@ -295,7 +295,7 @@
                             <div id="badge-file-preview" class="mt-3 hidden">
                                 <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg text-center">
                                     <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">Xem trước:</p>
-                                    <img id="badge-file-preview-img" class="h-16 mx-auto object-contain">
+                                    <img loading="lazy" id="badge-file-preview-img" class="h-16 mx-auto object-contain">
                                     <p id="badge-file-name"
                                         class="text-xs text-gray-600 dark:text-slate-400 mt-2 truncate"></p>
                                 </div>
@@ -413,7 +413,7 @@
                             <div id="frame-url-preview" class="mt-3 hidden">
                                 <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg text-center">
                                     <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">Xem trước:</p>
-                                    <img id="frame-url-preview-img" class="h-20 mx-auto object-contain"
+                                    <img loading="lazy" id="frame-url-preview-img" class="h-20 mx-auto object-contain"
                                         referrerpolicy="no-referrer">
                                 </div>
                             </div>
@@ -435,7 +435,7 @@
                             <div id="frame-file-preview" class="mt-3 hidden">
                                 <div class="p-3 bg-gray-100 dark:bg-slate-700 rounded-lg text-center">
                                     <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">Xem trước:</p>
-                                    <img id="frame-file-preview-img" class="h-20 mx-auto object-contain">
+                                    <img loading="lazy" id="frame-file-preview-img" class="h-20 mx-auto object-contain">
                                     <p id="frame-file-name"
                                         class="text-xs text-gray-600 dark:text-slate-400 mt-2 truncate"></p>
                                 </div>

@@ -48,8 +48,9 @@
 
             {{-- Ảnh bìa --}}
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-video">
-                <img src="{{ $recipe->thumbnail }}"
+                <img loading="lazy" src="{{ $recipe->thumbnail }}"
                     alt="{{ $recipe->title }}" class="w-full h-full object-cover"
+                    fetchpriority="high"
                     onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop'">
 
             </div>
@@ -67,19 +68,40 @@
                 </div>
                 <h1 class="text-3xl font-extrabold text-gray-800 mb-3">{{ $recipe->title }}</h1>
 
-                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
-                    <span class="flex items-center gap-1">
-                        <img src="{{ $recipe->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($recipe->user->name) }}"
-                            class="w-7 h-7 rounded-full object-cover" alt="">
-                        <strong class="text-gray-700">{{ $recipe->user->name }}</strong>
+                <div class="flex flex-wrap items-center gap-3 text-sm mb-6">
+                    <span class="flex items-center gap-2 bg-gray-100 text-gray-800 px-3 py-1.5 rounded-full font-semibold border border-gray-200">
+                        <img loading="lazy" src="{{ $recipe->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed='.urlencode($recipe->user->name) }}"
+                            class="w-6 h-6 rounded-full object-cover shadow-sm" alt="">
+                        {{ $recipe->user->name }}
                     </span>
                     @if($recipe->cooking_time)
-                    <span><i class="fas fa-clock text-green-500"></i> {{ $recipe->cooking_time }} phút</span>
+                    <span class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-medium border border-emerald-100">
+                        <i class="fas fa-clock"></i> {{ $recipe->cooking_time }} phút
+                    </span>
                     @endif
-                    <span><i class="fas fa-eye text-blue-400"></i> {{ number_format($recipe->view_count) }} lượt xem</span>
-                    <span><i class="fas fa-heart text-red-400"></i> {{ $likeCount }} lượt thích</span>
-                    <span><i class="fas fa-comment text-gray-400"></i> {{ $commentCount }} bình luận</span>
-                    <span class="text-gray-400">{{ $recipe->created_at->diffForHumans() }}</span>
+                    <span class="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-medium border border-blue-100">
+                        <i class="fas fa-eye"></i> {{ number_format($recipe->view_count) }}
+                    </span>
+                    <span class="flex items-center gap-1.5 bg-rose-50 text-rose-700 px-3 py-1.5 rounded-full font-medium border border-rose-100">
+                        <i class="fas fa-heart"></i> {{ $likeCount }}
+                    </span>
+                    <span class="flex items-center gap-1.5 bg-violet-50 text-violet-700 px-3 py-1.5 rounded-full font-medium border border-violet-100">
+                        <i class="fas fa-comment"></i> {{ $commentCount }}
+                    </span>
+                    @if($recipe->source)
+                        @if(filter_var($recipe->source, FILTER_VALIDATE_URL))
+                            <a href="{{ $recipe->source }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 hover:text-amber-800 px-3 py-1.5 rounded-full font-medium border border-amber-100 transition">
+                                <i class="fas fa-external-link-alt"></i> Nguồn: <strong class="ml-1" title="{{ $recipe->source }}">{{ parse_url($recipe->source, PHP_URL_HOST) ?? 'Liên kết ngoài' }}</strong>
+                            </a>
+                        @else
+                            <span class="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full font-medium border border-amber-100">
+                                <i class="fas fa-quote-left"></i> Nguồn: <strong class="ml-1">{{ $recipe->source }}</strong>
+                            </span>
+                        @endif
+                    @endif
+                    <span class="flex items-center gap-1.5 bg-gray-50 text-gray-500 px-3 py-1.5 rounded-full text-xs border border-gray-100">
+                        <i class="fas fa-calendar-alt"></i> {{ $recipe->created_at->diffForHumans() }}
+                    </span>
                 </div>
 
                 {{-- Nút Like & Bookmark --}}
@@ -172,7 +194,7 @@
                             <div class="flex-1">
                                 <p class="text-gray-900 text-lg font-medium leading-[1.8] mb-4">{{ $step->description }}</p>
                                 @if($step->image)
-                                <img src="{{ Str::startsWith($step->image,'http') ? $step->image : asset('storage/'.$step->image) }}"
+                                <img loading="lazy" src="{{ Str::startsWith($step->image,'http') ? $step->image : asset('storage/'.$step->image) }}"
                                     alt="Bước {{ $step->step_number }}"
                                     class="rounded-xl max-h-60 object-cover shadow">
                                 @endif
@@ -235,95 +257,8 @@
                 </div>
                 @endauth
 
-                <div class="space-y-5">
-                    @forelse($recipe->comments as $comment)
-                    <div class="flex gap-3">
-                        <img src="{{ $comment->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($comment->user->name) }}"
-                            class="w-9 h-9 rounded-full object-cover flex-shrink-0" alt="">
-                        <div class="flex-1">
-                            <div class="bg-gray-50 rounded-xl px-4 py-3">
-                                <span class="font-bold text-gray-800 text-sm">{{ $comment->user->name }}</span>
-                                <span class="text-gray-400 text-xs ml-2">{{ $comment->created_at->diffForHumans() }}</span>
-                                <p class="text-gray-700 text-sm mt-1">{{ $comment->content }}</p>
-                            </div>
-                            
-                            {{-- Add Like, Reply, Report buttons here --}}
-                            <div class="flex items-center gap-4 mt-2 ml-2 mb-4">
-                                @php
-                                    $isLikedComment = Auth::check() && $comment->likes()->where('user_id', Auth::id())->exists();
-                                @endphp
-                                <button onclick="handleLike({{ $comment->id }}, 'comment')" id="like-btn-comment-{{ $comment->id }}" class="text-[11px] font-bold flex items-center gap-1 {{ $isLikedComment ? 'text-red-500' : 'text-gray-500 hover:text-red-500' }} transition">
-                                    <i id="like-icon-comment-{{ $comment->id }}" class="{{ $isLikedComment ? 'fas' : 'far' }} fa-heart text-xs"></i>
-                                    <span id="like-count-comment-{{ $comment->id }}">{{ $comment->likes()->count() ?? 0 }}</span>
-                                </button>
-                                
-                                <button onclick="toggleReplySection({{ $comment->id }})" class="text-[11px] font-bold text-gray-500 hover:text-green-600 transition flex items-center gap-1">
-                                    <i class="fas fa-reply text-[10px]"></i> Trả lời ({{ $comment->replies->count() ?? 0 }})
-                                </button>
-
-                                @auth
-                                @if(Auth::id() !== $comment->user_id)
-                                <button onclick="reportComment({{ $comment->id }})" class="text-[11px] font-bold text-gray-400 hover:text-orange-500 transition ml-auto flex items-center gap-1" title="Báo cáo vi phạm">
-                                    <i class="fas fa-flag text-[10px]"></i> Báo cáo
-                                </button>
-                                @endif
-                                @endauth
-                            </div>
-
-                            {{-- Khu vực Reply Input --}}
-                            <div id="reply-section-{{ $comment->id }}" class="hidden mt-3 mb-4 border-l-2 border-gray-100 pl-3">
-                                @auth
-                                <form action="{{ route('recipes.comment', $recipe->id) }}" method="POST" class="flex gap-2 relative">
-                                    @csrf
-                                    <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                                    <textarea name="content" rows="1" class="w-full text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-green-400 resize-none" placeholder="Nhập câu trả lời..."></textarea>
-                                    <button type="submit" class="text-white px-4 py-1.5 bg-green-600 rounded-lg text-xs font-bold hover:bg-green-700 transition shadow">Gửi</button>
-                                </form>
-                                @else
-                                <div class="text-[11px] text-gray-500 italic p-2 bg-gray-50 rounded">Vui lòng <a href="{{ route('login') }}" class="text-green-600 font-bold">đăng nhập</a> để trả lời.</div>
-                                @endauth
-                            </div>
-
-                            {{-- Replies --}}
-                            @foreach($comment->replies as $reply)
-                            <div class="flex gap-3 mt-2 ml-4">
-                                <img src="{{ $reply->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($reply->user->name) }}"
-                                    class="w-7 h-7 rounded-full object-cover flex-shrink-0" alt="">
-                                <div class="flex-1">
-                                    <div class="bg-white border border-gray-100 rounded-xl px-3 py-2">
-                                        <span class="font-bold text-gray-700 text-xs">{{ $reply->user->name }}</span>
-                                        <p class="text-gray-600 text-xs mt-0.5">{{ $reply->content }}</p>
-                                    </div>
-                                    <div class="flex items-center gap-4 mt-1 ml-2 mb-2">
-                                        @php
-                                            $isLikedReply = Auth::check() && $reply->likes()->where('user_id', Auth::id())->exists();
-                                        @endphp
-                                        <button onclick="handleLike({{ $reply->id }}, 'comment')" id="like-btn-comment-{{ $reply->id }}" class="text-[10px] font-bold flex items-center gap-1 {{ $isLikedReply ? 'text-red-500' : 'text-gray-400 hover:text-red-500' }} transition">
-                                            <i id="like-icon-comment-{{ $reply->id }}" class="{{ $isLikedReply ? 'fas' : 'far' }} fa-heart text-[10px]"></i>
-                                            <span id="like-count-comment-{{ $reply->id }}">{{ $reply->likes()->count() ?? 0 }}</span>
-                                        </button>
-                                        
-                                        {{-- Nút Trả lời cho Reply --}}
-                                        <button onclick="replyToUser({{ $comment->id }}, '{{ addslashes($reply->user->name) }}')" class="text-[10px] font-bold text-gray-500 hover:text-green-600 transition flex items-center gap-1">
-                                            <i class="fas fa-reply text-[9px]"></i> Trả lời
-                                        </button>
-                                        
-                                        @auth
-                                        @if(Auth::id() !== $reply->user_id)
-                                        <button onclick="reportComment({{ $reply->id }})" class="text-[10px] font-bold text-gray-400 hover:text-orange-500 transition ml-auto flex items-center gap-1" title="Báo cáo vi phạm">
-                                            <i class="fas fa-flag text-[9px]"></i> Báo cáo
-                                        </button>
-                                        @endif
-                                        @endauth
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @empty
-                    <p class="text-gray-400 text-center py-6">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
-                    @endforelse
+                <div id="recipe-comments-wrapper">
+                    @include('partials.recipe-comments-list')
                 </div>
             </div>
         </div>
@@ -387,7 +322,7 @@
                 <div class="space-y-3">
                     @foreach($relatedRecipes as $rel)
                     <a href="{{ route('recipes.show', $rel->slug) }}" class="flex gap-3 group">
-                        <img src="{{ $rel->thumbnail }}"
+                        <img loading="lazy" src="{{ $rel->thumbnail }}"
                             alt="{{ $rel->title }}" class="w-16 h-16 object-cover rounded-xl flex-shrink-0"
                             onerror="this.src='https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=200&auto=format&fit=crop'">
 
@@ -555,6 +490,33 @@ async function reportComment(commentId) {
     const data = await res.json();
     alert(data.message || "Đã gửi báo cáo!");
 }
+
+function attachCommentsPaginationEvents() {
+    document.querySelectorAll('#recipe-comments-wrapper .recipe-comments-pagination a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+            
+            // Show a simple loading state
+            const wrapper = document.getElementById('recipe-comments-wrapper');
+            wrapper.style.opacity = '0.5';
+            
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.text())
+            .then(html => {
+                wrapper.innerHTML = html;
+                wrapper.style.opacity = '1';
+                attachCommentsPaginationEvents(); // Re-attach events to new links
+            });
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    attachCommentsPaginationEvents();
+});
 </script>
 @endpush
 @endsection

@@ -85,7 +85,7 @@
                         @if(isset($featuredArticle))
                             <a href="{{ $featuredArticle->link }}" class="md:col-span-3 group relative block">
                                 <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-4 shadow-md">
-                                    <img src="{{ $featuredArticle->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                                    <img loading="lazy" src="{{ $featuredArticle->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                                     <span class="absolute top-4 left-4 bg-brand-accent text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Tiêu Điểm</span>
                                     <div class="absolute bottom-4 left-4 right-4 text-white">
@@ -103,7 +103,7 @@
                                 @foreach($sidebarArticles as $article)
                                     <a href="{{ $article->link }}" class="flex flex-col group relative block">
                                         <div class="h-32 rounded-xl overflow-hidden mb-3 relative">
-                                            <img src="{{ $article->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                                            <img loading="lazy" src="{{ $article->image }}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
                                         </div>
                                         <div>
                                             <span class="text-brand-green text-xs font-bold uppercase">Tin Nóng</span>
@@ -120,14 +120,7 @@
                 {{-- 1.5. CÔNG THỨC NỔI BẬT --}}
                 @if((isset($latestPosts) && $latestPosts->count() > 0) || (isset($hotPosts) && $hotPosts->count() > 0))
                     <section id="featured-recipes-slider"
-                        class="relative group/slider bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 border border-rose-100 shadow-sm reveal">
-                        {{-- Decorative --}}
-                        <div
-                            class="absolute -top-4 -right-4 w-24 h-24 bg-rose-200/30 rounded-full blur-2xl pointer-events-none">
-                        </div>
-                        <div
-                            class="absolute -bottom-4 -left-4 w-20 h-20 bg-red-100/30 rounded-full blur-xl pointer-events-none">
-                        </div>
+                        class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-soft reveal">
 
                         {{-- Header với Tabs --}}
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 relative gap-3">
@@ -271,6 +264,8 @@
                         </button>
 
                         <style>
+                            .swiper { opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
+                            .swiper.swiper-initialized { opacity: 1; visibility: visible; }
                             .swiperNewBooks .swiper-pagination-bullet { width: 8px; height: 8px; background-color: #cbd5e1; opacity: 1; transition: all 0.3s; margin: 0 4px !important; }
                             .swiperNewBooks .swiper-pagination-bullet-active { width: 24px; border-radius: 4px; background-color: #2D4539; }
                             .swiperNewBooks .swiper-pagination { position: relative !important; margin-top: 32px !important; bottom: auto !important; }
@@ -279,10 +274,8 @@
                             <div class="swiper-wrapper flex items-stretch">
                                 @if(isset($recipes) && $recipes->count() > 0)
                                     @foreach($recipes->take(12) as $recipe)
-                                        <div class="swiper-slide !h-auto flex">
-                                            <div class="w-full">
-                                                @include('partials.recipe-card', ['recipe' => $recipe])
-                                            </div>
+                                        <div class="swiper-slide !h-auto">
+                                            @include('partials.recipe-card', ['recipe' => $recipe])
                                         </div>
                                     @endforeach
                                 @else
@@ -533,7 +526,7 @@
                                     {{-- Recipe Image --}}
                                     <div
                                         class="w-28 h-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 transform group-hover/recipe:scale-105 transition-transform duration-300 border-2 border-white">
-                                        <img src="{{ $randomRecipe->thumbnail }}" alt="{{ $randomRecipe->title }}"
+                                        <img loading="lazy" src="{{ $randomRecipe->thumbnail }}" alt="{{ $randomRecipe->title }}"
                                             class="w-full h-full object-cover"
                                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=400&auto=format&fit=crop'">
 
@@ -613,9 +606,9 @@
                                         @php
                                             $photoUrl = !empty($dailyAuthor->avatar)
                                                 ? (str_starts_with($dailyAuthor->avatar, 'http') ? $dailyAuthor->avatar : asset('storage/' . $dailyAuthor->avatar))
-                                                : 'https://ui-avatars.com/api/?name=' . urlencode($dailyAuthor->name) . '&background=0284C7&color=fff&size=96';
+                                                : 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($dailyAuthor->name) . '&background=0284C7&color=fff&size=96';
                                         @endphp
-                                        <img src="{{ $photoUrl }}" alt="{{ $dailyAuthor->name }}"
+                                        <img loading="lazy" src="{{ $photoUrl }}" alt="{{ $dailyAuthor->name }}"
                                             class="w-full h-full object-cover">
                                     </div>
 
@@ -658,7 +651,7 @@
                                     @if(isset($randomRecipe) && $randomRecipe)
                                     <div class="space-y-6 relative z-10">
                                         <div class="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
-                                            <img src="{{ $randomRecipe->thumbnail }}"
+                                            <img loading="lazy" src="{{ $randomRecipe->thumbnail }}"
                                                 class="w-full h-full object-cover transform group-hover/suggest:scale-110 transition-transform duration-700"
                                                 onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop'">
 
@@ -767,7 +760,7 @@
                                         {{-- Book Cover --}}
                                         <div
                                             class="w-14 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 shadow-md border-2 border-white transform group-hover/item:scale-105 transition-transform duration-300">
-                                            <img src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" 
+                                            <img loading="lazy" src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" 
                                                 class="w-full h-full object-cover" 
                                                 onerror="this.src='https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?q=80&w=400&auto=format&fit=crop'">
 
@@ -889,7 +882,7 @@
                             <a href="https://tiki.vn/nha-sach-tiki/c8322" target="_blank"
                                 class="flex items-center justify-between p-3 rounded-xl bg-white/80 backdrop-blur-sm border border-white hover:border-amber-100 hover:bg-blue-50 hover:shadow-md transition-all duration-300 group">
                                 <div class="flex items-center gap-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Logo_Tiki_2023.png"
+                                    <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Logo_Tiki_2023.png"
                                         class="w-8 h-8 object-contain" alt="Tiki">
                                     <div>
                                         <span class="font-bold text-sm text-gray-700 group-hover:text-brand-green block">Đồ Dùng Nhà Bếp</span>
@@ -903,7 +896,7 @@
                             <a href="https://shopee.vn/nhasachphuongnam" target="_blank"
                                 class="flex items-center justify-between p-3 rounded-xl bg-white/80 backdrop-blur-sm border border-white hover:border-orange-300 hover:bg-orange-50 hover:shadow-md transition-all duration-300 group">
                                 <div class="flex items-center gap-3">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg"
+                                    <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg"
                                         class="w-8 h-8 object-contain" alt="Shopee">
                                     <div>
                                         <span
@@ -1244,14 +1237,14 @@
                         if (data.comment.user_frame) {
                             avatarHtml = `
                                                                 <div class="relative w-10 h-10 inline-block flex-shrink-0">
-                                                                    <img src="${data.comment.user_frame}" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10">
+                                                                    <img loading="lazy" src="${data.comment.user_frame}" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10">
                                                                     <div class="absolute inset-0 flex items-center justify-center z-0">
-                                                                        <img src="${data.comment.user_avatar}" class="w-8 h-8 rounded-full object-cover border-2 border-gray-200">
+                                                                        <img loading="lazy" src="${data.comment.user_avatar}" class="w-8 h-8 rounded-full object-cover border-2 border-gray-200">
                                                                     </div>
                                                                 </div>
                                                             `;
                         } else {
-                            avatarHtml = `<img src="${data.comment.user_avatar}" class="w-9 h-9 rounded-full border border-white shadow-sm flex-shrink-0">`;
+                            avatarHtml = `<img loading="lazy" src="${data.comment.user_avatar}" class="w-9 h-9 rounded-full border border-white shadow-sm flex-shrink-0">`;
                         }
 
                         const newCommentHtml = `
@@ -1397,14 +1390,14 @@
                         if (data.user_frame) {
                             avatarHtml = `
                                                                 <div class="relative w-8 h-8 inline-block flex-shrink-0">
-                                                                    <img src="${data.user_frame}" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10">
+                                                                    <img loading="lazy" src="${data.user_frame}" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10">
                                                                     <div class="absolute inset-0 flex items-center justify-center z-0">
-                                                                        <img src="${data.user_avatar}" class="w-6 h-6 rounded-full object-cover">
+                                                                        <img loading="lazy" src="${data.user_avatar}" class="w-6 h-6 rounded-full object-cover">
                                                                     </div>
                                                                 </div>
                                                             `;
                         } else {
-                            avatarHtml = `<img src="${data.user_avatar}" class="w-7 h-7 rounded-full flex-shrink-0">`;
+                            avatarHtml = `<img loading="lazy" src="${data.user_avatar}" class="w-7 h-7 rounded-full flex-shrink-0">`;
                         }
 
                         const replyHtml = `

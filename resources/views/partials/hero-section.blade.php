@@ -18,7 +18,7 @@
 
             {{-- [MỨC 1] Ảnh nền toàn màn hình (60%+ diện tích) --}}
             <div class="absolute inset-0">
-                <img src="{{ $imgSrc }}" alt="{{ $slideTitle }}"
+                <img loading="lazy" src="{{ $imgSrc }}" alt="{{ $slideTitle }}"
                     class="w-full h-full object-cover transition-transform duration-[8s] ease-in-out group-hover/slide:scale-105">
 
                 {{-- Gradient overlay: tối ở trái (nội dung), trong suốt ở phải (ảnh thở) --}}
@@ -28,13 +28,13 @@
 
             {{-- [Xóa] Admin Tool đã chuyển vào trang Quản trị --}}
 
-            {{-- [MỨC 2–4] Nội dung văn bản - canh giữa chiều dọc --}}
-            <div class="absolute inset-0 flex items-center">
-                <div class="container mx-auto px-6 md:px-10 lg:px-16 pt-24 lg:pt-32">
+            {{-- [MỨC 2–4] Nội dung văn bản - canh giữa chiều dọc (chừa khoảng trống cho sticky footer ở đáy) --}}
+            <div class="absolute inset-0 flex items-center pb-16 md:pb-20 lg:pb-24">
+                <div class="container mx-auto px-6 md:px-10 lg:px-16 pt-12 md:pt-16">
                     <div class="max-w-2xl xl:max-w-3xl">
 
                         {{-- [MỨC 2] Badge/Tag --}}
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E85D04]/50 bg-[#E85D04]/15 backdrop-blur-sm mb-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E85D04]/50 bg-[#E85D04]/15 backdrop-blur-sm mb-4">
                             <span class="flex h-2 w-2 relative">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85D04] opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-[#E85D04]"></span>
@@ -43,16 +43,18 @@
                         </div>
 
                         {{-- [MỨC 1] Tiêu đề lớn nhất - Phân cấp hình ảnh tối cao --}}
-                        <h1 class="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-black leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-6">
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-black leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-4">
                             {!! $slideTitle !!}
                         </h1>
 
                         {{-- [MỨC 3] Mô tả phụ --}}
                         @if($slideDesc)
-                        <p class="text-white/70 text-lg md:text-xl leading-relaxed mb-8 border-l-4 border-[#E85D04]/60 pl-5 italic font-light max-w-xl">
+                        <p class="text-white/70 text-sm md:text-base lg:text-lg leading-relaxed mb-6 border-l-4 border-[#E85D04]/60 pl-5 italic font-light max-w-xl">
                             "{{ $slideDesc }}"
                         </p>
                         @endif
+
+
 
                         {{-- [MỨC 4] CTA Buttons --}}
                         <div class="flex flex-wrap gap-4 items-center">

@@ -23,6 +23,7 @@ class AuthorController extends Controller
 
         // Tính cả rank (likes count), followers count nếu cần
         $query->withCount('followers');
+        $query->with(['activeBadges']);
 
         if ($q) {
             $query->where('name', 'like', '%' . $q . '%');

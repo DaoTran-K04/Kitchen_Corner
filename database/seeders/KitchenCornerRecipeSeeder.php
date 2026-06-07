@@ -37,13 +37,60 @@ class KitchenCornerRecipeSeeder extends Seeder
         // Recipe::truncate(); // Đã tắt để không làm mất hàng trăm công thức cũ của bạn
         DB::table('recipe_ingredients')->truncate();
         DB::table('recipe_steps')->truncate();
+        
+        // Dọn dẹp và đổ lại bộ 4 Banner trượt siêu đẹp
+        DB::table('banners')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        $banners = [
+            [
+                'title' => 'Lễ hội Ẩm thực Mùa Hè 2026',
+                'tag' => 'Sự kiện Hot',
+                'description' => 'Tham gia ngay chuỗi sự kiện ẩm thực đường phố và nhận hàng ngàn voucher quà tặng hấp dẫn từ các đầu bếp hàng đầu.',
+                'image' => 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 1
+            ],
+            [
+                'title' => 'Cuộc thi: Đầu bếp tại gia xuất sắc',
+                'tag' => 'Khám phá',
+                'description' => 'Trổ tài nấu nướng đỉnh cao, chia sẻ công thức độc quyền và nhận cúp vàng danh giá cùng phần thưởng 50.000.000đ.',
+                'image' => 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 2
+            ],
+            [
+                'title' => 'Bí quyết nấu ăn chay thanh lọc cơ thể',
+                'tag' => 'Mẹo hay',
+                'description' => 'Khám phá các công thức chay độc đáo, đủ dưỡng chất từ đầu bếp 5 sao giúp thanh mát cơ thể và tràn đầy năng lượng mỗi ngày.',
+                'image' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 3
+            ],
+            [
+                'title' => 'Hương vị Việt Nam: Đậm đà bản sắc',
+                'tag' => 'Ẩm thực Việt',
+                'description' => 'Tổng hợp hàng trăm công thức món Việt truyền thống chuẩn vị ba miền từ phở, bún chả đến cơm tấm sườn bì chả.',
+                'image' => 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=2070&auto=format&fit=crop',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 4
+            ]
+        ];
+
+        foreach ($banners as $b) {
+            \App\Models\Banner::create($b);
+        }
+
 
         $recipes = [
             [
                 'title' => 'Sườn Xào Chua Ngọt Đậm Đà',
                 'description' => 'Món sườn xào chua ngọt truyền thống với lớp sốt bóng bẩy, thịt sườn mềm thơm quyện cùng vị chua dôn dốt của cà chua và chút cay nồng của tiêu đỏ. Tuyệt hảo khi dùng kèm cơm trắng nóng hổi.',
-                'image' => 'https://images.unsplash.com/photo-1544025162-811cffd92ef7?q=80&w=1000&auto=format&fit=crop',
+                'image' => 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1000&auto=format&fit=crop',
 
                 'category_id' => 8, // Món chính
                 'cooking_time' => 45,
@@ -161,7 +208,7 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Bánh Pancake Dâu Tây Mềm Xốp',
                 'description' => 'Món tráng miệng hoặc bữa sáng kiểu Tây cực kỳ dễ làm. Những lớp bánh pancake mềm mịn tơi xốp, thơm mùi bơ sữa và trứng gà, rưới thêm siro phong và kết hợp với dâu tây tươi chua ngọt.',
-                'image' => 'https://images.unsplash.com/photo-1567620905732-2d1ec7bb7445?q=80&w=1000&auto=format&fit=crop',
+                'image' => 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=1000&auto=format&fit=crop',
 
                 'category_id' => 9, // Tráng miệng
                 'cooking_time' => 20,
@@ -285,7 +332,7 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Cà Ri Gà Kiểu Thái (Thai Green Curry)',
                 'description' => 'Đánh thức mọi giác quan với món cà ri xanh kiểu Thái chuẩn vị siêu bắt cơm. Nước dùng là sự pha trộn diệu kỳ của cốt dừa béo ngậy bùng nổ cùng cốt lá chanh kaffir, sả, riềng và vị cay xé lưỡi từ ớt xanh.',
-                'image' => 'https://images.unsplash.com/photo-1455619411412-d5e810614868?q=80&w=1000&auto=format&fit=crop',
+                'image' => 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=1000&auto=format&fit=crop',
 
                 'category_id' => 8, // Món chính
                 'cooking_time' => 40,
@@ -317,7 +364,7 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Bún Chả Hà Nội Nướng Than Hoa',
                 'description' => 'Đậm đà phong vị Bắc Bộ với những miếng chả băm và chả miếng được ướp sả ớt, nướng xèo xèo trên lửa than hoa hồng rực. Quyện cùng bát nước mắm chua ngọt ấm nóng suýt xoa ăn kèm rau sống và bún tươi dai dẻo.',
-                'image' => 'https://images.unsplash.com/photo-1622312674312-d81a942defff?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=900',
                 'category_id' => 6, // Mì Bún Phở
                 'cooking_time' => 60,
                 'difficulty' => 'medium',
@@ -348,7 +395,7 @@ class KitchenCornerRecipeSeeder extends Seeder
             [
                 'title' => 'Bánh Mì Chảo Thập Cẩm Pate',
                 'description' => 'Tuổi thơ mỗi cuối tuần luôn khao khát chảo gang xì xèo bò bít tết băm, xúc xích dai dai, trứng ốp la đào vàng mọng, trét kèm lớp pate gan mịn mượt đẫm ngậy chấm một miếng bánh mì giòn tan hổi.',
-                'image' => 'https://images.unsplash.com/photo-1627308595229-7830f5c92135?auto=format&fit=crop&q=80&w=900',
+                'image' => 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&q=80&w=900',
                 'category_id' => 3, // Khai vị / Ăn sáng
                 'cooking_time' => 15,
                 'difficulty' => 'easy',

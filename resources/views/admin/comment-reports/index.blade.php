@@ -108,7 +108,7 @@
                             {{-- Người báo cáo --}}
                             <td class="px-6 py-4 align-top">
                                 <div class="flex items-center gap-3">
-                                    <img src="{{ $report->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($report->user->name) }}"
+                                    <img loading="lazy" src="{{ $report->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($report->user->name) }}"
                                         class="w-8 h-8 rounded-full border dark:border-slate-600">
                                     <div>
                                         <p class="text-sm font-bold text-gray-800 dark:text-white">{{ $report->user->name }}</p>

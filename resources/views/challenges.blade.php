@@ -9,7 +9,7 @@
 
         {{-- Background Image Overlay --}}
         <div class="absolute inset-0 opacity-20 mix-blend-overlay">
-            <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="Background">
+            <img loading="lazy" src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="Background">
         </div>
         
         {{-- Decorative Orbs --}}
@@ -133,7 +133,7 @@
                                 @endphp
                                 <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 mb-1 shadow-sm border border-yellow-200">
                                     @if($completedBadgeIconUrl)
-                                        <img src="{{ $completedBadgeIconUrl }}" alt="{{ $challenge->badge->name }}" class="w-10 h-10 object-contain">
+                                        <img loading="lazy" src="{{ $completedBadgeIconUrl }}" alt="{{ $challenge->badge->name }}" class="w-10 h-10 object-contain">
                                     @elseif($completedBadgeIcon && mb_strlen($completedBadgeIcon) <= 4)
                                         <span class="text-3xl">{{ $completedBadgeIcon }}</span>
                                     @else
@@ -153,7 +153,7 @@
                         @if($challenge->avatarFrame)
                             <div class="flex flex-col items-center">
                                 <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-1 shadow-sm border border-purple-200 overflow-hidden p-1">
-                                    <img src="{{ Str::startsWith($challenge->avatarFrame->frame_image, 'http') ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
+                                    <img loading="lazy" src="{{ (Str::startsWith($challenge->avatarFrame->frame_image, 'http') || Str::startsWith($challenge->avatarFrame->frame_image, 'data:image')) ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
                                          alt="{{ $challenge->avatarFrame->name }}" 
                                          class="w-full h-full object-contain">
                                 </div>
@@ -240,7 +240,7 @@
                                             <div class="flex items-center gap-3 bg-yellow-50 p-2.5 rounded-lg border border-yellow-100">
                                                 <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-sm">
                                                     @if($badgeIconUrl)
-                                                        <img src="{{ $badgeIconUrl }}" alt="" class="w-6 h-6 object-contain">
+                                                        <img loading="lazy" src="{{ $badgeIconUrl }}" alt="" class="w-6 h-6 object-contain">
                                                     @elseif($badgeIcon && mb_strlen($badgeIcon) <= 4)
                                                         <span class="text-xl">{{ $badgeIcon }}</span>
                                                     @else
@@ -268,7 +268,7 @@
                                         @if($challenge->avatarFrame)
                                             <div class="flex items-center gap-3 bg-purple-50 p-2.5 rounded-lg border border-purple-100">
                                                 <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center shadow-sm overflow-hidden p-1">
-                                                    <img src="{{ Str::startsWith($challenge->avatarFrame->frame_image, 'http') ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
+                                                    <img loading="lazy" src="{{ (Str::startsWith($challenge->avatarFrame->frame_image, 'http') || Str::startsWith($challenge->avatarFrame->frame_image, 'data:image')) ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
                                                          alt="{{ $challenge->avatarFrame->name }}" 
                                                          class="w-full h-full object-contain">
                                                 </div>
@@ -403,7 +403,7 @@
                                             <div class="flex items-center gap-3 bg-gradient-to-r from-yellow-500/10 to-transparent p-3 rounded-xl border border-yellow-400/20">
                                                 <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/20">
                                                     @if($badgeIconUrl2)
-                                                        <img src="{{ $badgeIconUrl2 }}" alt="" class="w-8 h-8 object-contain">
+                                                        <img loading="lazy" src="{{ $badgeIconUrl2 }}" alt="" class="w-8 h-8 object-contain">
                                                     @elseif($badgeIcon2 && mb_strlen($badgeIcon2) <= 4)
                                                         <span class="text-2xl">{{ $badgeIcon2 }}</span>
                                                     @else
@@ -431,7 +431,7 @@
                                         @if($challenge->avatarFrame)
                                             <div class="flex items-center gap-3 bg-gradient-to-r from-purple-500/10 to-transparent p-3 rounded-xl border border-purple-400/20">
                                                 <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 overflow-hidden p-1">
-                                                    <img src="{{ Str::startsWith($challenge->avatarFrame->frame_image, 'http') ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
+                                                    <img loading="lazy" src="{{ (Str::startsWith($challenge->avatarFrame->frame_image, 'http') || Str::startsWith($challenge->avatarFrame->frame_image, 'data:image')) ? $challenge->avatarFrame->frame_image : asset('storage/' . $challenge->avatarFrame->frame_image) }}" 
                                                          alt="{{ $challenge->avatarFrame->name }}" 
                                                          class="w-full h-full object-contain">
                                                 </div>

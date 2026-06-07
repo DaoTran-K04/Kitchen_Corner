@@ -194,7 +194,7 @@
                         @foreach($admins as $admin)
                             <div class="custom-option {{ request('admin_id') == $admin->id ? 'selected' : '' }}"
                                 data-value="{{ $admin->id }}">
-                                <img src="{{ $admin->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($admin->name) }}"
+                                <img loading="lazy" src="{{ $admin->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($admin->name) }}"
                                     class="w-4 h-4 rounded-full object-cover flex-shrink-0">
                                 {{ $admin->name }}
                             </div>

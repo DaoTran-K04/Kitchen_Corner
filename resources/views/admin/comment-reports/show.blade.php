@@ -27,7 +27,7 @@
                 <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-800">
                     @if($commentReport->comment)
                         <div class="flex items-center gap-3 mb-3">
-                            <img src="{{ $commentReport->comment->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($commentReport->comment->user->name) }}" class="w-10 h-10 rounded-full">
+                            <img loading="lazy" src="{{ $commentReport->comment->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($commentReport->comment->user->name) }}" class="w-10 h-10 rounded-full">
                             <div>
                                 <p class="font-bold text-gray-800 dark:text-white">{{ $commentReport->comment->user->name }}</p>
                                 <p class="text-xs text-gray-500">{{ $commentReport->comment->created_at->format('d/m/Y H:i') }}</p>
@@ -50,7 +50,7 @@
                 <div>
                     <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-l-4 border-orange-500 pl-2">Người báo cáo</h3>
                     <div class="flex items-center gap-3">
-                        <img src="{{ $commentReport->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($commentReport->user->name) }}" class="w-12 h-12 rounded-full border">
+                        <img loading="lazy" src="{{ $commentReport->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($commentReport->user->name) }}" class="w-12 h-12 rounded-full border">
                         <div>
                             <p class="font-bold text-gray-800 dark:text-white">{{ $commentReport->user->name }}</p>
                             <p class="text-sm text-gray-500">{{ $commentReport->user->email }}</p>

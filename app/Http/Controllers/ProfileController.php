@@ -68,7 +68,7 @@ class ProfileController extends Controller
             'user' => [
                 'name' => $user->name,
                 'bio' => $user->bio,
-                'avatar' => $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128'
+                'avatar' => $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128'
             ]
         ]);
     }
@@ -165,13 +165,14 @@ class ProfileController extends Controller
 
             // 7. Lấy danh sách bài review đã xóa (thùng rác)
             $trashedPosts = $user->recipes()
+                ->with(['user', 'category'])
                 ->onlyTrashed()
                 ->orderBy('deleted_at', 'desc')
                 ->get();
         }
 
         // 8. Lấy danh sách bình luận của User này (cho mọi người xem)
-        $userComments = \App\Models\Comment::with('recipe')
+        $userComments = \App\Models\Comment::with(['recipe', 'user'])
             ->where('user_id', $user->id)
             ->whereNull('parent_id')
             ->latest()
@@ -211,6 +212,7 @@ class ProfileController extends Controller
 
         // Lấy danh sách bài Review (CÓ PHÂN QUYỀN)
         $reviewsQuery = $user->recipes()
+            ->with(['user', 'category'])
             ->withCount(['likes', 'comments'])
             ->orderBy('created_at', 'desc');
 

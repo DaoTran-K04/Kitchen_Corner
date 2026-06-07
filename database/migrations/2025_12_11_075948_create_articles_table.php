@@ -13,10 +13,10 @@ return new class extends Migration
 {
     Schema::create('articles', function (Blueprint $table) {
         $table->id();
-        $table->string('title');            // Tiêu đề bài viết
-        $table->string('slug')->unique();   // Đường dẫn thân thiện (SEO)
-        $table->string('thumbnail')->nullable(); // Ảnh bìa
-        $table->string('tag')->nullable();  // Nhãn (Ví dụ: Mẹo Đọc, Cảm Hứng)
+        $table->string('title', 150);            // Tiêu đề bài viết
+        $table->string('slug', 170)->unique();   // Đường dẫn thân thiện (SEO)
+        $table->string('thumbnail', 200)->nullable(); // Ảnh bìa
+        $table->string('tag', 30)->nullable();  // Nhãn (Ví dụ: Mẹo Đọc, Cảm Hứng)
         $table->text('excerpt')->nullable();// Mô tả ngắn
         $table->longText('content');        // Nội dung chi tiết
         $table->boolean('is_featured')->default(false); // Đánh dấu bài Tiêu Điểm (To nhất)

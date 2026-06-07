@@ -8,14 +8,16 @@
     <meta name="description" content="Khám phá hàng nghìn công thức nấu ăn ngon, mẹo vặt nhà bếp và kiến thức dinh dưỡng tại Góc Bếp. Nơi kết nối những người yêu ẩm thực.">
     <meta name="keywords" content="công thức nấu ăn, món ngon mỗi ngày, nấu ăn ngon, thực đơn dinh dưỡng, ẩm thực việt nam, góc bếp">
     <meta name="author" content="Trần Hoàng Đạo">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 
-    {{-- Preconnect for faster CDN handshake --}}
+    {{-- Preconnect for faster CDN & Image handshake --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -87,6 +89,12 @@
     </script>
 
     <style>
+        /* Tối ưu hóa render cuộn trang cực nhanh cho thiết bị di động/máy tính */
+        .content-lazy {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 1000px;
+        }
+
         /* Prevent horizontal scroll on mobile */
         html,
         body {
@@ -199,74 +207,114 @@
         .safe-area-bottom {
             padding-bottom: env(safe-area-inset-bottom, 0);
         }
+
+        /* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+        /* Ảnh lazy load: fade-in mượt khi load xong */
+        img[loading="lazy"] {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        img[loading="lazy"].loaded {
+            opacity: 1;
+        }
+
+        /* Section dưới fold: trình duyệt không render cho đến khi gần viewport */
+        .lazy-section {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 600px;
+        }
+
+        /* Card hover optimization: dùng GPU layer riêng */
+        .recipe-card-item {
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        /* Tránh layout shift khi ảnh load */
+        .img-aspect-4-3 {
+            aspect-ratio: 4 / 3;
+            background: #f3f4f6;
+        }
+
+        /* Page transition: trang mới fade-in */
+        @keyframes page-enter {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .page-content {
+            animation: page-enter 0.3s ease-out;
+        }
     </style>
 
     {{-- SweetAlert2: defer to not block initial render --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
-        // Override native browser alert to use SweetAlert2
-        window.alert = function(message) {
-            Swal.fire({
-                title: 'Góc Bếp thông báo',
-                text: message,
-                icon: 'info',
-                confirmButtonColor: '#9B2226',
-                confirmButtonText: 'Đã hiểu',
-                customClass: {
-                    container: 'z-[9999]',
-                    title: 'font-serif text-2xl text-red-900',
-                    popup: 'rounded-[2rem] shadow-2xl border-0',
-                    confirmButton: 'rounded-full px-8 py-2.5 font-bold shadow hover:shadow-lg transition-all'
-                }
-            });
-        };
-        
-        // Custom function to ask user to login softly
-        window.requireLogin = function(customMessage = 'Bạn cần đăng nhập để sử dụng tính năng này!') {
-            Swal.fire({
-                title: 'Vui lòng đăng nhập',
-                text: customMessage,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#9B2226',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Đăng nhập',
-                cancelButtonText: 'Để sau',
-                customClass: {
-                    container: 'z-[9999]',
-                    title: 'font-serif text-2xl text-red-900',
-                    popup: 'rounded-[2rem] shadow-2xl border-0',
-                    confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
-                    cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{{ route('login') }}";
-                }
-            });
-        };
+        // Override sau khi Swal load xong
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal === 'undefined') return;
 
-        // Global SwalConfirm helper
-        window.SwalConfirm = function(title, text, icon = 'warning', confirmButtonText = 'Đồng ý', cancelButtonText = 'Hủy') {
-            return Swal.fire({
-                title: title,
-                text: text,
-                icon: icon,
-                showCancelButton: true,
-                confirmButtonColor: '#9B2226',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: confirmButtonText,
-                cancelButtonText: cancelButtonText,
-                reverseButtons: true,
-                customClass: {
-                    container: 'z-[9999]',
-                    title: 'font-serif text-2xl text-red-900',
-                    popup: 'rounded-[2rem] shadow-2xl border-0',
-                    confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
-                    cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
-                }
-            });
-        };
+            window.alert = function(message) {
+                Swal.fire({
+                    title: 'Góc Bếp thông báo',
+                    text: message,
+                    icon: 'info',
+                    confirmButtonColor: '#9B2226',
+                    confirmButtonText: 'Đã hiểu',
+                    customClass: {
+                        container: 'z-[9999]',
+                        title: 'font-serif text-2xl text-red-900',
+                        popup: 'rounded-[2rem] shadow-2xl border-0',
+                        confirmButton: 'rounded-full px-8 py-2.5 font-bold shadow hover:shadow-lg transition-all'
+                    }
+                });
+            };
+
+            window.requireLogin = function(customMessage = 'Bạn cần đăng nhập để sử dụng tính năng này!') {
+                Swal.fire({
+                    title: 'Vui lòng đăng nhập',
+                    text: customMessage,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#9B2226',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: 'Đăng nhập',
+                    cancelButtonText: 'Để sau',
+                    customClass: {
+                        container: 'z-[9999]',
+                        title: 'font-serif text-2xl text-red-900',
+                        popup: 'rounded-[2rem] shadow-2xl border-0',
+                        confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
+                        cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}";
+                    }
+                });
+            };
+
+            window.SwalConfirm = function(title, text, icon = 'warning', confirmButtonText = 'Đồng ý', cancelButtonText = 'Hủy') {
+                return Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: '#9B2226',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: confirmButtonText,
+                    cancelButtonText: cancelButtonText,
+                    reverseButtons: true,
+                    customClass: {
+                        container: 'z-[9999]',
+                        title: 'font-serif text-2xl text-red-900',
+                        popup: 'rounded-[2rem] shadow-2xl border-0',
+                        confirmButton: 'rounded-full px-6 py-2.5 font-bold shadow hover:shadow-lg transition-all',
+                        cancelButton: 'rounded-full px-6 py-2.5 font-bold shadow transition-all'
+                    }
+                });
+            };
+        });
     </script>
 </head>
 
@@ -281,7 +329,9 @@
         @yield('content')
     </div>
 
-    @include('partials.footer')
+    <div class="content-lazy lazy-section">
+        @include('partials.footer')
+    </div>
 
     {{-- Report Modal (Available on all pages) --}}
     @include('partials.report-modal')
@@ -349,24 +399,47 @@
             mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
         }
 
-        // Reveal on Scroll
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        }
+        // ===== REVEAL ON SCROLL (dùng IntersectionObserver, hiệu quả hơn scroll event) =====
+        (function() {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        revealObserver.unobserve(entry.target); // chỉ trigger 1 lần
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
 
-        window.addEventListener("scroll", reveal);
-        // To check the scroll position on page load
-        window.addEventListener("load", reveal);
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        })();
+
+        // ===== LAZY IMAGE FADE-IN =====
+        // Tự động thêm class 'loaded' khi ảnh lazy load xong → fade-in mượt
+        (function() {
+            const imgObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    if (img.complete) {
+                        img.classList.add('loaded');
+                    } else {
+                        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+                        img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
+                    }
+                    obs.unobserve(img);
+                });
+            }, { rootMargin: '200px' });
+
+            document.querySelectorAll('img[loading="lazy"]').forEach(img => imgObserver.observe(img));
+        })();
+
+        // ===== PAGE TRANSITION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const main = document.querySelector('.flex-grow');
+            if (main) main.classList.add('page-content');
+        });
     </script>
-    
+
     {{-- Instant.page: Pre-fetch on hover for instant navigation --}}
     <script src="https://instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipfGQRjygabvOoY28BmgrrU946y1DUFTD7D54D7nV1yuHDU9zoEwUJve" crossorigin="anonymous"></script>
 </body>

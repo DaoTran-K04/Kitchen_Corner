@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('user_badges', function (Blueprint $table) {
-            $table->unsignedInteger('display_order')->default(0)->after('expires_at')
+            $table->unsignedTinyInteger('display_order')->default(0)->after('expires_at')
                 ->comment('Thứ tự hiển thị - số nhỏ hơn hiển thị trước');
         });
     }

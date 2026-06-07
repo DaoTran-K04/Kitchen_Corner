@@ -30,6 +30,7 @@ class Recipe extends Model
         'is_featured',
         'is_premium',
         'status',
+        'source',
     ];
 
     protected $casts = [
@@ -106,12 +107,21 @@ class Recipe extends Model
             return $value;
         }
 
-        // Nếu là ảnh trong assets/ (ví dụ từ MealDB import)
+        // Định tuyến toàn bộ ảnh sang Supabase
+        $projectRef = 'uxkrgbnmvnzunxgkaunt';
+        $supabaseBase = "https://{$projectRef}.supabase.co/storage/v1/object/public/";
+
+        // Chuyển "assets/recipes/..." thành "recipes/..."
         if (str_starts_with($value, 'assets/')) {
-            return asset($value);
+            $value = str_replace('assets/', '', $value);
         }
 
-        return asset('storage/' . $value);
+        // Đảm bảo ảnh lưu cục bộ trước đây cũng nằm trong bucket recipes/
+        if (!str_starts_with($value, 'recipes/')) {
+            $value = 'recipes/' . $value;
+        }
+
+        return $supabaseBase . ltrim($value, '/');
     }
 
 

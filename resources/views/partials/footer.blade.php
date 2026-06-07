@@ -1,8 +1,8 @@
-<div class="relative mt-20 sm:mt-32">
+<div class="relative mt-10 sm:mt-16">
     <footer class="bg-brand-green text-white pt-16 sm:pt-24 pb-8 sm:pb-10 relative overflow-hidden rounded-t-[40px] md:rounded-t-[80px] shadow-[0_-10px_40px_rgba(155,34,38,0.15)]">
         {{-- Beautiful Background Image with soft dark red overlay --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Footer Background">
+            <img loading="lazy" src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Footer Background">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-brand-green/90 to-brand-green/95"></div>
         </div>
 

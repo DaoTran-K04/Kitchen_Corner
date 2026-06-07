@@ -54,7 +54,7 @@
                             <td class="px-4 py-4 font-medium text-gray-500 dark:text-slate-400 text-center">{{ $loop->iteration }}</td>
                             <td class="px-4 py-4">
                                 @php $bImg = trim($banner->image); @endphp
-                                <img src="{{ Str::startsWith($bImg, 'http') ? $bImg : asset('storage/' . $bImg) }}"
+                                <img loading="lazy" src="{{ Str::startsWith($bImg, 'http') ? $bImg : asset('storage/' . $bImg) }}"
                                     class="h-14 w-20 object-cover rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm"
                                     alt="Banner Img">
                             </td>

@@ -75,28 +75,45 @@ class AuthController extends Controller
 
         // Nếu email tồn tại nhưng chưa xác thực OTP (chưa activate)
         if ($existingUser && !$existingUser->email_verified_at) {
-            // Cập nhật mật khẩu mới (trường hợp họ nhập sai pass làn trước)
+            // Cập nhật mật khẩu và thông tin mới
             $existingUser->name     = $request->name;
             $existingUser->password = Hash::make($request->password);
+            $existingUser->email_verified_at = null; // Đảm bảo bắt buộc xác thực OTP
             $existingUser->save();
             $user = $existingUser;
         } elseif ($existingUser) {
             // Email đã xác thực – không cho đăng ký lại
             return back()->withErrors(['email' => 'Email này đã được sử dụng.'])->withInput();
         } else {
-            // Tạo user mới - Kích hoạt ngay lập tức giống trang web bạn vừa xem
+            // Tạo user mới - Cần xác thực OTP qua email để bảo mật tài khoản
             $user = User::create([
                 'name'      => $request->name,
                 'email'     => $request->email,
                 'password'  => Hash::make($request->password),
-                'is_active' => true, // Kích hoạt ngay
-                'email_verified_at' => now(), // Coi như đã xác thực để vào được web
+                'is_active' => true, // Kích hoạt tài khoản
+                'email_verified_at' => null, // Bắt buộc xác thực OTP
             ]);
         }
 
-        // Gửi email chào mừng (Gửi được thì tốt, không gửi được cũng không báo lỗi)
+        // Tạo mã 6 số ngẫu nhiên cho OTP đăng ký
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Lưu mã OTP vào bảng password_reset_codes để xác thực được ngay lập tức
         try {
-            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            DB::table('password_reset_codes')->where('email', $request->email)->delete();
+            DB::table('password_reset_codes')->insert([
+                'email' => $request->email,
+                'code' => $code,
+                'expires_at' => Carbon::now()->addMinutes(10),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('DB Error saving registration OTP: ' . $e->getMessage());
+        }
+
+        // Gửi email chào mừng kèm mã xác thực OTP
+        try {
             Mail::send([], [], function ($message) use ($request, $code, $user) {
                 $message->to($request->email)
                     ->subject('🍳 Chào mừng bạn đến với Góc Bếp')
@@ -104,7 +121,7 @@ class AuthController extends Controller
                         $user->name,
                         $code,
                         'Đăng Ký Thành Công',
-                        'Cảm ơn bạn đã gia nhập cộng đồng <strong>Góc Bếp</strong>! Tài khoản của bạn đã sẵn sàng sử dụng.',
+                        'Cảm ơn bạn đã gia nhập cộng đồng <strong>Góc Bếp</strong>! Vui lòng sử dụng mã OTP dưới đây để xác thực tài khoản của bạn và tiếp tục sử dụng tất cả tính năng.',
                         'Chúc bạn có những trải nghiệm tuyệt vời cùng chúng tôi!'
                     ));
             });
@@ -112,10 +129,11 @@ class AuthController extends Controller
             \Log::error('Mail Error: ' . $e->getMessage());
         }
 
-        // Đăng nhập và vào thẳng trang chủ
+        // Đăng nhập và chuyển hướng thẳng đến trang nhập OTP để hoàn tất xác thực
         Auth::login($user);
 
-        return redirect()->route('home')->with('success', 'Đăng ký tài khoản thành công!');
+        return redirect()->route('verification.notice')
+            ->with('status', 'Một mã xác thực OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã để hoàn tất đăng ký.');
     }
 
 

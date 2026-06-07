@@ -82,7 +82,7 @@
                         <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Ảnh bìa</label>
                         <div
                             class="mb-3 rounded-lg overflow-hidden border border-gray-200 dark:border-slate-600 w-full h-48 bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                            <img src="{{ Str::startsWith($banner->image, 'http') ? $banner->image : asset('storage/' . $banner->image) }}"
+                            <img loading="lazy" src="{{ Str::startsWith($banner->image, 'http') ? $banner->image : asset('storage/' . $banner->image) }}"
                                 class="max-h-full max-w-full object-contain">
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                         <div id="image-preview-container" class="hidden mb-3">
                             <div
                                 class="relative rounded-lg overflow-hidden border-2 border-green-400 dark:border-green-500 w-full h-40 bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                                <img id="image-preview" src="" class="max-h-full max-w-full object-contain">
+                                <img loading="lazy" id="image-preview" src="" class="max-h-full max-w-full object-contain">
                                 <span
                                     class="absolute top-2 left-2 px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded uppercase">Ảnh
                                     mới</span>

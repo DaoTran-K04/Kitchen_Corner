@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('avatar_frames', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('name', 50);
+            $table->string('slug', 60)->unique();
             $table->text('description')->nullable();
-            $table->string('frame_image'); // URL hoặc path đến file .gif/.png
+            $table->string('frame_image', 200); // URL hoặc path đến file .gif/.png
             $table->boolean('is_active')->default(true);
-            $table->integer('order')->default(0);
+            $table->unsignedTinyInteger('order')->default(0);
             $table->timestamps();
         });
     }

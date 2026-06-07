@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('collections', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('description')->nullable();
+            $table->string('name', 100);
+            $table->string('description', 200)->nullable();
             $table->boolean('is_public')->default(false);
             $table->timestamps();
         });

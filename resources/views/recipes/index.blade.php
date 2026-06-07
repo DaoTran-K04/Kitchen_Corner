@@ -6,7 +6,7 @@
 <div class="min-h-screen">
 
     {{-- ===== HERO BANNER ===== --}}
-    <div class="bg-gradient-to-br from-green-700 via-green-600 to-emerald-500 text-white pt-24 lg:pt-32 pb-14 px-4">
+    <div class="bg-gradient-to-br from-emerald-800 via-teal-700 to-emerald-600 text-white pt-24 lg:pt-32 pb-14 px-4 shadow-inner">
         <div class="max-w-5xl mx-auto text-center">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-3 drop-shadow">🍽️ Khám phá Công thức</h1>
             <p class="text-green-100 text-lg mb-6">Hàng trăm công thức nấu ăn ngon từ cộng đồng đầu bếp Việt</p>
@@ -149,68 +149,18 @@
                 @endauth
             </div>
             @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach($recipes as $recipe)
-                <a href="{{ route('recipes.show', $recipe->slug) }}"
-                    class="group bg-white rounded-2xl shadow hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col">
-                    {{-- Ảnh --}}
-                    <div class="relative overflow-hidden aspect-[4/3]">
-                        <img src="{{ $recipe->thumbnail }}"
-                            alt="{{ $recipe->title }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            onerror="this.src='https://images.unsplash.com/photo-1560180474-e8563fd75bab?w=600'">
-                        {{-- Badges --}}
-                        <div class="absolute top-2 left-2 flex gap-1 flex-wrap">
-                            @if($recipe->is_featured)
-                            <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full">⭐ Nổi bật</span>
-                            @endif
-                            <span class="text-xs font-bold px-2 py-0.5 rounded-full
-                                {{ $recipe->difficulty=='easy' ? 'bg-green-100 text-green-700' : ($recipe->difficulty=='hard' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
-                                {{ $recipe->difficulty=='easy' ? '🟢 Dễ' : ($recipe->difficulty=='hard' ? '🔴 Khó' : '🟡 TB') }}
-                            </span>
-                        </div>
-                        @if($recipe->total_calories)
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full backdrop-blur-sm">
-                            🔥 {{ $recipe->total_calories }} kcal
-                        </div>
-                        @endif
-                    </div>
-                    {{-- Nội dung --}}
-                    <div class="p-4 flex flex-col flex-1">
-                        <div class="flex items-center gap-1 text-xs text-gray-400 mb-1">
-                            @if($recipe->category)
-                            <span class="text-green-600 font-medium">{{ $recipe->category->name }}</span>
-                            <span>•</span>
-                            @endif
-                            @if($recipe->cooking_time)
-                            <span><i class="fas fa-clock"></i> {{ $recipe->cooking_time }} phút</span>
-                            @endif
-                        </div>
-                        <h3 class="font-bold text-gray-800 group-hover:text-green-600 transition line-clamp-2 mb-2 leading-snug">
-                            {{ $recipe->title }}
-                        </h3>
-                        <p class="text-gray-500 text-xs line-clamp-2 flex-1 mb-3">{{ $recipe->description }}</p>
-                        <div class="flex items-center justify-between text-xs text-gray-400 mt-auto pt-2 border-t border-gray-50">
-                            <span class="flex items-center gap-1">
-                                <img src="{{ $recipe->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($recipe->user->name).'&size=20' }}"
-                                    class="w-5 h-5 rounded-full object-cover" alt="">
-                                {{ Str::limit($recipe->user->name, 15) }}
-                            </span>
-                            <span class="flex items-center gap-2">
-                                <span><i class="fas fa-eye"></i> {{ number_format($recipe->view_count) }}</span>
-                            </span>
-                        </div>
-                    </div>
-                </a>
+                    @include('partials.recipe-card')
                 @endforeach
             </div>
 
-            {{-- Pagination --}}
-            <div class="mt-8">
-                {{ $recipes->links() }}
+            <div class="mt-10 flex justify-center">
+                {{ $recipes->links('pagination::tailwind') }}
             </div>
             @endif
         </main>
     </div>
 </div>
 @endsection
+

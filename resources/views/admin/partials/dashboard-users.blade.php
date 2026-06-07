@@ -14,7 +14,7 @@
                 <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-2">
-                            <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . $user->name . '&background=random' }}"
+                            <img loading="lazy" src="{{ $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . $user->name . '&background=random' }}"
                                 class="w-8 h-8 rounded-full object-cover border-2 border-gray-100 dark:border-slate-600">
                             <div>
                                 <span class="font-medium text-gray-800 dark:text-slate-200">{{ $user->name }}</span>

@@ -125,6 +125,10 @@ class User extends Authenticatable implements MustVerifyEmail
     // Lấy khung avatar đang sử dụng
     public function equippedFrame()
     {
+        if ($this->relationLoaded('avatarFrames')) {
+            return $this->avatarFrames->where('pivot.is_equipped', true)->first();
+        }
+        
         return $this->avatarFrames()
             ->wherePivot('is_equipped', true)
             ->first();

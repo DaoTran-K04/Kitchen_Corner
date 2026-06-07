@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
             $table->text('content');
-            $table->string('author')->default('Khuyết danh');
-            $table->string('source')->nullable();
-            $table->integer('order')->default(0);
+            $table->string('author', 50)->default('Khuyết danh');
+            $table->string('source', 100)->nullable();
+            $table->unsignedTinyInteger('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

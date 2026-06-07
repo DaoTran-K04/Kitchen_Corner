@@ -70,7 +70,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Ảnh bìa</label>
                 <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-green-400 transition" onclick="document.getElementById('coverImage').click()">
-                    <img id="coverPreview" src="" alt="" class="mx-auto max-h-48 rounded-xl mb-3 hidden object-cover">
+                    <img loading="lazy" id="coverPreview" src="" alt="" class="mx-auto max-h-48 rounded-xl mb-3 hidden object-cover">
                     <div id="coverPlaceholder">
                         <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
                         <p class="text-gray-400 text-sm">Nhấn để chọn ảnh (JPG, PNG, WebP – tối đa 3MB)</p>
@@ -274,6 +274,17 @@ function removeStep(btn) {
         row.querySelector('.step-num').textContent = idx + 1;
     });
 }
+
+// Cảnh báo nếu không có ảnh
+document.getElementById('recipeForm').addEventListener('submit', function(e) {
+    const coverImage = document.getElementById('coverImage');
+    if (!coverImage.value) {
+        if (!confirm('Bạn chưa tải lên ảnh bìa. Hệ thống sẽ tự động gán ảnh ngẫu nhiên. Bạn có chắc chắn muốn tiếp tục?')) {
+            e.preventDefault();
+        }
+    }
+});
+
 </script>
 @endpush
 @endsection

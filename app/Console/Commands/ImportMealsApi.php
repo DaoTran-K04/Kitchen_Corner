@@ -220,7 +220,6 @@ class ImportMealsApi extends Command
                         'image'          => $meal['strMealThumb'] ?? null,
                         'view_count'     => rand(50, 2500),
                         'is_featured'    => (rand(1, 5) === 1),
-                        'is_premium'     => false,
                         'status'         => 'published',
                         'total_calories' => rand(250, 750),
                         'total_protein'  => rand(10, 50),

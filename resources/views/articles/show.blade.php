@@ -56,7 +56,7 @@
 
                         <div class="flex items-center justify-between border-y border-gray-100 py-4 flex-col sm:flex-row gap-3">
                             <div class="flex items-center gap-3 w-full sm:w-auto">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($article->user->name ?? 'A') }}&background=random" 
+                                <img loading="lazy" src="https://api.dicebear.com/7.x/initials/svg?seed={{ urlencode($article->user->name ?? 'A') }}&background=random" 
                                      class="w-10 h-10 rounded-full border border-gray-100">
                                 <div>
                                     <p class="text-sm font-bold text-gray-900">{{ $article->user->name ?? 'Admin' }}</p>
@@ -91,7 +91,7 @@
 
                     {{-- 2. Ảnh Cover Lớn --}}
                     <div class="mb-10 rounded-xl overflow-hidden shadow-lg">
-                        <img src="{{ $article->thumbnail }}" 
+                        <img loading="lazy" src="{{ $article->thumbnail }}" 
                              class="w-full h-auto object-cover" 
                              alt="{{ $article->title }}">
                     </div>
@@ -126,7 +126,7 @@
                                 <a href="{{ route('articles.show', $related->slug) }}" 
                                    class="bg-gray-50 p-4 rounded-lg border border-gray-100 flex gap-3 items-center hover:bg-gray-100 hover:shadow-md transition group">
                                     <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
-                                        <img src="{{ $thumbnail }}" alt="{{ $related->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                                        <img loading="lazy" src="{{ $thumbnail }}" alt="{{ $related->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <span class="text-[10px] text-brand-green font-bold uppercase">{{ $related->tag ?? 'Góc Nhìn' }}</span>

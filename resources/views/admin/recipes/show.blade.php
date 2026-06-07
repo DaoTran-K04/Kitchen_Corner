@@ -13,7 +13,7 @@
     <div class="md:col-span-1 space-y-6">
         <!-- Thông tin cơ bản -->
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
-            <img src="{{ $recipe->thumbnail }}" 
+            <img loading="lazy" src="{{ $recipe->thumbnail }}" 
                  alt="{{ $recipe->title }}" 
                  class="w-full h-48 object-cover rounded-xl shadow-md mb-4 border dark:border-slate-700"
                  onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=600'">
@@ -93,7 +93,7 @@
                             $stepImg = trim($step->image);
                             $displayStepImg = str_starts_with($stepImg, 'http') ? $stepImg : asset('storage/' . $stepImg);
                         @endphp
-                        <img src="{{ $displayStepImg }}" alt="Bước {{ $idx + 1 }}" class="mt-2 w-48 h-32 object-cover rounded-xl shadow-sm border border-gray-100">
+                        <img loading="lazy" src="{{ $displayStepImg }}" alt="Bước {{ $idx + 1 }}" class="mt-2 w-48 h-32 object-cover rounded-xl shadow-sm border border-gray-100">
                         @endif
                     </div>
                 </div>

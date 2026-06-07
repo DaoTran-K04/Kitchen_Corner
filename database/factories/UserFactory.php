@@ -43,7 +43,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123456789'),
-            'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=random&color=fff',
+            'avatar' => 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($name) . '&background=random&color=fff',
             'bio' => fake()->randomElement($bios),
             'role' => 'user',
             'is_active' => true,

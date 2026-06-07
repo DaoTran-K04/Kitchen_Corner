@@ -54,7 +54,7 @@ class NotificationController extends Controller
                     },
 
                     // User info (for post/comment notifications)
-                    'user_avatar' => $n->data['avatar'] ?? $n->data['user_avatar'] ?? 'https://ui-avatars.com/api/?name=System',
+                    'user_avatar' => $n->data['avatar'] ?? $n->data['user_avatar'] ?? 'https://api.dicebear.com/7.x/initials/svg?seed=System',
                     'user_name'   => $n->data['user_name'] ?? ($n->data['uploader_name'] ?? ($n->data['author_name'] ?? ($n->data['reporter_name'] ?? 'System'))),
 
                     // Content

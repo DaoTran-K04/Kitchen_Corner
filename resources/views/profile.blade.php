@@ -146,7 +146,7 @@
 
                                     <div class="group relative cursor-help">
                                         @if($iconUrl)
-                                            <img src="{{ $iconUrl }}" alt="{{ $badge->name }}"
+                                            <img loading="lazy" src="{{ $iconUrl }}" alt="{{ $badge->name }}"
                                                 class="w-12 h-12 object-contain drop-shadow-sm transform group-hover:scale-110 transition duration-300"
                                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md\'>🏆</div>';">
                                         @elseif($icon && mb_strlen($icon) <= 4)
@@ -200,7 +200,7 @@
                                                     {{ $loop->iteration }}
                                                 </div>
                                                 @if($iconUrl)
-                                                    <img src="{{ $iconUrl }}" alt="{{ $badge->name }}"
+                                                    <img loading="lazy" src="{{ $iconUrl }}" alt="{{ $badge->name }}"
                                                         class="w-12 h-12 object-contain drop-shadow-sm ring-2 ring-blue-300 ring-offset-1 rounded-lg"
                                                         onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22gold%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22/></svg>';">
                                                 @elseif($icon && mb_strlen($icon) <= 4)
@@ -266,7 +266,7 @@
                                             <!-- Frame Preview -->
                                             <div
                                                 class="aspect-square bg-gray-50 rounded overflow-hidden flex items-center justify-center">
-                                                <img src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                                                <img loading="lazy" src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                                                     alt="{{ $frame->name }}" class="w-full h-full object-contain">
                                             </div>
 
@@ -308,7 +308,7 @@
                                             <!-- Frame Preview -->
                                             <div
                                                 class="aspect-square bg-gray-50 rounded overflow-hidden flex items-center justify-center">
-                                                <img src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                                                <img loading="lazy" src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                                                     alt="{{ $frame->name }}" class="w-full h-full object-contain">
                                             </div>
 
@@ -470,7 +470,7 @@
                                 @foreach($reviews->take(3) as $post)
                                     <div class="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition group relative">
                                         <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="absolute inset-0 z-0"></a>
-                                        <img src="{{ $post->thumbnail }}" 
+                                        <img loading="lazy" src="{{ $post->thumbnail }}" 
                                              loading="lazy"
                                              class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0"
                                              onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">
@@ -606,7 +606,7 @@
                                     <div class="flex items-center gap-4">
                                         <a href="{{ route('recipes.show', $post->slug ?? $post->id) }}" class="block shrink-0 relative z-10">
                                             {{-- Sửa lại đường dẫn ảnh cho chuẩn --}}
-                                            <img src="{{ $post->thumbnail }}"
+                                            <img loading="lazy" src="{{ $post->thumbnail }}"
                                                 loading="lazy"
                                                 class="w-12 h-16 object-cover rounded shadow-sm border border-gray-200"
                                                 onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">
@@ -642,7 +642,7 @@
 
                                 {{-- Nội dung review (Render HTML an toàn) --}}
                                 <div class="text-gray-500 text-sm line-clamp-3 prose prose-sm max-w-none">
-                                    {!! $post->content !!}
+                                    {{ strip_tags($post->content) }}
                                 </div>
 
                                 {{-- FOOTER --}}
@@ -749,7 +749,7 @@
                                     @if($book->status == 'published')
                                         <a href="{{ route('recipes.show', $book->slug ?? $book->id) }}">
                                     @endif
-                                        <img src="{{ $book->thumbnail }}"
+                                        <img loading="lazy" src="{{ $book->thumbnail }}"
                                             loading="lazy"
                                             class="w-full h-full object-cover transition group-hover:opacity-90"
                                             onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=400'">
@@ -841,7 +841,7 @@
 
                                         <div class="flex gap-5">
                                             <a href="{{ route('recipes.show', $savedPost->slug ?? $savedPost->id) }}" class="flex-shrink-0">
-                                                <img src="{{ $savedPost->image ? (Str::startsWith($savedPost->image, 'http') ? $savedPost->image : asset('storage/' . $savedPost->image)) : 'https://placehold.co/80x120' }}"
+                                                <img loading="lazy" src="{{ $savedPost->image ? (Str::startsWith($savedPost->image, 'http') ? $savedPost->image : asset('storage/' . $savedPost->image)) : 'https://placehold.co/80x120' }}"
                                                     class="w-20 h-28 object-cover rounded-lg shadow-sm group-hover:shadow-md transition">
                                             </a>
 
@@ -849,7 +849,7 @@
                                                 {{-- Tác giả bài viết --}}
                                                 <div class="flex items-center gap-2 mb-2">
                                                     <a href="{{ route('public.profile', $savedPost->user->id) }}" class="relative z-10">
-                                                        <img src="{{ $savedPost->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($savedPost->user->name) }}"
+                                                        <img loading="lazy" src="{{ $savedPost->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($savedPost->user->name) }}"
                                                             class="w-7 h-7 rounded-full border border-gray-200">
                                                     </a>
                                                     <a href="{{ route('public.profile', $savedPost->user->id) }}"
@@ -912,7 +912,7 @@
                                                             class="space-y-2 mb-3 pl-3 border-l-2 border-gray-100 max-h-40 overflow-y-auto">
                                                             @foreach($savedPost->comments->take(5) as $comment)
                                                                 <div class="flex gap-2">
-                                                                    <img src="{{ $comment->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->name) }}"
+                                                                    <img loading="lazy" src="{{ $comment->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($comment->user->name) }}"
                                                                         class="w-6 h-6 rounded-full mt-0.5">
                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
                                                                         <span class="font-bold text-gray-700">{{ $comment->user->name }}</span>
@@ -926,7 +926,7 @@
                                                     <form onsubmit="submitSavedComment({{ $savedPost->id }}, event)"
                                                         class="flex gap-2 items-center">
                                                         @csrf
-                                                        <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}"
+                                                        <img loading="lazy" src="{{ optional(Auth::user())->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}"
                                                             class="w-8 h-8 rounded-full">
                                                         <input type="text" name="content" required
                                                             class="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-brand-green"
@@ -1043,7 +1043,7 @@
                                                     : null;
                                             @endphp
                                             @if($coverUrl)
-                                                <img src="{{ $coverUrl }}"
+                                                <img loading="lazy" src="{{ $coverUrl }}"
                                                     alt="{{ $post->title }}"
                                                     class="w-12 h-16 object-cover rounded shadow-sm flex-shrink-0 opacity-60">
                                             @else
@@ -1262,12 +1262,12 @@
                     let html = '<div class="space-y-3">';
                     users.forEach(u => {
                         // Logic lấy avatar (Nếu null thì dùng UI Avatars)
-                        const avatar = u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random`;
+                        const avatar = u.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(u.name)}&background=random`;
 
                         // Link tới profile người đó
                         html += `
                                                                 <a href="/profile/${u.id}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition group border border-transparent hover:border-gray-100">
-                                                                    <img src="${avatar}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                                                                    <img loading="lazy" src="${avatar}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
                                                                     <div>
                                                                         <h4 class="font-bold text-gray-800 text-sm group-hover:text-brand-green transition">${u.name}</h4>
                                                                     </div>
@@ -1610,8 +1610,8 @@
                                 {{-- Preview ảnh --}}
                                 <div class="flex justify-center mb-4">
                                     <div class="relative group">
-                                        <img id="avatarPreview"
-                                            src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
+                                        <img loading="lazy" id="avatarPreview"
+                                            src="{{ $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
                                             class="w-28 h-28 rounded-full border-4 border-brand-beige shadow-lg object-cover">
                                     </div>
                                 </div>
@@ -1846,7 +1846,7 @@
                             const newComment = document.createElement('div');
                             newComment.className = 'flex gap-2';
                             newComment.innerHTML = `
-                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
+                                                                                    <img loading="lazy" src="{{ optional(Auth::user())->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
                                                                                         <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>
@@ -1915,8 +1915,8 @@
                                 {{-- Preview ảnh --}}
                                 <div class="flex justify-center mb-4">
                                     <div class="relative group">
-                                        <img id="avatarPreview"
-                                            src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
+                                        <img loading="lazy" id="avatarPreview"
+                                            src="{{ $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
                                             class="w-28 h-28 rounded-full border-4 border-brand-beige shadow-lg object-cover">
                                     </div>
                                 </div>
@@ -2150,7 +2150,7 @@
                                 const newComment = document.createElement('div');
                                 newComment.className = 'flex gap-2';
                                 newComment.innerHTML = `
-                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
+                                                                                    <img loading="lazy" src="{{ optional(Auth::user())->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
                                                                                         <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>
@@ -2220,8 +2220,8 @@
                                 {{-- Preview ảnh --}}
                                 <div class="flex justify-center mb-4">
                                     <div class="relative group">
-                                        <img id="avatarPreview"
-                                            src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
+                                        <img loading="lazy" id="avatarPreview"
+                                            src="{{ $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128' }}"
                                             class="w-28 h-28 rounded-full border-4 border-brand-beige shadow-lg object-cover">
                                     </div>
                                 </div>
@@ -2455,7 +2455,7 @@
                                 const newComment = document.createElement('div');
                                 newComment.className = 'flex gap-2';
                                 newComment.innerHTML = `
-                                                                                    <img src="{{ optional(Auth::user())->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
+                                                                                    <img loading="lazy" src="{{ optional(Auth::user())->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional(Auth::user())->name ?? 'Guest') }}" 
                                                                                          class="w-6 h-6 rounded-full mt-0.5">
                                                                                     <div class="bg-gray-50 px-3 py-2 rounded-lg text-sm flex-1">
                                                                                         <span class="font-bold text-gray-700">{{ optional(Auth::user())->name ?? 'Guest' }}</span>

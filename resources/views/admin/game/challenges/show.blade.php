@@ -151,7 +151,7 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700">
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <img src="{{ $uc->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($uc->user->name) }}"
+                                    <img loading="lazy" src="{{ $uc->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($uc->user->name) }}"
                                         class="w-8 h-8 rounded-full mr-3" alt="">
                                     <div>
                                         <p class="font-medium text-gray-800 dark:text-white">{{ $uc->user->name }}</p>

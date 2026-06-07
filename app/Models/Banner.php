@@ -9,5 +9,5 @@ class Banner extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'tag', 'description', 'image', 'rating', 'link', 'is_active', 'order'];
+    protected $fillable = ['title', 'tag', 'description', 'image', 'link', 'is_active', 'order'];
 }

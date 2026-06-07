@@ -47,7 +47,7 @@
 
                         <div class="flex items-center justify-between border-y border-gray-100 py-4">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($article->user->name ?? 'A') }}&background=random" 
+                                <img loading="lazy" src="https://api.dicebear.com/7.x/initials/svg?seed={{ urlencode($article->user->name ?? 'A') }}&background=random" 
                                      class="w-10 h-10 rounded-full border border-gray-100">
                                 <div>
                                     <p class="text-sm font-bold text-gray-900">{{ $article->user->name ?? 'Admin' }}</p>
@@ -67,7 +67,7 @@
                     {{-- 2. Ảnh Cover Lớn --}}
                     @if($article->thumbnail)
                         <div class="mb-10 rounded-xl overflow-hidden shadow-lg">
-                            <img src="{{ Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail) }}" 
+                            <img loading="lazy" src="{{ Str::startsWith($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail) }}" 
                                  class="w-full h-auto object-cover" 
                                  alt="{{ $article->title }}">
                         </div>
@@ -93,7 +93,7 @@
                             {{-- Placeholder cho bài liên quan --}}
                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 flex gap-3 items-center cursor-pointer hover:bg-gray-100 transition">
                                 <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
-                                    <img src="https://source.unsplash.com/random/100x100?book" class="w-full h-full object-cover">
+                                    <img loading="lazy" src="https://source.unsplash.com/random/100x100?book" class="w-full h-full object-cover">
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-brand-green font-bold uppercase">Mẹo đọc</span>

@@ -188,8 +188,17 @@ class HomeController extends Controller
         // Lấy 8 công thức nổi bật để hiển thị ở section slider
         // Lấy 8 công thức nổi bật (CACHE 30p)
         $latestPosts = \Illuminate\Support\Facades\Cache::remember('home_featured_posts', 1800, function() {
-            $posts = Recipe::with(['user', 'category'])->where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
-            return $posts->isEmpty() ? Recipe::with(['user', 'category'])->where('status', 'published')->latest()->take(8)->get() : $posts;
+            $featured = Recipe::with(['user', 'category'])->where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
+            if ($featured->count() < 8) {
+                $more = Recipe::with(['user', 'category'])
+                    ->where('status', 'published')
+                    ->whereNotIn('id', $featured->pluck('id')->toArray()) // tránh trùng lặp
+                    ->latest()
+                    ->take(8 - $featured->count())
+                    ->get();
+                return $featured->merge($more);
+            }
+            return $featured;
         });
         
         $hotPosts = \Illuminate\Support\Facades\Cache::remember('home_hot_posts', 1800, function() {
@@ -323,7 +332,7 @@ class HomeController extends Controller
             'success'     => true,
             'reply_id'    => $reply->id,
             'user_name'   => $user->name,
-            'user_avatar' => $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random',
+            'user_avatar' => $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=random',
             'user_frame'  => $frameUrl,
             'content'     => $reply->content,
             'time'        => $reply->created_at->diffForHumans(),
@@ -478,7 +487,7 @@ class HomeController extends Controller
                 'title'       => $title,
                 'icon'        => $icon,
                 'color'       => $color,
-                'user_avatar' => $notification->data['user_avatar'] ?? 'https://ui-avatars.com/api/?name=User',
+                'user_avatar' => $notification->data['user_avatar'] ?? 'https://api.dicebear.com/7.x/initials/svg?seed=User',
                 'user_name'   => $notification->data['user_name']   ?? '',
                 'message'     => $notification->data['message']     ?? 'đã tương tác với bạn',
                 'post_title'  => \Str::limit($notification->data['post_title'] ?? ($notification->data['recipe_title'] ?? ''), 50),

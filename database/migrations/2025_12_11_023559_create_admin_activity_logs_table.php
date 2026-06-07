@@ -13,9 +13,9 @@ return new class extends Migration {
         Schema::create('admin_activity_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
-            $table->string('action'); // create, update, delete, login, logout, export, etc.
-            $table->string('description'); // Mô tả hành động
-            $table->string('model_type')->nullable(); // App\Models\Recipe, App\Models\Post, etc.
+            $table->string('action', 50); // create, update, delete, login, logout, export, etc.
+            $table->string('description', 200); // Mô tả hành động
+            $table->string('model_type', 100)->nullable(); // App\Models\Recipe, App\Models\Post, etc.
             $table->unsignedBigInteger('model_id')->nullable(); // ID của đối tượng bị tác động
             $table->json('old_values')->nullable(); // Giá trị cũ (cho update/delete)
             $table->json('new_values')->nullable(); // Giá trị mới (cho create/update)

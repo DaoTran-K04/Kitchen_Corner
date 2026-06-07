@@ -5,7 +5,7 @@
     {{-- Shadow & Background container (Separate so overflow-hidden doesn't clip absolute dropdowns) --}}
     <div id="header-bg-container" class="absolute inset-0 z-0 bg-brand-green rounded-b-[40px] shadow-[0_15px_50px_rgba(155,34,38,0.2)] lg:rounded-b-[80px] overflow-hidden transition-all duration-500 origin-top opacity-100 scale-y-100">
         {{-- Beautiful Background Image with soft dark red overlay --}}
-        <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Header Background">
+        <img loading="lazy" src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover opacity-50 mix-blend-overlay" alt="Header Background">
         <div class="absolute inset-0 bg-gradient-to-b from-brand-green/95 via-brand-green/90 to-brand-green/95"></div>
     </div>
 
@@ -126,7 +126,7 @@
                                                 <i class="{{ $icon }} {{ $iconColor }} text-sm"></i>
                                             </div>
                                         @else
-                                            <img src="{{ $notification->data['avatar'] ?? 'https://ui-avatars.com/api/?name=User' }}"
+                                            <img loading="lazy" src="{{ $notification->data['avatar'] ?? 'https://api.dicebear.com/7.x/initials/svg?seed=User' }}"
                                                 class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
                                         @endif
                                     </div>
@@ -567,7 +567,7 @@
 
                         html += `
                         <a href="${detailUrl}" class="flex items-center gap-4 p-3 hover:bg-red-50/50 rounded-2xl transition cursor-pointer group border border-transparent hover:border-red-100">
-                            <img src="${imgUrl}" class="w-14 h-14 object-cover rounded-[1rem] shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/50x50?text=Food'">
+                            <img loading="lazy" src="${imgUrl}" class="w-14 h-14 object-cover rounded-[1rem] shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/50x50?text=Food'">
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-[13px] font-bold text-gray-800 line-clamp-1 group-hover:text-brand-green transition-colors">${highlightedTitle}</h4>
                                 <p class="text-[11px] text-gray-500 font-medium mt-1 uppercase tracking-wider flex gap-3">

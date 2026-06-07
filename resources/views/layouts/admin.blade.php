@@ -574,6 +574,21 @@
                         <span class="font-medium text-sm">Quản Lý Banner</span>
                     </a>
 
+                    <a href="{{ route('admin.feedbacks.index') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.feedbacks.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        <i
+                            class="fas fa-envelope-open-text w-5 text-center {{ request()->routeIs('admin.feedbacks.*') ? 'text-white' : 'text-slate-400 group-hover:text-amber-400' }}"></i>
+                        <span class="font-medium text-sm">Quản Lý Góp Ý</span>
+                        @php
+                            $pendingFeedbacks = \App\Models\Feedback::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingFeedbacks > 0)
+                            <span class="ml-auto min-w-[20px] h-5 flex items-center justify-center bg-gradient-to-r from-orange-400 to-red-500 text-white text-[10px] font-bold px-1.5 rounded-full shadow-md shadow-orange-500/30 badge-blink">
+                                {{ $pendingFeedbacks }}
+                            </span>
+                        @endif
+                    </a>
+
 
                     <a href="{{ route('admin.articles.index') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
@@ -615,7 +630,30 @@
                         <span class="font-medium text-sm">Quản Lý Danh Mục</span>
                     </a>
 
+                    <a href="{{ route('admin.ingredients.index') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.ingredients.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        <i
+                            class="fas fa-carrot w-5 text-center {{ request()->routeIs('admin.ingredients.*') ? 'text-white' : 'text-slate-400 group-hover:text-orange-500' }}"></i>
+                        <span class="font-medium text-sm">Quản Lý Nguyên Liệu</span>
+                    </a>
 
+
+
+                    {{-- Trạm Kiểm Duyệt AI --}}
+                    <a href="{{ route('admin.ai-moderation.index') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.ai-moderation.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        <i
+                            class="fas fa-shield-alt w-5 text-center {{ request()->routeIs('admin.ai-moderation.*') ? 'text-white' : 'text-slate-400 group-hover:text-blue-400' }}"></i>
+                        <span class="font-medium text-sm">Trạm kiểm duyệt AI</span>
+                    </a>
+
+                    {{-- Cấu Hình Chatbot --}}
+                    <a href="{{ route('admin.chatbot-settings.index') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.chatbot-settings.*') ? 'bg-[#9b2226] text-white shadow-md shadow-red-900/20' : 'hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
+                        <i
+                            class="fas fa-robot w-5 text-center {{ request()->routeIs('admin.chatbot-settings.*') ? 'text-white' : 'text-slate-400 group-hover:text-green-400' }}"></i>
+                        <span class="font-medium text-sm">Cấu Hình Chatbot</span>
+                    </a>
 
                     {{-- Báo Cáo Bình Luận --}}
                     <a href="{{ route('admin.comment-reports.index') }}"
@@ -794,6 +832,16 @@
                         {{-- Nội Dung --}}
                         <div class="space-y-1">
                             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nội Dung</p>
+                            <a href="{{ route('admin.ai-moderation.index') }}"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.ai-moderation.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                <i class="fas fa-shield-alt w-5 text-center"></i>
+                                <span class="font-medium text-sm">Trạm kiểm duyệt AI</span>
+                            </a>
+                            <a href="{{ route('admin.chatbot-settings.index') }}"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.chatbot-settings.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                <i class="fas fa-robot w-5 text-center"></i>
+                                <span class="font-medium text-sm">Cấu Hình Chatbot</span>
+                            </a>
                             <a href="{{ route('admin.banners.index') }}"
                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.banners.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-images w-5 text-center"></i>
@@ -824,6 +872,11 @@
                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.categories.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                                 <i class="fas fa-tags w-5 text-center"></i>
                                 <span class="font-medium text-sm">Quản Lý Danh Mục</span>
+                            </a>
+                            <a href="{{ route('admin.ingredients.index') }}"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.ingredients.*') ? 'bg-[#9b2226] text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                                <i class="fas fa-carrot w-5 text-center"></i>
+                                <span class="font-medium text-sm">Quản Lý Nguyên Liệu</span>
                             </a>
 
                         </div>

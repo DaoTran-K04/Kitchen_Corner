@@ -46,7 +46,7 @@
                     <div class="flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
                             @if($badge->icon && (Str::startsWith($badge->icon, 'http') || Str::startsWith($badge->icon, 'data:')))
-                                <img src="{{ $badge->icon }}" alt="{{ $badge->name }}" class="w-10 h-10 object-contain rounded"
+                                <img loading="lazy" src="{{ $badge->icon }}" alt="{{ $badge->name }}" class="w-10 h-10 object-contain rounded"
                                     referrerpolicy="no-referrer">
                             @else
                                 <span class="text-3xl">{{ $badge->icon ?? '🏅' }}</span>

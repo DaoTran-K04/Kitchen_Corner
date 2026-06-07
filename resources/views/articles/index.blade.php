@@ -11,7 +11,7 @@
 
 
     <div class="absolute inset-0 opacity-20">
-        <img src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="">
+        <img loading="lazy" src="{{ asset('images/auth/kitchen_1.png') }}" class="w-full h-full object-cover" alt="">
     </div>
     <div class="absolute inset-0 bg-gradient-to-b from-brand-green/70 to-brand-green/90"></div>
     <div class="container mx-auto px-4 relative z-10 text-center">
@@ -56,7 +56,7 @@
             <a href="{{ route('articles.show', $article->slug) }}"
                 class="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
                 <div class="relative overflow-hidden h-56">
-                    <img src="{{ $article->thumbnail }}"
+                    <img loading="lazy" src="{{ $article->thumbnail }}"
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         alt="{{ $article->title }}">
 

@@ -30,7 +30,7 @@
 <body class="font-sans min-h-screen flex items-center justify-center p-4 relative bg-gray-50">
     <!-- Beautiful Full Background Image -->
     <div class="absolute inset-0 z-0">
-        <img src="{{ asset('images/auth/kitchen_1.png') }}" alt="Kitchen Background" class="w-full h-full object-cover" />
+        <img loading="lazy" src="{{ asset('images/auth/kitchen_1.png') }}" alt="Kitchen Background" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
     </div>
 
@@ -38,7 +38,7 @@
         <div class="p-8 text-center text-white relative overflow-hidden">
             <!-- Header Image -->
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('images/auth/kitchen_2.png') }}" alt="Cooking" class="w-full h-full object-cover" />
+                <img loading="lazy" src="{{ asset('images/auth/kitchen_2.png') }}" alt="Cooking" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-brand-green/80"></div>
             </div>
             

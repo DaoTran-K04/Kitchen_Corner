@@ -69,13 +69,13 @@
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Ảnh bìa</label>
                 <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-green-400 transition" onclick="document.getElementById('coverImage').click()">
                     @if($recipe->image)
-                        <img id="coverPreview" src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" class="mx-auto max-h-48 rounded-xl mb-3 object-cover">
+                        <img loading="lazy" id="coverPreview" src="{{ $recipe->thumbnail }}" alt="{{ $recipe->title }}" class="mx-auto max-h-48 rounded-xl mb-3 object-cover">
                         <div id="coverPlaceholder" class="hidden">
                             <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
                             <p class="text-gray-400 text-sm">Nhấn để thay đổi ảnh</p>
                         </div>
                     @else
-                        <img id="coverPreview" src="" alt="" class="mx-auto max-h-48 rounded-xl mb-3 hidden object-cover">
+                        <img loading="lazy" id="coverPreview" src="" alt="" class="mx-auto max-h-48 rounded-xl mb-3 hidden object-cover">
                         <div id="coverPlaceholder">
                             <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
                             <p class="text-gray-400 text-sm">Nhấn để chọn ảnh (JPG, PNG, WebP – tối đa 3MB)</p>
@@ -189,9 +189,9 @@
                             <div class="flex items-center gap-3">
                                 <input type="file" name="steps[{{ $idx }}][image]" accept="image/*" class="text-xs text-gray-400">
                                 @if(is_array($step) && isset($step['image']) && is_string($step['image']))
-                                    <img src="{{ asset('storage/' . $step['image']) }}" alt="Ảnh bước {{ $idx + 1 }}" class="h-10 w-10 object-cover rounded-md border">
+                                    <img loading="lazy" src="{{ asset('storage/' . $step['image']) }}" alt="Ảnh bước {{ $idx + 1 }}" class="h-10 w-10 object-cover rounded-md border">
                                 @elseif(isset($step['image']) && is_string($step['image']))
-                                    <img src="{{ asset('storage/' . $step['image']) }}" alt="Ảnh bước {{ $idx + 1 }}" class="h-10 w-10 object-cover rounded-md border">
+                                    <img loading="lazy" src="{{ asset('storage/' . $step['image']) }}" alt="Ảnh bước {{ $idx + 1 }}" class="h-10 w-10 object-cover rounded-md border">
                                 @endif
                             </div>
                         </div>
@@ -322,6 +322,18 @@ function removeStep(btn) {
         row.querySelector('.step-num').textContent = idx + 1;
     });
 }
+
+// Cảnh báo nếu không có ảnh
+const hasExistingImage = {{ $recipe->image ? 'true' : 'false' }};
+document.getElementById('recipeForm').addEventListener('submit', function(e) {
+    const coverImage = document.getElementById('coverImage');
+    if (!coverImage.value && !hasExistingImage) {
+        if (!confirm('Bạn chưa tải lên ảnh bìa. Hệ thống sẽ tự động gán ảnh ngẫu nhiên. Bạn có chắc chắn muốn tiếp tục?')) {
+            e.preventDefault();
+        }
+    }
+});
+
 </script>
 @endpush
 @endsection

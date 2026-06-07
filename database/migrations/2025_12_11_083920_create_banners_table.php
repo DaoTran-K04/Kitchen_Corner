@@ -13,14 +13,13 @@ return new class extends Migration
 {
     Schema::create('banners', function (Blueprint $table) {
         $table->id();
-        $table->string('title');        // Tiêu đề sách
-        $table->string('tag')->nullable(); // Tag (vd: Sách của tháng)
+        $table->string('title', 150);        // Tiêu đề sách
+        $table->string('tag', 50)->nullable(); // Tag (vd: Sách của tháng)
         $table->text('description')->nullable(); // Mô tả ngắn/Trích dẫn
-        $table->string('image');        // Link ảnh bìa
-        $table->string('rating')->nullable(); // Đánh giá (vd: 4.9/5.0)
-        $table->string('link')->nullable();   // Link khi bấm vào (vd: link tới sách)
+        $table->string('image', 200);        // Link ảnh bìa
+        $table->string('link', 200)->nullable();   // Link khi bấm vào (vd: link tới sách)
         $table->boolean('is_active')->default(true); // Ẩn/Hiện
-        $table->integer('order')->default(0); // Thứ tự hiển thị
+        $table->unsignedTinyInteger('order')->default(0); // Thứ tự hiển thị
         $table->timestamps();
     });
 }

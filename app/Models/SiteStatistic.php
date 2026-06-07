@@ -22,10 +22,11 @@ class SiteStatistic extends Model
      */
     public static function incrementValue(string $key, int $amount = 1): void
     {
-        self::updateOrCreate(
+        $stat = self::firstOrCreate(
             ['key' => $key],
-            ['value' => \DB::raw("COALESCE(value, 0) + {$amount}")]
+            ['value' => 0]
         );
+        $stat->increment('value', $amount);
     }
 
     /**

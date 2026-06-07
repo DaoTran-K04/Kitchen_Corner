@@ -16,7 +16,7 @@
                 {{ ($recipes->currentPage() - 1) * $recipes->perPage() + $index + 1 }}
             </td>
             <td class="px-5 py-3">
-                <img src="{{ $recipe->thumbnail }}" 
+                <img loading="lazy" src="{{ $recipe->thumbnail }}" 
                      alt="{{ $recipe->title }}" 
                      class="w-14 h-14 rounded-xl object-cover border-2 border-white dark:border-slate-600 shadow-md transform group-hover:scale-105 transition-transform duration-300"
                      onerror="this.src='https://images.unsplash.com/photo-1495195129352-aed325a55b65?w=200'">

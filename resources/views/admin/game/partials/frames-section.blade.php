@@ -45,7 +45,7 @@
                     data-status="{{ $frame->is_active ? 'active' : 'inactive' }}">
                     {{-- Preview Image --}}
                     <div class="h-20 w-20 mx-auto mb-3 flex items-center justify-center">
-                        <img src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                        <img loading="lazy" src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                             alt="{{ $frame->name }}" class="max-h-full max-w-full object-contain"
                             referrerpolicy="no-referrer">
                     </div>

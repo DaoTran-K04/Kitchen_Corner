@@ -61,7 +61,7 @@
                         <div id="image-preview-container" class="hidden mb-3">
                             <div
                                 class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-slate-600 w-full h-40 bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                                <img id="image-preview" src="" class="max-h-full max-w-full object-contain">
+                                <img loading="lazy" id="image-preview" src="" class="max-h-full max-w-full object-contain">
                                 <button type="button" onclick="clearPreview()"
                                     class="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition">
                                     <i class="fas fa-times text-xs"></i>

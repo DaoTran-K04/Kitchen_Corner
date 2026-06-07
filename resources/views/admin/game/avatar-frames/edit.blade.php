@@ -43,7 +43,7 @@
                             tại</label>
                         <div
                             class="mb-3 rounded-lg overflow-hidden border border-gray-200 dark:border-slate-600 w-32 h-32 bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                            <img src="{{ Str::startsWith($frame->frame_image, 'http') ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
+                            <img loading="lazy" src="{{ (Str::startsWith($frame->frame_image, 'http') || Str::startsWith($frame->frame_image, 'data:')) ? $frame->frame_image : asset('storage/' . $frame->frame_image) }}"
                                 class="max-h-full max-w-full object-contain">
                         </div>
                     </div>
