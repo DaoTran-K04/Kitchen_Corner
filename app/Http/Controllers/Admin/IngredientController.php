@@ -23,6 +23,11 @@ class IngredientController extends Controller
 
         $ingredients = $query->orderBy('name')->paginate(15)->withQueryString();
 
+        // Redirect to the last page if the requested page is out of bounds (e.g. after deletion)
+        if ($ingredients->currentPage() > $ingredients->lastPage() && $ingredients->lastPage() > 0) {
+            return redirect()->route('admin.ingredients.index', array_merge($request->query(), ['page' => $ingredients->lastPage()]));
+        }
+
         return view('admin.ingredients.index', compact('ingredients'));
     }
 

@@ -13,7 +13,7 @@ class SyncIngredientNutrition extends Command
      *
      * @var string
      */
-    protected $signature = 'ingredients:sync-nutrition';
+    protected $signature = 'ingredients:sync-nutrition {--force : Force sync all ingredients to Supabase}';
 
     /**
      * The console command description.
@@ -29,8 +29,12 @@ class SyncIngredientNutrition extends Command
     {
         $this->info('Bắt đầu đồng bộ dữ liệu dinh dưỡng nguyên liệu...');
 
-        // Find ingredients that have 0 calories (assuming they haven't been synced)
-        $ingredients = Ingredient::where('calories_per_unit', 0)->get();
+        if ($this->option('force')) {
+            $ingredients = Ingredient::all();
+            $this->warn('Chế độ Force: Đồng bộ tất cả nguyên liệu lên Supabase...');
+        } else {
+            $ingredients = Ingredient::where('calories_per_unit', 0)->get();
+        }
 
         if ($ingredients->isEmpty()) {
             $this->info('Tất cả nguyên liệu đã có dữ liệu dinh dưỡng.');
@@ -47,7 +51,7 @@ class SyncIngredientNutrition extends Command
             // Lấy thông tin dinh dưỡng (hàm này sẽ tự động lưu vào SupabaseIngredient cache)
             $info = $spoonacularService->getNutritionInfo($ingredient->name);
 
-            if ($info) {
+            if ($info && ($info->calories > 0 || $info->protein > 0 || $info->carbs > 0 || $info->fat > 0)) {
                 // Info in DB is based on 100g. 
                 // We assume Ingredient unit is 'g' or 'ml' and we store per 100g.
                 // If the local ingredient has a different default unit (like 'củ', 'trái'), 
@@ -60,6 +64,8 @@ class SyncIngredientNutrition extends Command
                 ]);
                 $successCount++;
             } else {
+                // Xóa nguyên liệu không có thông số hoặc không tìm thấy trên API
+                $ingredient->delete();
                 $failCount++;
             }
 

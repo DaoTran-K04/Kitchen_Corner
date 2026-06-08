@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name', 50);
             $table->string('slug', 60)->unique();
             $table->text('description')->nullable();
-            $table->string('icon', 200)->nullable();
+            $table->string('icon', 100)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

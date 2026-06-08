@@ -13,6 +13,9 @@ class AdminBannerCreateTest extends DuskTestCase
      */
     public function test_create_banner(): void
     {
+        // Cleanup
+        \App\Models\Banner::where('title', 'Banner Test Tự Động')->delete();
+
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
                     ->pause(1000)
@@ -41,7 +44,8 @@ class AdminBannerCreateTest extends DuskTestCase
                     // Bỏ qua is_active vì nó bị ẩn bằng class sr-only (mặc định đã checked rồi)
                     // Bấm nút Lưu
                     ->press('Lưu')
-                    ->pause(60000); // Tạm dừng 1 phút thay vì 10 phút để bạn tự xem kết quả
+                    ->pause(2000)
+                    ->assertSee('Banner Test Tự Động');
         });
     }
 }

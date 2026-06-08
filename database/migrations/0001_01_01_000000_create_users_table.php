@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 60);
-            $table->string('avatar', 200)->nullable();
+            $table->string('avatar', 150)->nullable();
             $table->text('bio')->nullable();
             // Vai trò người dùng: 0 = User, 1 = Admin
             $table->enum('role', ['user', 'admin'])->default('user');

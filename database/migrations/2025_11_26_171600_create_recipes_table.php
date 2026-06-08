@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('total_protein')->nullable()->comment('in grams');
             $table->unsignedSmallInteger('total_carbs')->nullable()->comment('in grams');
             $table->unsignedSmallInteger('total_fat')->nullable()->comment('in grams');
-            $table->string('image', 200)->nullable();
+            $table->string('image', 150)->nullable();
             $table->unsignedInteger('view_count')->default(0);
             $table->boolean('is_featured')->default(false);
             $table->enum('status', ['draft', 'published', 'hidden', 'pending_delete'])->default('published');

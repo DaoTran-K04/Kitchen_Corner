@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('challenges', function (Blueprint $table) {
-            $table->string('action_type')->default('post_recipe')->after('name')->comment('post_recipe, post_comment');
+            $table->string('action_type', 50)->default('post_recipe')->after('name')->comment('post_recipe, post_comment');
         });
     }
 

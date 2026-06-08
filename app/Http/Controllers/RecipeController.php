@@ -22,6 +22,7 @@ class RecipeController extends Controller
     public function index(Request $request)
     {
         $query = Recipe::with(['user', 'category'])
+            ->withCount(['likes', 'comments'])
             ->where('status', 'published');
 
         // Lọc theo danh mục
@@ -117,7 +118,7 @@ class RecipeController extends Controller
         if (Auth::check()) {
             $userLiked = Like::where('user_id', Auth::id())->where('recipe_id', $recipe->id)->exists();
             $userSaved = Collection::where('user_id', Auth::id())
-                ->whereHas('recipes', fn($q) => $q->where('recipe_id', $recipe->id))
+                ->whereHas('recipes', fn($q) => $q->where('recipes.id', $recipe->id))
                 ->exists();
         }
 
@@ -434,6 +435,7 @@ class RecipeController extends Controller
         $categoryId = $request->get('category');
 
         $query = Recipe::with(['user', 'category'])
+            ->withCount(['likes', 'comments'])
             ->where('status', 'published');
 
         if ($keyword) {
@@ -470,7 +472,7 @@ class RecipeController extends Controller
 
         // Lấy sẵn các quan hệ và số lượt likes
         $baseQuery = Recipe::with(['ingredients', 'user', 'category'])
-            ->withCount('likes')
+            ->withCount(['likes', 'comments'])
             ->where('status', 'published');
 
         // --- A. LUÔN LẤY AI RECOMMENDED RECIPES (Dành riêng cho bạn) ---

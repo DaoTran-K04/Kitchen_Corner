@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->string('title', 150);            // Tiêu đề bài viết
         $table->string('slug', 170)->unique();   // Đường dẫn thân thiện (SEO)
-        $table->string('thumbnail', 200)->nullable(); // Ảnh bìa
+        $table->string('thumbnail', 150)->nullable(); // Ảnh bìa
         $table->string('tag', 30)->nullable();  // Nhãn (Ví dụ: Mẹo Đọc, Cảm Hứng)
         $table->text('excerpt')->nullable();// Mô tả ngắn
         $table->longText('content');        // Nội dung chi tiết

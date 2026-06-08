@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('protein_per_unit')->default(0);
             $table->unsignedSmallInteger('carbs_per_unit')->default(0);
             $table->unsignedSmallInteger('fat_per_unit')->default(0);
-            $table->string('icon', 200)->nullable();
+            $table->string('icon', 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

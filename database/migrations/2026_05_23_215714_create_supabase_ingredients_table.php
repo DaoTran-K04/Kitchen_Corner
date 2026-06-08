@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('protein', 6, 2)->unsigned()->default(0);
             $table->decimal('carbs', 6, 2)->unsigned()->default(0);
             $table->decimal('fat', 6, 2)->unsigned()->default(0);
-            $table->string('image_url', 200)->nullable();
+            $table->string('image_url', 150)->nullable();
             $table->timestamps();
         });
     }

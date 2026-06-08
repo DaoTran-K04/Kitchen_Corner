@@ -8,7 +8,7 @@ use App\Http\Controllers\ChatbotController;
 
 class TestChatbot extends Command
 {
-    protected $signature = 'test:chatbot {--q1 : Test Câu 1 (Code)} {--q2 : Test Câu 2 (Nấu cháo)}';
+    protected $signature = 'test:chatbot {--q1 : Test Câu 1 (Code)} {--q2 : Test Câu 2 (Nấu cháo)} {--msg= : Test câu hỏi tùy chọn}';
     protected $description = 'Test Chatbot Controller Directly';
 
     public function handle()
@@ -21,8 +21,10 @@ class TestChatbot extends Command
             $msg = "Chào bạn, bạn có thể hướng dẫn tôi viết code lập trình một website được không?";
         } elseif ($this->option('q2')) {
             $msg = "Xin chào, hôm nay tôi hơi mệt, bạn có món cháo nào nấu nhanh giúp giải cảm không?";
+        } elseif ($this->option('msg')) {
+            $msg = $this->option('msg');
         } else {
-            $this->error("Vui lòng chọn cờ --q1 hoặc --q2 để test.");
+            $this->error("Vui lòng chọn cờ --q1, --q2 hoặc --msg để test.");
             return;
         }
 

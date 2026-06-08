@@ -225,6 +225,89 @@
                     </section>
                 @endif
 
+                {{-- 1.6. ĐỀ XUẤT CÁ NHÂN HÓA (DÀNH RIÊNG CHO BẠN) --}}
+                @auth
+                    @if(isset($personalizedRecipes) && $personalizedRecipes->count() > 0)
+                        <section id="personalized-recipes-slider"
+                            class="relative group/slider bg-gradient-to-br from-brand-green/5 to-transparent rounded-[2.5rem] p-8 border border-white/50 shadow-soft reveal mt-16 mb-16">
+                            
+                            {{-- Decorative Element --}}
+                            <div class="absolute -top-6 -left-6 w-32 h-32 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                            {{-- Header --}}
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 relative gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-brand-accent to-orange-400 rounded-xl flex items-center justify-center shadow-md">
+                                        <i class="fas fa-magic text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg sm:text-xl font-bold text-brand-green font-serif">
+                                            Dành Riêng Cho Bạn
+                                        </h2>
+                                        <p class="text-xs text-gray-500">Dựa trên sở thích và hoạt động của bạn</p>
+                                    </div>
+                                </div>
+                                <a href="{{ route('recipes.list') }}" class="text-xs text-brand-green hover:text-brand-accent font-bold flex items-center gap-1 transition-colors">
+                                    Khám phá thêm <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            {{-- Slider Container --}}
+                            <div class="relative px-2 group/slider transition-all duration-500">
+                                {{-- Nút Prev --}}
+                                <button id="btnPrevPersonalized"
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 -ml-2 sm:-ml-5 z-20 w-12 h-12 bg-white rounded-full shadow-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-white hover:bg-brand-accent hover:border-brand-accent hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 duration-300 cursor-pointer">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                
+                                {{-- Nút Next --}}
+                                <button id="btnNextPersonalized"
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 -mr-2 sm:-mr-5 z-20 w-12 h-12 bg-white rounded-full shadow-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-white hover:bg-brand-accent hover:border-brand-accent hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 duration-300 cursor-pointer">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+
+                                <div class="swiper swiperPersonalized w-full overflow-visible pt-4 pb-2">
+                                    <div class="swiper-wrapper flex items-stretch">
+                                        @foreach($personalizedRecipes as $recipe)
+                                            <div class="swiper-slide !h-auto">
+                                                @include('partials.recipe-card', ['recipe' => $recipe])
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="swiper-pagination-personalized !relative !bottom-auto !mt-8 !flex !justify-center !items-center !gap-1"></div>
+                                </div>
+                            </div>
+
+                            <style>
+                                .swiper-pagination-personalized .swiper-pagination-bullet { width: 8px; height: 8px; background-color: #cbd5e1; opacity: 1; transition: all 0.3s; margin: 0 4px !important; }
+                                .swiper-pagination-personalized .swiper-pagination-bullet-active { width: 24px; border-radius: 4px; background-color: #eab308; }
+                            </style>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    if(typeof Swiper !== 'undefined') {
+                                        new Swiper('.swiperPersonalized', {
+                                            grabCursor: true,
+                                            slidesPerView: 1,
+                                            spaceBetween: 16,
+                                            loop: true,
+                                            autoplay: { delay: 4500, disableOnInteraction: false },
+                                            speed: 800,
+                                            breakpoints: {
+                                                640: { slides: 2, spaceBetween: 20 },
+                                                1024: { slidesPerView: 3, spaceBetween: 24 },
+                                                1280: { slidesPerView: 4, spaceBetween: 24 },
+                                            },
+                                            pagination: { el: '.swiper-pagination-personalized', clickable: true },
+                                            navigation: { nextEl: '#btnNextPersonalized', prevEl: '#btnPrevPersonalized' },
+                                        });
+                                    }
+                                });
+                            </script>
+                        </section>
+                    @endif
+                @endauth
+
                 {{-- 2. CÔNG THỨC MỚI CẬP NHẬT --}}
                 <section id="new-books"
                     class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-soft reveal">

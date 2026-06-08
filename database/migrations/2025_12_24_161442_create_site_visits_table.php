@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('site_visits', function (Blueprint $table) {
             $table->id();
             $table->string('session_id')->unique();
-            $table->string('ip_address')->nullable();
+            $table->string('ip_address', 45)->nullable();
             $table->timestamp('last_activity')->useCurrent();
             $table->timestamps();
         });

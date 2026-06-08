@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('ai_moderation_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('ip_address')->nullable();
-            $table->string('source')->default('rule_based'); // e.g. rule_based, gemini_safety
-            $table->string('severity')->nullable(); // MEDIUM, HIGH
-            $table->string('intent')->nullable(); // adult.explicit_violation, etc.
+            $table->string('ip_address', 45)->nullable();
+            $table->string('source', 50)->default('rule_based'); // e.g. rule_based, gemini_safety
+            $table->string('severity', 20)->nullable(); // MEDIUM, HIGH
+            $table->string('intent', 50)->nullable(); // adult.explicit_violation, etc.
             $table->text('blocked_content')->nullable();
             $table->text('excerpt')->nullable(); // The specific matched word or short snippet
             $table->timestamps();

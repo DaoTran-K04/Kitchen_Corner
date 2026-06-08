@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('step_number');
             $table->text('description');
-            $table->string('image', 200)->nullable();
+            $table->string('image', 150)->nullable();
             $table->timestamps();
         });
     }

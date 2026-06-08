@@ -70,7 +70,7 @@ class HomeController extends Controller
             elseif (($month == 10 && $day >= 25) || ($month == 11 && $day <= 2)) $siteTheme = 'halloween';
         }
 
-        $recipesQuery = Recipe::with(['user', 'category'])->where('status', 'published');
+        $recipesQuery = Recipe::with(['user', 'category'])->withCount(['likes', 'comments'])->where('status', 'published');
 
         $themeKeywords = [];
         if ($siteTheme === 'valentine') {
@@ -117,6 +117,7 @@ class HomeController extends Controller
 
         $trendingRecipes = \Illuminate\Support\Facades\Cache::remember('home_trending_recipes', 600, function() {
             return Recipe::with(['user', 'category'])
+                ->withCount(['likes', 'comments'])
                 ->where('status', 'published')
                 ->orderBy('view_count', 'desc')
                 ->take(5)
@@ -177,7 +178,7 @@ class HomeController extends Controller
         if ($totalPublishedRecipes > 0) {
             $dayOfYear    = now()->dayOfYear + now()->year;
             $offsetIndex  = $dayOfYear % $totalPublishedRecipes;
-            $randomRecipe = Recipe::where('status', 'published')->offset($offsetIndex)->limit(1)->with('category')->first();
+            $randomRecipe = Recipe::with(['category'])->withCount(['likes', 'comments'])->where('status', 'published')->offset($offsetIndex)->limit(1)->first();
         }
 
         // --- 8. TÁC GIẢ TIÊU BIỂU ---
@@ -188,9 +189,10 @@ class HomeController extends Controller
         // Lấy 8 công thức nổi bật để hiển thị ở section slider
         // Lấy 8 công thức nổi bật (CACHE 30p)
         $latestPosts = \Illuminate\Support\Facades\Cache::remember('home_featured_posts', 1800, function() {
-            $featured = Recipe::with(['user', 'category'])->where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
+            $featured = Recipe::with(['user', 'category'])->withCount(['likes', 'comments'])->where('status', 'published')->where('is_featured', true)->latest()->take(8)->get();
             if ($featured->count() < 8) {
                 $more = Recipe::with(['user', 'category'])
+                    ->withCount(['likes', 'comments'])
                     ->where('status', 'published')
                     ->whereNotIn('id', $featured->pluck('id')->toArray()) // tránh trùng lặp
                     ->latest()
@@ -202,7 +204,7 @@ class HomeController extends Controller
         });
         
         $hotPosts = \Illuminate\Support\Facades\Cache::remember('home_hot_posts', 1800, function() {
-            return Recipe::with(['user', 'category'])->where('status', 'published')->orderBy('view_count', 'desc')->take(8)->get();
+            return Recipe::with(['user', 'category'])->withCount(['likes', 'comments'])->where('status', 'published')->orderBy('view_count', 'desc')->take(8)->get();
         });
 
         // --- 9. THỬ THÁCH (CACHE 1h) ---
@@ -215,6 +217,51 @@ class HomeController extends Controller
                 ->inRandomOrder()
                 ->first();
         });
+
+        // --- 10. ĐỀ XUẤT CÁ NHÂN HÓA (CHO NGƯỜI DÙNG ĐĂNG NHẬP) ---
+        $personalizedRecipes = collect();
+        if (Auth::check()) {
+            $user = Auth::user();
+            // Lấy ID các công thức người dùng đã thích hoặc lưu (nếu có table collections/bookmarks thì thêm vào)
+            $likedRecipeIds = DB::table('likes')->where('user_id', $user->id)->pluck('recipe_id')->toArray();
+            $collectedRecipeIds = DB::table('collection_recipes')
+                ->join('collections', 'collections.id', '=', 'collection_recipes.collection_id')
+                ->where('collections.user_id', $user->id)
+                ->pluck('collection_recipes.recipe_id')
+                ->toArray();
+            $interactedRecipeIds = array_unique(array_merge($likedRecipeIds, $collectedRecipeIds));
+
+            if (count($interactedRecipeIds) > 0) {
+                // Lấy các danh mục của những công thức đã tương tác
+                $categoryIds = DB::table('recipes')
+                    ->whereIn('id', $interactedRecipeIds)
+                    ->pluck('category_id')
+                    ->unique()
+                    ->toArray();
+
+                // Truy vấn các công thức cùng danh mục, loại trừ những công thức đã tương tác
+                $personalizedRecipes = Recipe::with(['user', 'category'])
+                    ->withCount(['likes', 'comments'])
+                    ->where('status', 'published')
+                    ->whereIn('category_id', $categoryIds)
+                    ->whereNotIn('id', $interactedRecipeIds)
+                    ->inRandomOrder()
+                    ->take(8)
+                    ->get();
+            }
+            
+            // Nếu không đủ dữ liệu cá nhân hóa (chưa tương tác hoặc đã xem hết trong danh mục)
+            if ($personalizedRecipes->count() < 4) {
+                $additionalRecipes = Recipe::with(['user', 'category'])
+                    ->withCount(['likes', 'comments'])
+                    ->where('status', 'published')
+                    ->whereNotIn('id', $interactedRecipeIds)
+                    ->orderBy('view_count', 'desc')
+                    ->take(8 - $personalizedRecipes->count())
+                    ->get();
+                $personalizedRecipes = $personalizedRecipes->merge($additionalRecipes);
+            }
+        }
 
         return view('home', compact(
             'heroSlides',
@@ -230,7 +277,8 @@ class HomeController extends Controller
             'dailyAuthor',
             'latestPosts',
             'hotPosts',
-            'activeChallenge'
+            'activeChallenge',
+            'personalizedRecipes'
         ));
     }
 

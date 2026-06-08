@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name', 50);
             $table->string('slug', 60)->unique();
             $table->text('description')->nullable();
-            $table->string('frame_image', 200); // URL hoặc path đến file .gif/.png
+            $table->text('frame_image'); // Base64 SVG hoặc URL
             $table->boolean('is_active')->default(true);
             $table->unsignedTinyInteger('order')->default(0);
             $table->timestamps();

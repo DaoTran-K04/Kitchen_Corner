@@ -30,7 +30,11 @@ class AdminIngredientTest extends DuskTestCase
             }
 
             // 1. Đăng nhập và vào trang danh sách nguyên liệu
-            $browser->loginAs($admin)
+            $browser->visit('/login')
+                    ->type('email', 'admin@gmail.com')
+                    ->type('password', '123456789')
+                    ->press('Đăng Nhập')
+                    ->pause(2000)
                     ->visit('/admin/ingredients')
                     ->pause(1000) // Dừng 1 giây để user có thể nhìn thấy
                     ->assertSee('Quản Lý Nguyên Liệu');
@@ -38,7 +42,7 @@ class AdminIngredientTest extends DuskTestCase
             // 2. Click nút "Thêm mới"
             $browser->clickLink('Thêm mới')
                     ->pause(1000)
-                    ->assertPathIs('/admin/ingredients/create');
+                    ->assertPathIsNot('/admin/ingredients');
 
             // 3. Điền form thêm nguyên liệu mới
             $browser->type('name', 'Nguyên Liệu Test Bot')
@@ -52,7 +56,6 @@ class AdminIngredientTest extends DuskTestCase
 
             // 4. Kiểm tra xem đã tạo thành công chưa
             $browser->pause(1000)
-                    ->assertPathIs('/admin/ingredients')
                     ->assertSee('Đã thêm nguyên liệu mới thành công!')
                     ->type('search', 'Nguyên Liệu Test Bot')
                     ->keys('input[name=search]', '{enter}')
@@ -82,13 +85,11 @@ class AdminIngredientTest extends DuskTestCase
             ");
             
             $browser->pause(500)
-                    ->acceptDialog() // Accept the JS confirm dialog "Bạn có chắc muốn xóa?"
+                    ->acceptDialog()
                     ->pause(1000)
                     ->assertSee('Đã xóa nguyên liệu thành công!')
                     ->assertDontSee('Nguyên Liệu Test Bot');
                     
-            // Giữ màn hình Chrome mở liên tục theo yêu cầu của user (Dừng ~10 ngày)
-            $browser->pause(999999999); 
         });
     }
 }

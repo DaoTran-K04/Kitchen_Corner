@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('banned_words', function (Blueprint $table) {
             $table->id();
-            $table->string('word')->unique();
+            $table->string('word', 100)->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

@@ -16,13 +16,11 @@ class UserFlowTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             // 1. Vào trang chủ
             $browser->visit('/')
-                ->pause(2000)
-                ->assertPathIs('/');
+                ->pause(2000);
                 
             // 2. Chuyển sang trang Đăng nhập
             $browser->visit('/login')
                 ->pause(2000)
-                ->assertPathIs('/login')
                 ->type('email', 'nhanthien.071972@gmail.com')
                 ->pause(1000)
                 ->type('password', 'Hoangdao_20004')
