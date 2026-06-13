@@ -33,7 +33,7 @@
             <span class="flex-shrink-0 whitespace-nowrap"><i class="fas fa-clock text-gray-400"></i> {{ $recipe->cooking_time }} phút</span>
             @endif
         </div>
-        <h3 class="font-bold text-gray-900 group-hover:text-teal-600 transition line-clamp-2 mb-2 leading-snug text-lg">
+        <h3 class="font-bold text-gray-900 group-hover:text-teal-600 transition line-clamp-2 mb-2 leading-snug text-base md:text-lg">
             {{ $recipe->title }}
         </h3>
         <div class="flex items-center justify-between text-sm text-gray-500 mt-auto pt-3 border-t border-gray-100 font-medium gap-2">

@@ -71,7 +71,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                             <i class="fas fa-envelope"></i>
                         </span>
-                        <input type="email" name="email" class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 transition duration-300 focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green focus:bg-white" placeholder="yourname@gmail.com" required value="{{ old('email') }}">
+                        <input type="email" id="email" name="email" class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 transition duration-300 focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green focus:bg-white" placeholder="yourname@gmail.com" required value="{{ old('email') }}">
                     </div>
                 </div>
 

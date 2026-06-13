@@ -41,3 +41,6 @@ BaoCao_*.docx
 
 # File nén cũ
 gocsach.zip
+
+# File tạm Microsoft Office (~$*.docx, ~$*.xlsx, ...)
+~$*

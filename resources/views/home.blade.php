@@ -49,8 +49,8 @@
     @endguest
 
     {{-- MAIN LAYOUT --}}
-    <main class="container mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <main class="container mx-auto px-4 py-6 lg:py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
 
 
             <div class="lg:col-span-8 space-y-16 order-1 lg:order-2">
@@ -120,7 +120,7 @@
                 {{-- 1.5. CÔNG THỨC NỔI BẬT --}}
                 @if((isset($latestPosts) && $latestPosts->count() > 0) || (isset($hotPosts) && $hotPosts->count() > 0))
                     <section id="featured-recipes-slider"
-                        class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-soft reveal">
+                        class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-5 md:p-8 border border-white shadow-soft reveal">
 
                         {{-- Header với Tabs --}}
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 relative gap-3">
@@ -229,7 +229,7 @@
                 @auth
                     @if(isset($personalizedRecipes) && $personalizedRecipes->count() > 0)
                         <section id="personalized-recipes-slider"
-                            class="relative group/slider bg-gradient-to-br from-brand-green/5 to-transparent rounded-[2.5rem] p-8 border border-white/50 shadow-soft reveal mt-16 mb-16">
+                            class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-5 md:p-8 border border-white shadow-soft reveal mt-8 mb-8 md:mt-16 md:mb-16">
                             
                             {{-- Decorative Element --}}
                             <div class="absolute -top-6 -left-6 w-32 h-32 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -310,7 +310,7 @@
 
                 {{-- 2. CÔNG THỨC MỚI CẬP NHẬT --}}
                 <section id="new-books"
-                    class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-soft reveal">
+                    class="relative group/slider bg-white/50 backdrop-blur-sm rounded-[2.5rem] p-5 md:p-8 border border-white shadow-soft reveal">
                     {{-- Header --}}
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-3">
@@ -412,8 +412,8 @@
                 </section>
 
                 {{-- 3. CỘNG ĐỒNG REVIEW --}}
-                <section id="community-posts" class="mb-16 scroll-mt-24 reveal">
-                    <div class="bg-white/70 backdrop-blur-md rounded-[2.5rem] p-8 border border-white shadow-soft">
+                <section id="community-posts" class="mb-8 md:mb-16 scroll-mt-24 reveal">
+                    <div class="bg-white/70 backdrop-blur-md rounded-[2.5rem] p-5 md:p-8 border border-white shadow-soft">
                         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                             <div class="flex items-center gap-4">
                                 <div class="w-1 h-8 bg-brand-accent rounded-full"></div>
@@ -470,7 +470,7 @@
                 {{-- Banner Sự Kiện - PREMIUM --}}
                 @if(isset($activeChallenge) && $activeChallenge)
                 <div
-                    class="bg-gradient-to-br from-[#2A483A] via-[#1e3a2f] to-[#0f1f17] rounded-2xl p-8 relative overflow-hidden shadow-xl text-white group hover:shadow-2xl transition-all duration-500">
+                    class="bg-gradient-to-br from-[#2A483A] via-[#1e3a2f] to-[#0f1f17] rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-xl text-white group hover:shadow-2xl transition-all duration-500">
                     {{-- Decorative Elements --}}
                     <div
                         class="absolute top-0 right-0 w-72 h-72 bg-brand-accent/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700">
@@ -527,7 +527,7 @@
                     {{-- Widget 0: Châm Ngôn Hôm Nay --}}
                     @if(isset($dailyQuote) && $dailyQuote)
                         <div
-                            class="glass rounded-3xl p-8 border border-white shadow-soft relative overflow-hidden group hover:shadow-xl transition-all duration-500 reveal">
+                            class="glass rounded-3xl p-5 md:p-8 border border-white shadow-soft relative overflow-hidden group hover:shadow-xl transition-all duration-500 reveal">
                             {{-- Decorative Elements --}}
                             <div
                                 class="absolute -top-6 -right-6 w-24 h-24 bg-amber-200/30 rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500">
@@ -574,7 +574,7 @@
                     {{-- Widget: Hôm nay nấu gì? --}}
                     @if(isset($randomRecipe) && $randomRecipe)
                         <div
-                            class="glass rounded-3xl p-8 border border-white shadow-soft relative overflow-hidden group hover:shadow-xl transition-all duration-500 reveal">
+                            class="glass rounded-3xl p-5 md:p-8 border border-white shadow-soft relative overflow-hidden group hover:shadow-xl transition-all duration-500 reveal">
                             {{-- Decorative --}}
                             <div
                                 class="absolute -top-8 -right-8 w-28 h-28 bg-red-100/30 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500">

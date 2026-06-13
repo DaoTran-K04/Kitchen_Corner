@@ -220,8 +220,8 @@
                 </a>
             @endauth
 
-            {{-- Mobile Menu Button --}}
-            <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 flex items-center justify-center transition ml-1 shadow-md">
+            {{-- Mobile Menu Button (Hidden now because we use Bottom Nav) --}}
+            <button id="mobile-menu-btn" class="hidden w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 flex items-center justify-center transition ml-1 shadow-md">
                 <i class="fas fa-bars"></i>
             </button>
         </div>

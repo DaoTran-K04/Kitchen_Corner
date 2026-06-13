@@ -9,24 +9,34 @@ use Tests\DuskTestCase;
 class UserFlowTest extends DuskTestCase
 {
     /**
-     * Test a complete user flow.
+     * Test User Login and Navigation flow.
      */
-    public function test_user_flow(): void
+    public function testUserCanLoginAndNavigate()
     {
         $this->browse(function (Browser $browser) {
-            // 1. Vào trang chủ
-            $browser->visit('/')
-                ->pause(2000);
-                
-            // 2. Chuyển sang trang Đăng nhập
             $browser->visit('/login')
-                ->pause(2000)
-                ->type('email', 'nhanthien.071972@gmail.com')
-                ->pause(1000)
-                ->type('password', 'Hoangdao_20004')
-                ->pause(1000)
-                ->keys('input[name="password"]', '{enter}')
-                ->pause(10000); // Wait 10 seconds for user to see
+                    ->assertPathIs('/login')
+                    ->type('email', 'tester@gmail.com')
+                    ->type('password', '123456789')
+                    ->press('Đăng Nhập')
+                    ->assertPathIs('/')
+                    // Chuyển sang trang Công thức
+                    ->visit('/cong-thuc')
+                    ->assertPathIs('/cong-thuc')
+                    // Chuyển sang trang Thử thách
+                    ->visit('/thu-thach')
+                    ->assertPathIs('/thu-thach')
+                    // Chuyển sang trang Hồ sơ cá nhân
+                    ->visit('/profile')
+                    ->assertPathIs('/profile')
+                    // Đăng xuất (Gỉa sử có button/link đăng xuất hoặc form)
+                    // Nếu dùng button logout trong dropdown, có thể gọi post /logout thay thế
+                    ->visit('/logout') // Có thể ko chạy nếu là POST
+                    ->pause(1000);
+            
+            // Xử lý nút đăng xuất thường là POST form
+            $browser->visit('/')
+                    ->script("document.getElementById('logout-form') ? document.getElementById('logout-form').submit() : window.location.href='/';");
         });
     }
 }

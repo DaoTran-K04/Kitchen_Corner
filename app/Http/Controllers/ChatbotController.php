@@ -187,10 +187,14 @@ class ChatbotController extends Controller
         $systemPrompt = \App\Models\Setting::where('key', 'chatbot_system_prompt')->value('value') ?? $defaultPrompt;
 
         if ($user) {
+            $favCuisines = isset($profile['favorite_cuisines']) && !empty($profile['favorite_cuisines']) ? implode(', ', $profile['favorite_cuisines']) : 'chưa có dữ liệu';
+            $recentSearch = isset($profile['recent_searches']) && !empty($profile['recent_searches']) ? implode(', ', $profile['recent_searches']) : 'chưa có dữ liệu';
+            $diet = $profile['diet_tendency'] ?? 'chưa rõ';
+            
             $systemPrompt .= "\n\nThông tin người dùng hiện tại để cá nhân hóa câu trả lời:\n" .
-                             "- Thích ẩm thực: " . implode(', ', $profile['favorite_cuisines']) . "\n" .
-                             "- Lịch sử tìm kiếm gần đây: " . implode(', ', $profile['recent_searches']) . "\n" .
-                             "- Chế độ ăn / Khẩu vị: " . $profile['diet_tendency'] . ".";
+                             "- Thích ẩm thực: " . $favCuisines . "\n" .
+                             "- Lịch sử tìm kiếm gần đây: " . $recentSearch . "\n" .
+                             "- Chế độ ăn / Khẩu vị: " . $diet . ".";
         }
 
         // Prepare context

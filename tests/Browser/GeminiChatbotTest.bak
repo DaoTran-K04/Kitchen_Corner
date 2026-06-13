@@ -1,0 +1,26 @@
+<?php
+
+namespace Tests\Browser;
+
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
+
+class GeminiChatbotTest extends DuskTestCase
+{
+    /**
+     * A Dusk test example.
+     */
+    public function testChatbot()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/')
+                    ->waitFor('#chatbot-toggle', 10)
+                    ->click('#chatbot-toggle')
+                    ->waitFor('#chatbot-input', 10)
+                    ->type('#chatbot-input', 'Xin chào, bạn có thể tư vấn cho tôi một vài món ăn lành mạnh ít calo không?')
+                    ->click('#chatbot-send')
+                    ->pause(15000); // Wait for Gemini AI response
+        });
+    }
+}

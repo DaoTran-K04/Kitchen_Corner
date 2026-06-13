@@ -1,5 +1,5 @@
 {{-- AI Chatbox Component --}}
-<div id="chatbox-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9998]">
+<div id="chatbox-container" class="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-[9998]">
 
     {{-- Chat Window - Responsive: compact on mobile, larger on desktop --}}
     <div id="chatbox-window"

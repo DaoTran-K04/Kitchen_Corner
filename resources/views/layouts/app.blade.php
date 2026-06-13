@@ -322,7 +322,7 @@
 
     @include('partials.header')
 
-    <div class="flex-grow {{ (Request::is('/') || Request::is('cong-thuc*') || Request::is('tac-gia*') || Request::is('tim-kiem-nguyen-lieu*') || Request::is('mon-an*') || Request::is('login') || Request::is('register') || Request::is('tap-chi*') || Request::is('thu-thach*')) ? '' : 'pt-20 lg:pt-24' }}">
+    <div class="flex-grow pb-20 lg:pb-0 {{ (Request::is('/') || Request::is('cong-thuc*') || Request::is('tac-gia*') || Request::is('tim-kiem-nguyen-lieu*') || Request::is('mon-an*') || Request::is('login') || Request::is('register') || Request::is('tap-chi*') || Request::is('thu-thach*')) ? '' : 'pt-20 lg:pt-24' }}">
 
 
 
@@ -343,6 +343,9 @@
 
     {{-- AI Chatbox --}}
     @include('partials.chatbox')
+
+    {{-- Bottom Navigation (Mobile Only) --}}
+    @include('partials.bottom-nav')
 
     <script>
         // Mobile Menu Toggle
