@@ -44,3 +44,7 @@ gocsach.zip
 
 # File tạm Microsoft Office (~$*.docx, ~$*.xlsx, ...)
 ~$*
+
+# Word documents
+*.doc
+*.docx
