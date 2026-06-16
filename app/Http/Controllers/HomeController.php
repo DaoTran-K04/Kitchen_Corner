@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Notifications\CommentLikedNotification;
 use App\Notifications\CommentRepliedNotification;
 
-
+// đề xuất công thức cá nhân hóa
 class HomeController extends Controller
 {
     public function index(Request $request)
@@ -218,7 +218,7 @@ class HomeController extends Controller
                 ->first();
         });
 
-        // --- 10. ĐỀ XUẤT CÁ NHÂN HÓA (CHO NGƯỜI DÙNG ĐĂNG NHẬP) ---
+        // --- 10. ĐỀ XUẤT CÁ NHÂN HÓA (CHO NGƯỜI DÙNG ĐĂNG NHẬP) --- //
         $personalizedRecipes = collect();
         if (Auth::check()) {
             $user = Auth::user();

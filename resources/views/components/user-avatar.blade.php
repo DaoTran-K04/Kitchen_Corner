@@ -1,7 +1,7 @@
 <div {{ $attributes->merge(['class' => 'relative inline-block']) }}>
     @php
-        $equippedFrame = $user->equippedFrame();
-        $avatarUrl = $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=3E5F4E&color=fff&size=128';
+        $equippedFrame = $user ? $user->equippedFrame() : null;
+        $avatarUrl = optional($user)->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional($user)->name ?? 'Ẩn danh') . '&background=3E5F4E&color=fff&size=128';
     @endphp
     
     <!-- Avatar Frame (if equipped) -->
@@ -14,7 +14,7 @@
     <!-- User Avatar -->
     <div class="absolute inset-0 flex items-center justify-center z-0">
         <img src="{{ $avatarUrl }}" 
-             alt="{{ $user->name }}"
+             alt="{{ optional($user)->name ?? 'Ẩn danh' }}"
              {{ $attributes->merge(['class' => 'rounded-full object-cover']) }}>
     </div>
 </div>

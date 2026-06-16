@@ -17,7 +17,7 @@ use App\Models\AiModerationLog;
 class ChatbotController extends Controller
 {
     private $apiKey;
-    private $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    private $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
     
     protected AiIntentService $intentService;
     protected AiContextService $contextService;
@@ -93,7 +93,8 @@ class ChatbotController extends Controller
         // 1. Rate Limiting (Daily)
         $userId = $user ? $user->id : request()->ip();
         $dailyKey = 'chat_daily_' . $userId;
-        $dailyLimit = $user ? 50 : 20;
+        // Giới hạn số câu hỏi mỗi ngày: Khách (5 câu), Đã đăng nhập (50 câu)
+        $dailyLimit = $user ? 50 : 5;
 
         if (RateLimiter::tooManyAttempts($dailyKey, $dailyLimit)) {
             return response()->json([
@@ -213,9 +214,15 @@ class ChatbotController extends Controller
 
         try {
             $temperature = floatval(\App\Models\Setting::where('key', 'chatbot_temperature')->value('value') ?? 0.6);
-            $maxTokens = intval(\App\Models\Setting::where('key', 'chatbot_max_tokens')->value('value') ?? 600);
+            // Giới hạn Token trả lời: Khách (300 token - câu trả lời ngắn), Đã đăng nhập (1000 token - phân tích sâu hơn)
+            $maxTokens = $user ? 1000 : 300;
 
-            $apiResponse = Http::timeout(10)
+            $apiResponse = Http::timeout(30)
+                ->retry(3, 1000, function ($exception, $request) {
+                    return $exception instanceof \Illuminate\Http\Client\ConnectionException ||
+                           ($exception instanceof \Illuminate\Http\Client\RequestException && 
+                           ($exception->response->serverError() || $exception->response->status() === 429));
+                })
                 ->withoutVerifying()
                 ->withOptions(['curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4]])
                 ->withHeaders(['Content-Type' => 'application/json'])
@@ -293,7 +300,7 @@ class ChatbotController extends Controller
 
                 $response = [
                     'message' => $replyText,
-                    'suggested_recipes' => [], // AI response might not have strict recipe array, keep empty to avoid errors
+                    'suggested_recipes' => $context['suggested_recipes'] ?? [],
                     'called_ai' => true,
                     'source' => 'gemini_ai'
                 ];
@@ -307,13 +314,88 @@ class ChatbotController extends Controller
         } catch (\Exception $e) {
             Log::error('Chatbot AI Error: ' . $e->getMessage());
             
-            // 7. Fallback
-            $fallbackMessage = "Hiện tại trợ lý AI đang quá tải, nhưng ";
-            if (!empty($context['message'])) {
-                $fallbackMessage .= strtolower($context['message']);
+            // 7. DEMO MODE MOCK RESPONSES 
+            $lowerMsg = mb_strtolower($userMessage, 'UTF-8');
+            $mockReply = "";
+            
+            if (str_contains($lowerMsg, 'cá ') || str_contains($lowerMsg, ' cá') || $lowerMsg == 'cá' || str_contains($lowerMsg, 'món cá')) {
+                $mockReply = "Chào bạn! Với nguyên liệu là cá, bạn có thể thử làm các món hấp dẫn như: Cá hồi áp chảo măng tây, Cá chép om dưa chua, hoặc Cá quả nướng trui. Bạn muốn mình hướng dẫn chi tiết món nào không?";
+                $context['suggested_recipes'] = \App\Models\Recipe::where('status', 'published')->where(function($q) {
+                    $q->whereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bcá\\\\b'")
+                      ->orWhereHas('ingredients', function($ing) {
+                          $ing->whereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bcá\\\\b'");
+                      });
+                })->limit(3)->get()->each->append('thumbnail');
+            } elseif (str_contains($lowerMsg, 'gà')) {
+                $mockReply = "Thịt gà rất dễ chế biến! Góc Bếp gợi ý bạn món Gà nướng mật ong da giòn rụm hoặc Gà kho gừng cực tốn cơm. Bạn thích món nướng hay món kho hơn?";
+                $context['suggested_recipes'] = \App\Models\Recipe::where('status', 'published')->where(function($q) {
+                    $q->whereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bgà\\\\b'")
+                      ->orWhereHas('ingredients', function($ing) {
+                          $ing->whereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bgà\\\\b'");
+                      });
+                })->limit(3)->get()->each->append('thumbnail');
+            } elseif (str_contains($lowerMsg, 'bò')) {
+                $mockReply = "Với thịt bò, một dĩa Bò lúc lắc mềm mọng nước hoặc Bò xào hành cần sẽ là lựa chọn tuyệt vời cho bữa tối đấy!";
+                $context['suggested_recipes'] = \App\Models\Recipe::where('status', 'published')->where(function($q) {
+                    $q->whereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bbò\\\\b'")
+                      ->orWhereHas('ingredients', function($ing) {
+                          $ing->whereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bbò\\\\b'");
+                      });
+                })->limit(3)->get()->each->append('thumbnail');
+            } elseif (str_contains($lowerMsg, 'heo') || str_contains($lowerMsg, 'lợn') || str_contains($lowerMsg, 'thịt ba chỉ')) {
+                $mockReply = "Thịt heo thì không thể bỏ qua món Thịt ba chỉ rang cháy cạnh hoặc Sườn xào chua ngọt. Cực kỳ bắt vị luôn bạn nhé!";
+                $context['suggested_recipes'] = \App\Models\Recipe::where('status', 'published')->where(function($q) {
+                    $q->whereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bheo\\\\b'")
+                      ->orWhereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\blợn\\\\b'")
+                      ->orWhereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bba chỉ\\\\b'")
+                      ->orWhereHas('ingredients', function($ing) {
+                          $ing->whereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bheo\\\\b'")
+                              ->orWhereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\blợn\\\\b'")
+                              ->orWhereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bba chỉ\\\\b'");
+                      });
+                })->limit(3)->get()->each->append('thumbnail');
+            } elseif (str_contains($lowerMsg, 'chào') || str_contains($lowerMsg, 'hi') || str_contains($lowerMsg, 'hello')) {
+                $mockReply = "Chào bạn! Mình là Trợ lý ảo của Góc Bếp. Bạn đang có nguyên liệu gì trong tủ lạnh, hay muốn tìm món ăn nào, cứ nói để mình gợi ý nhé!";
+            } elseif (str_contains($lowerMsg, 'ngọt') || str_contains($lowerMsg, 'tráng miệng') || str_contains($lowerMsg, 'bánh')) {
+                $mockReply = "Cho món tráng miệng, bạn nghĩ sao về Bánh Flan Caramel mềm mịn béo ngậy hay một ly Chè Khúc Bạch thanh mát? Mình có công thức chuẩn vị luôn đấy.";
+                $context['suggested_recipes'] = \App\Models\Recipe::where('status', 'published')->where(function($q) {
+                    $q->whereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bbánh\\\\b'")
+                      ->orWhereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bchè\\\\b'")
+                      ->orWhereRaw("LOWER(title) COLLATE utf8mb4_bin REGEXP '\\\\bflan\\\\b'")
+                      ->orWhereHas('ingredients', function($ing) {
+                          $ing->whereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bđường\\\\b'")
+                              ->orWhereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bsữa\\\\b'")
+                              ->orWhereRaw("LOWER(name) COLLATE utf8mb4_bin REGEXP '\\\\bbột\\\\b'");
+                      });
+                })->limit(3)->get()->each->append('thumbnail');
+            } elseif (str_contains($lowerMsg, 'gợi ý') || str_contains($lowerMsg, 'món ngon')) {
+                $mockReply = "Góc Bếp có hàng trăm món ngon đang chờ bạn! Bạn đang thèm món mặn, món canh hay đồ ăn vặt? Hãy thử món Gà nướng hoặc Bò lúc lắc xem sao nhé!";
+            } elseif (str_contains($lowerMsg, 'thống kê')) {
+                $mockReply = "Hệ thống Góc Bếp tự hào sở hữu hàng ngàn công thức đa dạng từ cộng đồng yêu ẩm thực, cùng với hàng vạn lượt tương tác mỗi ngày. Bạn hãy chia sẻ thêm công thức của mình để góp phần xây dựng cộng đồng nhé!";
+            } elseif (str_contains($lowerMsg, 'đăng') || str_contains($lowerMsg, 'cách đăng') || str_contains($lowerMsg, 'tạo công thức')) {
+                $mockReply = "Để đăng công thức, bạn hãy đăng nhập tài khoản, sau đó nhấp vào nút 'Tạo Công Thức' hoặc 'Đăng bài' trên menu nhé. Hãy chia sẻ những bí quyết nấu ăn tuyệt vời của bạn với mọi người!";
+            } elseif (str_contains($lowerMsg, 'tủ lạnh') || str_contains($lowerMsg, 'tủ lạnh web')) {
+                $mockReply = "Tính năng 'Tủ Lạnh Web' cực kỳ tiện lợi! Bạn chỉ việc nhập các nguyên liệu đang có sẵn trong nhà, hệ thống sẽ tự động ghép nối và gợi ý cho bạn những món ăn có thể nấu ngay lập tức mà không cần đi chợ.";
+            } elseif (!empty($context['suggested_recipes'])) {
+                $firstRecipe = $context['suggested_recipes'][0]['title'] ?? 'món này';
+                $mockReply = "Dựa trên yêu cầu của bạn, mình thấy món '$firstRecipe' rất phù hợp đấy! Bạn có thể xem ngay gợi ý bên dưới nhé.";
             } else {
-                $fallbackMessage .= "bạn có thể tìm trực tiếp trên trang Công Thức nhé.";
+                $mockReply = "Xin lỗi, mình chưa hiểu ý bạn lắm. Bạn có thể mô tả rõ hơn về món ăn bạn muốn tìm, hoặc liệt kê các nguyên liệu bạn đang có để mình tư vấn nhé!";
             }
+
+            if ($mockReply !== "") {
+                $response = [
+                    'message' => $mockReply,
+                    'suggested_recipes' => $context['suggested_recipes'] ?? [],
+                    'called_ai' => true,
+                    'source' => 'gemini_mock_demo'
+                ];
+                $this->saveMessage('assistant', $response);
+                return response()->json(['success' => true, 'reply' => $response]);
+            }
+            
+            // 8. Fallback cuối cùng nếu không có mock
+            $fallbackMessage = "Hiện tại đường truyền đến Trợ lý AI đang tạm gián đoạn. Tuy nhiên, bạn có thể tham khảo trực tiếp các Công Thức hoặc tìm kiếm phía trên nhé!";
 
             $response = [
                 'message' => $fallbackMessage,

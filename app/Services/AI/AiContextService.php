@@ -89,8 +89,15 @@ class AiContextService
                 if (mb_strlen($cleanMsg) > 2) {
                     $recipes = Recipe::where('status', 'published')
                         ->where(function($q) use ($cleanMsg) {
-                            $q->where('title', 'like', "%{$cleanMsg}%")
-                              ->orWhere('description', 'like', "%{$cleanMsg}%");
+                            $lowerCleanMsg = mb_strtolower($cleanMsg, 'UTF-8');
+                            $q->whereRaw('LOWER(title) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerCleanMsg}%"])
+                              ->orWhereRaw('LOWER(description) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerCleanMsg}%"])
+                              ->orWhereHas('category', function($cat) use ($lowerCleanMsg) {
+                                  $cat->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerCleanMsg}%"]);
+                              })
+                              ->orWhereHas('ingredients', function($ing) use ($lowerCleanMsg) {
+                                  $ing->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerCleanMsg}%"]);
+                              });
                         })
                         ->limit(3)
                         ->get(['id', 'title', 'cooking_time', 'difficulty', 'image', 'slug', 'description']);

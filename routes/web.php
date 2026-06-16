@@ -293,23 +293,27 @@ Route::post('/lien-he', [\App\Http\Controllers\FeedbackController::class, 'store
 // AJAX Live Search – Tìm kiếm công thức theo từ khoá
 Route::get('/ajax-search', function (Request $request) {
     $keyword = $request->get('keyword');
-    if (!$keyword || strlen($keyword) < 2) return response()->json([]);
+    if (!$keyword || mb_strlen($keyword, 'UTF-8') < 2) return response()->json([]);
+
+    $lowerKeyword = mb_strtolower($keyword, 'UTF-8');
 
     $recipes = App\Models\Recipe::where('status', 'published')
-        ->where(function ($q) use ($keyword) {
-            $q->where('title', 'like', "%{$keyword}%")
-              ->orWhere('description', 'like', "%{$keyword}%")
-              ->orWhereHas('category', function($cat) use ($keyword) {
-                  $cat->where('name', 'like', "%{$keyword}%");
+        ->where(function ($q) use ($lowerKeyword) {
+            $q->whereRaw('LOWER(title) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"])
+              ->orWhereRaw('LOWER(description) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"])
+              ->orWhereHas('category', function($cat) use ($lowerKeyword) {
+                  $cat->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
               })
-              ->orWhereHas('ingredients', function($ing) use ($keyword) {
-                  $ing->where('name', 'like', "%{$keyword}%");
+              ->orWhereHas('ingredients', function($ing) use ($lowerKeyword) {
+                  $ing->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
               });
         })
         ->select('id', 'title', 'slug', 'image', 'cooking_time', 'difficulty')
         ->orderBy('view_count', 'desc')
         ->limit(8)
         ->get();
+
+    $recipes->each->append('thumbnail');
 
     return response()->json($recipes);
 })->name('ajax.search');

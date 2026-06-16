@@ -19,10 +19,12 @@
                         </a>
                         <div class="flex flex-col">
                             <div class="flex items-center gap-1">
-                                <a href="{{ route('public.profile', $comment->user->id) }}" class="hover:text-brand-green transition">
-                                    <h4 class="font-bold text-gray-800 text-sm">{{ $comment->user->name }}</h4>
+                                <a href="{{ route('public.profile', optional($comment->user)->id ?? 1) }}" class="hover:text-brand-green transition">
+                                    <h4 class="font-bold text-gray-800 text-sm">{{ optional($comment->user)->name ?? 'Ẩn danh' }}</h4>
                                 </a>
-                                @include('partials.user-badges', ['user' => $comment->user, 'size' => 'xs'])
+                                @if($comment->user)
+                                    @include('partials.user-badges', ['user' => $comment->user, 'size' => 'xs'])
+                                @endif
                             </div>
                             <div class="text-xs text-gray-500 flex items-center gap-1">
                                 <span>Bình luận tại:</span>
@@ -141,10 +143,12 @@
                                     <div class="bg-white p-2 rounded-xl rounded-tl-none border border-gray-100 shadow-sm">
                                         <div class="flex justify-between items-center mb-1">
                                             <div class="flex items-center gap-1">
-                                                <a href="{{ route('public.profile', $reply->user->id) }}" class="hover:text-brand-green transition">
-                                                    <h6 class="font-bold text-[10px] text-gray-700">{{ $reply->user->name }}</h6>
+                                                <a href="{{ route('public.profile', optional($reply->user)->id ?? 1) }}" class="hover:text-brand-green transition">
+                                                    <h6 class="font-bold text-[10px] text-gray-700">{{ optional($reply->user)->name ?? 'Ẩn danh' }}</h6>
                                                 </a>
-                                                @include('partials.user-badges', ['user' => $reply->user, 'size' => 'xs'])
+                                                @if($reply->user)
+                                                    @include('partials.user-badges', ['user' => $reply->user, 'size' => 'xs'])
+                                                @endif
                                             </div>
                                             <span class="text-[9px] text-gray-400">{{ $reply->created_at->diffForHumans() }}</span>
                                         </div>

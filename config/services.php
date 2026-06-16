@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Third Party Services
+    | Third Party Services || Quản lý thông số GEMINI_GEMINI_KEY giao tiếp với g
     |--------------------------------------------------------------------------
     |
     | This file is for storing the credentials for third party services such

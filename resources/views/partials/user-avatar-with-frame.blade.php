@@ -3,8 +3,8 @@
     $avatarSize = $size ?? 'w-12 h-12';
     $showFrame = $showFrame ?? true;
     $showNameplate = $showNameplate ?? true;
-    $equippedFrame = $showFrame ? $user->equippedFrame() : null;
-    $avatarUrl = $user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($user->name) . '&background=random&size=128';
+    $equippedFrame = ($showFrame && $user) ? $user->equippedFrame() : null;
+    $avatarUrl = optional($user)->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional($user)->name ?? 'Ẩn danh') . '&background=random&size=128';
     
     $isRoyal = $equippedFrame && $equippedFrame->slug === 'khung-hoang-gia-toi-cao';
     
@@ -21,7 +21,7 @@
 
         {{-- User Avatar (always rendered cleanly, never obscured) --}}
         <img src="{{ $avatarUrl }}"
-             alt="{{ $user->name }}"
+             alt="{{ optional($user)->name ?? 'Ẩn danh' }}"
              class="{{ $avatarSize }} rounded-full object-cover flex-shrink-0"
              style="display:block;">
 
@@ -40,7 +40,7 @@
             <div class="absolute inset-0 opacity-20" style="background: repeating-linear-gradient(45deg, #ffd700 0px, #ffd700 1px, transparent 1px, transparent 6px);"></div>
             <span class="relative z-10 text-[#ffd700] font-black uppercase tracking-widest text-xs drop-shadow-md whitespace-nowrap"
                   style="text-shadow: 0 0 8px rgba(255,215,0,0.8), 1px 1px 2px rgba(0,0,0,0.9);">
-                {{ $user->name }}
+                {{ optional($user)->name ?? 'Ẩn danh' }}
             </span>
         </div>
     @endif

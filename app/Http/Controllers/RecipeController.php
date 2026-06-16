@@ -439,14 +439,15 @@ class RecipeController extends Controller
             ->where('status', 'published');
 
         if ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhere('description', 'like', "%{$keyword}%")
-                  ->orWhereHas('category', function($cat) use ($keyword) {
-                      $cat->where('name', 'like', "%{$keyword}%");
+            $lowerKeyword = mb_strtolower($keyword, 'UTF-8');
+            $query->where(function ($q) use ($lowerKeyword) {
+                $q->whereRaw('LOWER(title) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"])
+                  ->orWhereRaw('LOWER(description) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"])
+                  ->orWhereHas('category', function($cat) use ($lowerKeyword) {
+                      $cat->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
                   })
-                  ->orWhereHas('ingredients', function($ing) use ($keyword) {
-                      $ing->where('name', 'like', "%{$keyword}%");
+                  ->orWhereHas('ingredients', function($ing) use ($lowerKeyword) {
+                      $ing->whereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
                   });
             });
         }
@@ -508,13 +509,15 @@ class RecipeController extends Controller
                     $query->whereHas('ingredients', function($q) use ($expandedKeywords) {
                         $q->where(function($q2) use ($expandedKeywords) {
                             foreach ($expandedKeywords as $keyword) {
-                                $q2->orWhere('name', 'like', "%{$keyword}%");
+                                $lowerKeyword = mb_strtolower($keyword, 'UTF-8');
+                                $q2->orWhereRaw('LOWER(name) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
                             }
                         });
                     })
                     ->orWhere(function($q3) use ($expandedKeywords) {
                         foreach ($expandedKeywords as $keyword) {
-                            $q3->orWhere('title', 'like', "%{$keyword}%");
+                            $lowerKeyword = mb_strtolower($keyword, 'UTF-8');
+                            $q3->orWhereRaw('LOWER(title) COLLATE utf8mb4_bin LIKE ?', ["%{$lowerKeyword}%"]);
                         }
                     });
                 })
@@ -566,7 +569,7 @@ class RecipeController extends Controller
         }
 
         // 2. Tính điểm cho từng công thức
-        $results = $recipes->map(function ($recipe) use ($userIngredients, $userCategories, $ingredientInput) {
+        $results = $recipes->map(function ($recipe) use ($userIngredients, $userCategories, $ingredientInput, $userId) {
             $score = 0;
             $matchCount = 0;
             
@@ -600,8 +603,20 @@ class RecipeController extends Controller
             if (in_array($recipe->category_id, $userCategories)) {
                 $score += 30;
             } elseif (count($userCategories) == 0) {
-                // User mới chưa có sở thích, cấp ngẫu nhiên 10-20đ để đa dạng hóa gợi ý
-                $score += rand(10, 20);
+                // User mới chưa có sở thích: Tạo sở thích giả lập dựa trên ID để mỗi user thấy kết quả khác nhau
+                $pseudoFavCategory = ($userId % 8) + 1; // Giả lập 1 category yêu thích ngẫu nhiên dựa trên ID
+                
+                if ($recipe->category_id == $pseudoFavCategory) {
+                    $score += 25; // Ưu tiên category giả lập này
+                } else {
+                    // Cộng điểm đa dạng dựa trên sự kết hợp giữa Recipe ID và User ID (từ 0 đến 10 điểm)
+                    $score += 10 + (($recipe->id + $userId) % 10);
+                }
+
+                // Vẫn ưu tiên nhẹ cho các món dễ nấu
+                if ($recipe->difficulty === 'easy') {
+                    $score += 5;
+                }
             }
             
             // --- C. Độ Phổ Biến (Max 20đ) ---

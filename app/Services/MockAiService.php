@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+// giả lập AI
 class MockAiService
 {
     /**

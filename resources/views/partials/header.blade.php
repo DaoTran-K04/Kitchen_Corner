@@ -234,7 +234,7 @@
             <h4 class="text-brand-green text-sm font-serif font-bold mb-3 px-2 flex items-center"><i class="fas fa-utensils mr-2"></i> Hôm nay bạn muốn nấu món gì?</h4>
             <div class="relative flex items-center bg-white rounded-full h-14 sm:h-16 px-6 border-2 border-brand-green/20 focus-within:border-brand-accent focus-within:shadow-[0_0_20px_rgba(232,93,4,0.15)] transition-all">
                 <i class="fas fa-search text-brand-accent text-lg mr-4"></i>
-                <input type="text" id="header-search-input" name="keyword" value="{{ request('keyword') }}"
+                <input type="text" id="header-search-input" name="q" value="{{ request('q') }}"
                     autocomplete="off" placeholder="Gõ tên món ăn, nguyên liệu..."
                     class="flex-1 bg-transparent border-none p-0 text-gray-800 placeholder-gray-400 font-medium text-base sm:text-lg focus:outline-none focus:ring-0">
                 <button type="submit" class="bg-brand-green text-white font-bold px-6 py-2.5 rounded-full hover:bg-[#7a1a1e] transition shadow-[0_4px_15px_rgba(155,34,38,0.3)] whitespace-nowrap hidden sm:block">
@@ -561,13 +561,13 @@
                 if (recipes.length > 0) {
                     let html = '<div class="grid grid-cols-1 gap-2 pt-2">';
                     recipes.forEach(recipe => {
-                        let imgUrl = recipe.image ? (recipe.image.startsWith('http') ? recipe.image : '/storage/' + recipe.image) : 'https://placehold.co/50x50?text=Food';
+                        let imgUrl = recipe.thumbnail || (recipe.image ? (recipe.image.startsWith('http') ? recipe.image : '/storage/' + recipe.image) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=100');
                         let detailUrl = `/cong-thuc/${recipe.slug || recipe.id}`;
                         let highlightedTitle = recipe.title.replace(new RegExp(`(${keyword})`, 'gi'), '<span class="bg-amber-100 text-brand-accent font-black">$1</span>');
 
                         html += `
                         <a href="${detailUrl}" class="flex items-center gap-4 p-3 hover:bg-red-50/50 rounded-2xl transition cursor-pointer group border border-transparent hover:border-red-100">
-                            <img loading="lazy" src="${imgUrl}" class="w-14 h-14 object-cover rounded-[1rem] shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/50x50?text=Food'">
+                            <img loading="lazy" src="${imgUrl}" class="w-14 h-14 object-cover rounded-[1rem] shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=100'">
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-[13px] font-bold text-gray-800 line-clamp-1 group-hover:text-brand-green transition-colors">${highlightedTitle}</h4>
                                 <p class="text-[11px] text-gray-500 font-medium mt-1 uppercase tracking-wider flex gap-3">

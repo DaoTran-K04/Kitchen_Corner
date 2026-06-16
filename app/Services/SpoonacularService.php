@@ -6,6 +6,7 @@ use App\Models\SupabaseIngredient;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+//crawl và chuẩn hóa N_BASE từ USDA thông qua api này
 class SpoonacularService
 {
     protected $apiKey;

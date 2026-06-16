@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Ingredient;
 use App\Services\SpoonacularService;
 
+//Sync hệ thống dinh dưỡng bằng spoonacular
 class SyncIngredientNutrition extends Command
 {
     /**

@@ -736,7 +736,7 @@
                                         <div class="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
                                             <img loading="lazy" src="{{ $randomRecipe->thumbnail }}"
                                                 class="w-full h-full object-cover transform group-hover/suggest:scale-110 transition-transform duration-700"
-                                                onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop'">
+                                                >
 
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                             <div class="absolute bottom-4 left-4">

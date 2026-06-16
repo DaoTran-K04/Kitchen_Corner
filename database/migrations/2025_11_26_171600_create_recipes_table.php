@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations.(quy định các cột chứa giá trị dinh dưỡng(0(1))
      */
     public function up(): void
     {

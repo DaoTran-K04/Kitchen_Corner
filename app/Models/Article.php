@@ -34,10 +34,6 @@ class Article extends Model
 
     public function getThumbnailAttribute($value)
     {
-        if (!$value) {
-            return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop&sig=art-{$this->id}";
-        }
-
         if (str_starts_with($value, 'http')) {
             return $value;
         }

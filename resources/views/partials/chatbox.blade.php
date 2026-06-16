@@ -21,8 +21,8 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="clearChatHistory()" title="Xóa lịch sử"
-                    class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition">
+                <button id="clear-history-btn" onclick="clearChatHistory()" title="Xóa lịch sử"
+                    class="hidden w-8 h-8 rounded-full hover:bg-white/20 items-center justify-center transition">
                     <i class="fas fa-trash-alt text-sm"></i>
                 </button>
                 <button onclick="toggleChatbox()"
@@ -215,9 +215,41 @@
     let historyLoaded = false;
     const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
 
-    // Tải lịch sử chat từ database
+    function updateClearButtonVisibility() {
+        const btn = document.getElementById('clear-history-btn');
+        if (chatHistory.length > 0) {
+            btn.classList.remove('hidden');
+            btn.classList.add('flex');
+        } else {
+            btn.classList.add('hidden');
+            btn.classList.remove('flex');
+        }
+    }
+
+    // Tải lịch sử chat từ database hoặc sessionStorage
     async function loadChatHistory() {
-        if (!isLoggedIn || historyLoaded) return;
+        if (historyLoaded) return;
+
+        if (!isLoggedIn) {
+            const sessionHistory = sessionStorage.getItem('guestChatHistory');
+            if (sessionHistory) {
+                try {
+                    const parsed = JSON.parse(sessionHistory);
+                    if (parsed.length > 0) {
+                        document.getElementById('quick-replies').style.display = 'none';
+                        parsed.forEach(msg => {
+                            addMessage(msg.content, msg.role === 'user', msg.created_at);
+                            chatHistory.push(msg);
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing session history', e);
+                }
+            }
+            historyLoaded = true;
+            updateClearButtonVisibility();
+            return;
+        }
 
         try {
             const response = await fetch('{{ route("chatbot.history") }}', {
@@ -239,6 +271,7 @@
                 });
             }
             historyLoaded = true;
+            updateClearButtonVisibility();
         } catch (error) {
             console.error('Error loading chat history:', error);
         }
@@ -265,6 +298,8 @@
             // Reset UI for everyone
             chatHistory = [];
             historyLoaded = false;
+            if (!isLoggedIn) sessionStorage.removeItem('guestChatHistory');
+            updateClearButtonVisibility();
             const container = document.getElementById('chatbox-messages');
             container.innerHTML = `
                 <div class="flex gap-3">
@@ -371,7 +406,7 @@
                 const imgUrl = r.thumbnail ? r.thumbnail : '/images/default-recipe.jpg';
                 
                 recipeCardsHtml += `
-                    <div class="flex items-center gap-3 p-2 border border-gray-100 rounded-lg hover:bg-gray-50 transition cursor-pointer" onclick="window.location.href='/recipes/${r.slug}'">
+                    <div class="flex items-center gap-3 p-2 border border-gray-100 rounded-lg hover:bg-gray-50 transition cursor-pointer" onclick="window.location.href='/cong-thuc/${r.slug}'">
                         <img src="${imgUrl}" alt="${escapeHtml(r.title)}" class="w-12 h-12 rounded object-cover flex-shrink-0" onerror="this.src='/images/default-recipe.jpg'">
                         <div class="flex-1 min-w-0">
                             <h5 class="text-sm font-semibold text-gray-800 truncate">${escapeHtml(r.title)}</h5>
@@ -475,7 +510,9 @@
 
         // Display user message
         addMessage(message, true);
-        chatHistory.push({ role: 'user', content: message });
+        chatHistory.push({ role: 'user', content: message, created_at: new Date().toISOString() });
+        if (!isLoggedIn) sessionStorage.setItem('guestChatHistory', JSON.stringify(chatHistory));
+        updateClearButtonVisibility();
 
         // Clear input and disable
         input.value = '';
@@ -501,7 +538,18 @@
 
             if (data.success) {
                 addMessage(data.reply, false);
-                chatHistory.push({ role: 'assistant', content: data.reply });
+                chatHistory.push({ role: 'assistant', content: data.reply, created_at: new Date().toISOString() });
+                if (!isLoggedIn) sessionStorage.setItem('guestChatHistory', JSON.stringify(chatHistory));
+                updateClearButtonVisibility();
+
+                // Khóa khung nhập nếu báo lỗi hết hạn mức (rate limit)
+                if (data.reply && data.reply.source === 'rate_limit') {
+                    document.getElementById('chatbox-input').disabled = true;
+                    document.getElementById('chatbox-input').placeholder = "Bạn đã hết hạn mức câu hỏi hôm nay";
+                    document.getElementById('chatbox-input').classList.add('bg-gray-100', 'cursor-not-allowed');
+                    document.getElementById('chatbox-send').disabled = true;
+                    document.getElementById('chatbox-send').classList.add('opacity-50', 'cursor-not-allowed');
+                }
             } else {
                 addMessage(data.reply || 'Xin lỗi, có lỗi xảy ra!', false);
             }

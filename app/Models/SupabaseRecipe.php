@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+//phi chuẩn hóa từ khóa trong model
 class SupabaseRecipe extends Model
 {
     protected $connection = 'supabase';

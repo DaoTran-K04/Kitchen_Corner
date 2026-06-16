@@ -108,11 +108,11 @@
                             {{-- Người báo cáo --}}
                             <td class="px-6 py-4 align-top">
                                 <div class="flex items-center gap-3">
-                                    <img loading="lazy" src="{{ $report->user->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($report->user->name) }}"
+                                    <img loading="lazy" src="{{ optional($report->user)->avatar ?? 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode(optional($report->user)->name ?? 'Ẩn danh') }}"
                                         class="w-8 h-8 rounded-full border dark:border-slate-600">
                                     <div>
-                                        <p class="text-sm font-bold text-gray-800 dark:text-white">{{ $report->user->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-slate-400">{{ $report->user->email }}</p>
+                                        <p class="text-sm font-bold text-gray-800 dark:text-white">{{ optional($report->user)->name ?? 'Ẩn danh' }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-slate-400">{{ optional($report->user)->email ?? 'Không có' }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -122,7 +122,7 @@
                                 @if($report->comment)
                                     <div class="mb-2">
                                         <p class="text-xs text-gray-500 dark:text-slate-400 mb-1">
-                                            <i class="fas fa-user mr-1"></i> {{ $report->comment->user->name ?? 'Người dùng ẩn' }}
+                                            <i class="fas fa-user mr-1"></i> {{ optional($report->comment->user)->name ?? 'Người dùng ẩn' }}
                                         </p>
                                         <p class="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">
                                             {{ Str::limit($report->comment->content, 80) }}
@@ -135,10 +135,10 @@
 
                                     {{-- Hidden content for modal --}}
                                     <div id="comment-data-{{ $report->id }}" class="hidden">
-                                        <div class="comment-author">{{ $report->comment->user->name ?? 'Người dùng ẩn' }}</div>
+                                        <div class="comment-author">{{ optional($report->comment->user)->name ?? 'Người dùng ẩn' }}</div>
                                         <div class="comment-content">{{ $report->comment->content }}</div>
                                         <div class="comment-date">{{ $report->comment->created_at->format('d/m/Y H:i') }}</div>
-                                        <div class="reporter-name">{{ $report->user->name }}</div>
+                                        <div class="reporter-name">{{ optional($report->user)->name ?? 'Ẩn danh' }}</div>
                                         <div class="report-reason">{{ $report->reason_label }}</div>
                                         <div class="report-description">{{ $report->description ?? 'Không có mô tả' }}</div>
                                     </div>
@@ -198,7 +198,7 @@
                                     @if($report->status == 'pending' && $report->comment)
                                         {{-- Chấp thuận --}}
                                         <button type="button"
-                                            onclick="openApproveModal({{ $report->id }}, '{{ addslashes($report->comment->user->name ?? 'Người dùng') }}')"
+                                            onclick="openApproveModal({{ $report->id }}, '{{ addslashes(optional(optional($report->comment)->user)->name ?? 'Người dùng') }}')"
                                             class="w-8 h-8 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300 hover:bg-green-500 dark:hover:bg-green-600 hover:text-white transition"
                                             title="Chấp thuận">
                                             <i class="fas fa-check text-xs"></i>

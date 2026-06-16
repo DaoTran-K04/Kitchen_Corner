@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+//phi chuẩn hóa từ khóa trong model
 class Recipe extends Model
 {
     use HasFactory, SoftDeletes;
@@ -80,48 +80,14 @@ class Recipe extends Model
         return $query->where('status', 'published');
     }
 
+    public function getImageAttribute($value)
+    {
+        return $value;
+    }
+
     public function getThumbnailAttribute()
     {
-        $value = $this->image;
-        
-        // Nếu không có ảnh, lấy ảnh ngẫu nhiên từ danh sách (đảm bảo không trùng lặp toàn bộ)
-        if (!$value) {
-            $photoIds = [
-                '1490645935967-10de6ba17061', // salad
-                '1473093295043-cdd812d0e601', // pasta
-                '1495521821757-a1efb6729352', // fruits
-                '1504630083234-14187a9df0f5', // steak
-                '1476224203421-9ce22365c465', // bread
-                '1484723091782-4def3715a3ba', // dessert
-                '1455619452474-d2be8b1e70cd'  // curry/soup
-            ];
-            $photoId = $photoIds[$this->id % count($photoIds)];
-            return "https://images.unsplash.com/{$photoId}?q=80&w=1000&auto=format&fit=crop";
-        }
-
-        if (str_starts_with($value, 'http') || str_starts_with($value, 'data:')) {
-            // Thêm sig để tránh cache trùng ảnh nếu link giống nhau
-            if (str_contains($value, 'unsplash.com')) {
-                return $value . (str_contains($value, '?') ? '&' : '?') . "sig={$this->id}";
-            }
-            return $value;
-        }
-
-        // Định tuyến toàn bộ ảnh sang Supabase
-        $projectRef = 'uxkrgbnmvnzunxgkaunt';
-        $supabaseBase = "https://{$projectRef}.supabase.co/storage/v1/object/public/";
-
-        // Chuyển "assets/recipes/..." thành "recipes/..."
-        if (str_starts_with($value, 'assets/')) {
-            $value = str_replace('assets/', '', $value);
-        }
-
-        // Đảm bảo ảnh lưu cục bộ trước đây cũng nằm trong bucket recipes/
-        if (!str_starts_with($value, 'recipes/')) {
-            $value = 'recipes/' . $value;
-        }
-
-        return $supabaseBase . ltrim($value, '/');
+        return $this->image;
     }
 
 
